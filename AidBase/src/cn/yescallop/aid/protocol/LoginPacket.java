@@ -9,8 +9,8 @@ import io.netty.buffer.ByteBuf;
 public class LoginPacket extends Packet {
     public static final int ID = 0x00;
 
-    public CharSequence username;
-    public CharSequence password;
+    public String username;
+    public String password;
 
     public LoginPacket() {
         super(ID);
@@ -32,7 +32,7 @@ public class LoginPacket extends Packet {
     public String toString() {
         return "LoginPacket{" +
                 "username='" + username +
-                "', password=" + password +
+                "', password='" + password +
                 "'}";
     }
 }

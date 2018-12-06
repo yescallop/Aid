@@ -14,12 +14,15 @@ public class PacketUtil {
         //no instance
     }
 
-    public static CharSequence readUTF8(ByteBuf in) {
-        return in.readCharSequence(in.readInt(), StandardCharsets.UTF_8);
+    public static String readUTF8(ByteBuf in) {
+        byte[] buf = new byte[in.readInt()];
+        in.readBytes(buf);
+        return new String(buf, StandardCharsets.UTF_8);
     }
 
-    public static void writeUTF8(ByteBuf out, CharSequence sequence) {
-        out.writeInt(sequence.length());
-        ByteBufUtil.writeUtf8(out, sequence);
+    public static void writeUTF8(ByteBuf out, String str) {
+        byte[] buf = str.getBytes(StandardCharsets.UTF_8);
+        out.writeInt(buf.length);
+        out.writeBytes(buf);
     }
 }

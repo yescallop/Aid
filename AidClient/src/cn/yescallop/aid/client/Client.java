@@ -12,15 +12,7 @@ public class Client {
 
     public static void main(String[] args) {
         try {
-            Network.startClient("127.0.0.1", 9000, new ChannelInboundHandlerAdapter() {
-                @Override
-                public void channelActive(ChannelHandlerContext ctx) {
-                    LoginPacket p = new LoginPacket();
-                    p.username = p.password = "test";
-                    ctx.channel().writeAndFlush(p);
-                    ctx.close();
-                }
-            });
+            Network.startClient("127.0.0.1", 9000, new ClientHandler());
         } catch (Exception e) {
             e.printStackTrace();
         }
