@@ -1,9 +1,6 @@
 package cn.yescallop.aid.client;
 
 import cn.yescallop.aid.network.Network;
-import cn.yescallop.aid.protocol.LoginPacket;
-import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
  * @author Scallop Ye

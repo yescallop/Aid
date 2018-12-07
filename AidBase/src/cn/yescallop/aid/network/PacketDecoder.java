@@ -1,6 +1,6 @@
 package cn.yescallop.aid.network;
 
-import cn.yescallop.aid.protocol.Packet;
+import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageDecoder;
@@ -14,10 +14,10 @@ import java.util.List;
 public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        if (in.readableBytes() <= 4) {
+        if (in.readableBytes() <= Network.MAGIC.length) {
             out.add(in.retain());
         } else {
-            byte[] header = new byte[4];
+            byte[] header = new byte[Network.MAGIC.length];
             in.readBytes(header);
             if (Arrays.equals(header, Network.MAGIC)) {
                 Packet packet = Packet.from(in);

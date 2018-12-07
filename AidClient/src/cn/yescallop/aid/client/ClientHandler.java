@@ -1,7 +1,7 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.protocol.LoginPacket;
-import cn.yescallop.aid.protocol.Packet;
+import cn.yescallop.aid.network.protocol.LoginPacket;
+import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;

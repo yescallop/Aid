@@ -1,6 +1,6 @@
-package cn.yescallop.aid.protocol;
+package cn.yescallop.aid.network.protocol;
 
-import cn.yescallop.aid.util.PacketUtil;
+import cn.yescallop.aid.network.util.PacketUtil;
 import io.netty.buffer.ByteBuf;
 
 /**

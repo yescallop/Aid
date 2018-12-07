@@ -1,4 +1,4 @@
-package cn.yescallop.aid.protocol;
+package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 

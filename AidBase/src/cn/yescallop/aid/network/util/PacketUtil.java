@@ -1,7 +1,6 @@
-package cn.yescallop.aid.util;
+package cn.yescallop.aid.network.util;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 
 import java.nio.charset.StandardCharsets;
 

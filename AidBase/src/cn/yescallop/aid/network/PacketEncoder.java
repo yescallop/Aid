@@ -1,6 +1,6 @@
 package cn.yescallop.aid.network;
 
-import cn.yescallop.aid.protocol.Packet;
+import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
