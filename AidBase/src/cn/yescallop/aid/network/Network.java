@@ -38,7 +38,8 @@ public class Network {
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
-                .childOption(ChannelOption.SO_KEEPALIVE, true);
+                .childOption(ChannelOption.SO_KEEPALIVE, true)
+                .childOption(ChannelOption.TCP_NODELAY, true);
         try {
             bootstrap.bind(port).sync()
                     .channel().closeFuture().sync();
@@ -62,7 +63,8 @@ public class Network {
                                 .addLast(handler);
                     }
                 })
-                .option(ChannelOption.SO_KEEPALIVE, true);
+                .option(ChannelOption.SO_KEEPALIVE, true)
+                .option(ChannelOption.TCP_NODELAY, true);
         try {
             bootstrap.connect(host, port).sync()
                     .channel().closeFuture().sync();
