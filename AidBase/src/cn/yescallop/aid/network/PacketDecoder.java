@@ -18,10 +18,10 @@ public class PacketDecoder extends MessageToMessageDecoder<ByteBuf> {
             out.add(in.retain());
         } else {
             byte[] header = new byte[Network.MAGIC.length];
-            in.readBytes(header);
+            in.getBytes(0, header);
             if (Arrays.equals(header, Network.MAGIC)) {
-                Packet packet = Packet.from(in);
-                out.add(packet == null ? in.retain() : packet);
+                Packet packet = Packet.from(in.skipBytes(4));
+                out.add(packet == null ? in.readerIndex(0).retain() : packet);
             } else out.add(in.retain());
         }
     }

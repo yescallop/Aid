@@ -24,7 +24,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
             Packet packet = (Packet) msg;
             System.out.println(packet);
         } else if (msg instanceof ByteBuf) {
-            System.out.println("unidentified buffer '" + ByteBufUtil.hexDump((ByteBuf) msg) + '\'');
+            System.out.println("unidentified buffer");
+            System.out.println(ByteBufUtil.prettyHexDump((ByteBuf) msg));
         }
     }
 }
