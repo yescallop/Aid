@@ -7,13 +7,13 @@ import io.netty.buffer.ByteBuf;
  * @author Scallop Ye
  */
 public class LoginPacket extends Packet {
-    public static final int ID = 0x00;
 
     public String username;
     public String password;
 
-    public LoginPacket() {
-        super(ID);
+    @Override
+    public int id() {
+        return ID_LOGIN;
     }
 
     @Override

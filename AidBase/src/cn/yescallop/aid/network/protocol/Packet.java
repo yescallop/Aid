@@ -7,18 +7,14 @@ import io.netty.buffer.ByteBuf;
  */
 public abstract class Packet {
 
-    private int id;
-
-    public Packet(int id) {
-        this.id = id;
-    }
+    public static final int ID_LOGIN = 0x00;
 
     public static Packet from(ByteBuf in) {
         int id = in.readUnsignedByte();
 
         Packet packet;
         switch (id) {
-            case LoginPacket.ID:
+            case ID_LOGIN:
                 packet = new LoginPacket();
                 break;
             default:
@@ -29,9 +25,7 @@ public abstract class Packet {
         return packet;
     }
 
-    public int id() {
-        return id;
-    }
+    public abstract int id();
 
     public abstract void readFrom(ByteBuf in);
 
