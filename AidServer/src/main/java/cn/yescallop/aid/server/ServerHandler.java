@@ -34,6 +34,12 @@ public class ServerHandler extends ChannelInboundHandlerAdapter {
                 case Packet.ID_CLIENT_HELLO:
                     ctx.writeAndFlush(new ServerHelloPacket());
                     break;
+                case Packet.ID_DEVICE_HELLO:
+                    ctx.writeAndFlush(new ServerHelloPacket());
+                    break;
+
+
+                    
             }
 
 
