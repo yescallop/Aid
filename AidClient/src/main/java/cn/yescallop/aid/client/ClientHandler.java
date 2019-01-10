@@ -1,6 +1,7 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.network.protocol.LoginPacket;
+import cn.yescallop.aid.network.protocol.ClientHelloPacket;
+import cn.yescallop.aid.network.protocol.ServerHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
@@ -11,10 +12,8 @@ public class ClientHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        LoginPacket p = new LoginPacket();
-        p.username = p.password = "测试UTF-8";
+        ClientHelloPacket p = new ClientHelloPacket();
         ctx.channel().writeAndFlush(p);
-        ctx.close();
     }
 
     @Override

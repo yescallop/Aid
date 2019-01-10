@@ -12,7 +12,8 @@ public class Client {
         try {
             Channel channel = Network.startClient("127.0.0.1", 9000, new ClientHandler());
             System.out.println("Connected to " + channel.remoteAddress());
-            channel.closeFuture().sync();
+            System.in.read();
+            channel.close().sync();
         } catch (Exception e) {
             e.printStackTrace();
         }
