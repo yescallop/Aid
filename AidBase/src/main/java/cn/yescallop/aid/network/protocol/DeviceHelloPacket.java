@@ -1,5 +1,6 @@
 package cn.yescallop.aid.network.protocol;
 
+import cn.yescallop.aid.network.util.PacketUtil;
 import io.netty.buffer.ByteBuf;
 
 public class DeviceHelloPacket extends Packet {
@@ -14,14 +15,14 @@ public class DeviceHelloPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
-        name = readUTF8(in);
+        name = PacketUtil.readUTF8(in);
         mac = new byte[6];
         in.readBytes(mac);
     }
 
     @Override
     public void writeTo(ByteBuf out) {
-        writeUTF8(out, name);
+        PacketUtil.writeUTF8(out, name);
         out.writeBytes(mac);
     }
 }
