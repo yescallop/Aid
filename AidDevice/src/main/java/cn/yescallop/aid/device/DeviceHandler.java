@@ -1,15 +1,14 @@
 package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.device.util.Util;
-import cn.yescallop.aid.network.protocol.ClientHelloPacket;
+import cn.yescallop.aid.network.AbstractHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 
-public class DeviceHandler extends ChannelInboundHandlerAdapter {
+public class DeviceHandler extends AbstractHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -22,12 +21,23 @@ public class DeviceHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) {
         System.out.print("From " + ctx.channel().remoteAddress() + ": ");
-        if (msg instanceof Packet) {
-            Packet packet = (Packet) msg;
-            System.out.println(packet);
-        } else if (msg instanceof ByteBuf) {
-            System.out.println("unidentified buffer");
-            System.out.println(ByteBufUtil.prettyHexDump((ByteBuf) msg));
-        }
+        super.channelRead(ctx, msg);
+    }
+
+    @Override
+    protected void handlePacket(ChannelHandlerContext ctx, Packet packet) {
+        System.out.println(packet);
+    }
+
+    @Override
+    protected void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf) {
+        System.out.println("unidentified buffer");
+        System.out.println(ByteBufUtil.prettyHexDump(buf));
+    }
+
+    @Override
+    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        cause.printStackTrace();
+        ctx.close();
     }
 }
