@@ -11,6 +11,9 @@ public abstract class Packet {
     public static final int ID_CLIENT_HELLO = 0x01;
     public static final int ID_DEVICE_HELLO = 0x02;
     public static final int ID_STATUS = 0x03;
+    public static final int ID_EVENT = 0x04;
+    public static final int ID_VIDEO = 0x05;
+
 
     public static Packet from(ByteBuf in) {
         int id = in.readUnsignedByte();
@@ -29,6 +32,7 @@ public abstract class Packet {
             case ID_STATUS:
                 packet = new StatusPacket();
                 break;
+                //TODO
             default:
                 return null;
         }

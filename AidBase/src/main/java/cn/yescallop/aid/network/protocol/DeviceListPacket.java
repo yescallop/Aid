@@ -2,25 +2,19 @@ package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 
-/**
- * @author Scallop Ye
- */
-public class ServerHelloPacket extends Packet {
-
-    public int mtu;
-
+public class DeviceListPacket extends Packet {
     @Override
     public int id() {
-        return ID_SERVER_HELLO;
+        return 0;
     }
 
     @Override
     public void readFrom(ByteBuf in) {
-        mtu = in.readShort() & 0xffff;
+
     }
 
     @Override
     public void writeTo(ByteBuf out) {
-        out.writeShort(mtu);
+
     }
 }

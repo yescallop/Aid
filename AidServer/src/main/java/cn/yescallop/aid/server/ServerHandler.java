@@ -3,6 +3,7 @@ package cn.yescallop.aid.server;
 import cn.yescallop.aid.network.AbstractHandler;
 import cn.yescallop.aid.network.protocol.Packet;
 import cn.yescallop.aid.network.protocol.ServerHelloPacket;
+import cn.yescallop.aid.network.protocol.StatusPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
@@ -39,9 +40,9 @@ public class ServerHandler extends AbstractHandler {
             case Packet.ID_DEVICE_HELLO:
                 ctx.writeAndFlush(new ServerHelloPacket());
                 break;
-
-
-
+            case Packet.ID_STATUS:
+                System.out.println(((StatusPacket) packet).status);
+                break;
         }
         System.out.println(packet);
     }

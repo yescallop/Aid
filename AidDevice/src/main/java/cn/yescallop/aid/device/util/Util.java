@@ -6,7 +6,7 @@ public class Util {
         //no instance
     }
 
-    public static byte[] getMacAddress() {
-        return new byte[6];
+    public static byte[][] getMacAddresses() {
+        return new byte[6][1];
     }
 }

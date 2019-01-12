@@ -18,5 +18,7 @@ public abstract class AbstractHandler extends ChannelInboundHandlerAdapter {
 
     protected abstract void handlePacket(ChannelHandlerContext ctx, Packet packet);
 
-    protected abstract void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf);
+    protected void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf) {
+        //默认忽略
+    }
 }

@@ -14,7 +14,7 @@ public class DeviceHandler extends AbstractHandler {
     public void channelActive(ChannelHandlerContext ctx) {
         DeviceHelloPacket p = new DeviceHelloPacket();
         p.name = "测试设备";
-        p.mac = Util.getMacAddress();
+        p.macs = Util.getMacAddresses();
         ctx.channel().writeAndFlush(p);
     }
 
