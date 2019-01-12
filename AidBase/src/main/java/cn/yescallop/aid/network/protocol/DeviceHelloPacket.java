@@ -7,6 +7,7 @@ public class DeviceHelloPacket extends Packet {
 
     public String name;
     public byte[][] macs;
+    public int mtu;
 
     @Override
     public int id() {
