@@ -1,11 +1,9 @@
 package cn.yescallop.aid.server;
 
-import cn.yescallop.aid.network.AbstractHandler;
+import cn.yescallop.aid.network.PacketHandler;
 import cn.yescallop.aid.network.protocol.Packet;
 import cn.yescallop.aid.network.protocol.ServerHelloPacket;
 import cn.yescallop.aid.network.protocol.StatusPacket;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
@@ -13,7 +11,7 @@ import io.netty.channel.ChannelHandlerContext;
  * @author Scallop Ye
  */
 @ChannelHandler.Sharable
-public class ServerHandler extends AbstractHandler {
+public class ServerHandler extends PacketHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -32,7 +30,7 @@ public class ServerHandler extends AbstractHandler {
     }
 
     @Override
-    protected void handlePacket(ChannelHandlerContext ctx, Packet packet) {
+    protected void handle(ChannelHandlerContext ctx, Packet packet) {
         switch (packet.id()) {
             case Packet.ID_CLIENT_HELLO:
                 ctx.writeAndFlush(new ServerHelloPacket());
@@ -45,12 +43,6 @@ public class ServerHandler extends AbstractHandler {
                 break;
         }
         System.out.println(packet);
-    }
-
-    @Override
-    protected void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf) {
-        System.out.println("unidentified buffer");
-        System.out.println(ByteBufUtil.prettyHexDump(buf));
     }
 
     @Override

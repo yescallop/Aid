@@ -1,18 +1,18 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.network.AbstractHandler;
+import cn.yescallop.aid.network.PacketHandler;
 import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 
-public class ClientHandler extends AbstractHandler {
+public class ClientHandler extends PacketHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        ClientHelloPacket p = new ClientHelloPacket();
-        ctx.channel().writeAndFlush(p);
+        for (int i = 0; i < 5; i++) {
+            ClientHelloPacket p = new ClientHelloPacket();
+            ctx.channel().writeAndFlush(p);
+        }
     }
 
     @Override
@@ -22,14 +22,8 @@ public class ClientHandler extends AbstractHandler {
     }
 
     @Override
-    protected void handlePacket(ChannelHandlerContext ctx, Packet packet) {
+    protected void handle(ChannelHandlerContext ctx, Packet packet) {
         System.out.println(packet);
-    }
-
-    @Override
-    protected void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf) {
-        System.out.println("unidentified buffer");
-        System.out.println(ByteBufUtil.prettyHexDump(buf));
     }
 
     @Override

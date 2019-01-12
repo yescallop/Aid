@@ -13,11 +13,10 @@ public abstract class Packet {
     public static final int ID_STATUS = 0x03;
     public static final int ID_EVENT = 0x04;
     public static final int ID_VIDEO = 0x05;
+    public static final int ID_DEVICE_LIST = 0x06;
 
 
-    public static Packet from(ByteBuf in) {
-        int id = in.readUnsignedByte();
-
+    public static Packet from(int id, ByteBuf in) {
         Packet packet;
         switch (id) {
             case ID_SERVER_HELLO:
@@ -32,7 +31,12 @@ public abstract class Packet {
             case ID_STATUS:
                 packet = new StatusPacket();
                 break;
-                //TODO
+            case ID_VIDEO:
+                packet = new VideoPacket();
+                break;
+            case ID_DEVICE_LIST:
+                packet = new DeviceListPacket();
+                break;
             default:
                 return null;
         }

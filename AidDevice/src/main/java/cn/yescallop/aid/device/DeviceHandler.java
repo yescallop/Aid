@@ -1,14 +1,12 @@
 package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.device.util.Util;
-import cn.yescallop.aid.network.AbstractHandler;
+import cn.yescallop.aid.network.PacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.channel.ChannelHandlerContext;
 
-public class DeviceHandler extends AbstractHandler {
+public class DeviceHandler extends PacketHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -25,14 +23,8 @@ public class DeviceHandler extends AbstractHandler {
     }
 
     @Override
-    protected void handlePacket(ChannelHandlerContext ctx, Packet packet) {
+    protected void handle(ChannelHandlerContext ctx, Packet packet) {
         System.out.println(packet);
-    }
-
-    @Override
-    protected void handleUnidentified(ChannelHandlerContext ctx, ByteBuf buf) {
-        System.out.println("unidentified buffer");
-        System.out.println(ByteBufUtil.prettyHexDump(buf));
     }
 
     @Override
