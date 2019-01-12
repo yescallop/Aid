@@ -24,13 +24,9 @@ public class ServerHandler extends PacketHandler {
     }
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.print("From " + ctx.channel().remoteAddress() + ": ");
-        super.channelRead(ctx, msg);
-    }
-
-    @Override
     protected void handle(ChannelHandlerContext ctx, Packet packet) {
+        System.out.print("From " + ctx.channel().remoteAddress() + ": ");
+        System.out.println(packet);
         switch (packet.id()) {
             case Packet.ID_CLIENT_HELLO:
                 ctx.writeAndFlush(new ServerHelloPacket());
@@ -42,7 +38,6 @@ public class ServerHandler extends PacketHandler {
                 System.out.println(((StatusPacket) packet).status);
                 break;
         }
-        System.out.println(packet);
     }
 
     @Override

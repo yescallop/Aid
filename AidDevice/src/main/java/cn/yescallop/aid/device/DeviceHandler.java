@@ -16,14 +16,10 @@ public class DeviceHandler extends PacketHandler {
         ctx.channel().writeAndFlush(p);
     }
 
-    @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        System.out.print("From " + ctx.channel().remoteAddress() + ": ");
-        super.channelRead(ctx, msg);
-    }
 
     @Override
     protected void handle(ChannelHandlerContext ctx, Packet packet) {
+        System.out.print("From " + ctx.channel().remoteAddress() + ": ");
         System.out.println(packet);
     }
 
