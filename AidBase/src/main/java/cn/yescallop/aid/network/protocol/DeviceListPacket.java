@@ -8,7 +8,7 @@ import io.netty.buffer.ByteBuf;
 public class DeviceListPacket extends Packet {
     @Override
     public int id() {
-        return 0;
+        return ID_DEVICE_LIST;
     }
 
     @Override

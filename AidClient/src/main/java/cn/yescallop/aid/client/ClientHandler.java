@@ -1,6 +1,6 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.network.PacketHandler;
+import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
@@ -8,7 +8,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * @author Scallop Ye
  */
-public class ClientHandler extends PacketHandler {
+public class ClientHandler extends ClientPacketHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
@@ -19,6 +19,11 @@ public class ClientHandler extends PacketHandler {
     }
 
     @Override
+    protected void connectionLost(ChannelHandlerContext ctx) {
+        System.out.println("Connection lost: " + ctx.channel().remoteAddress());
+    }
+
+    @Override
     protected void handle(ChannelHandlerContext ctx, Packet packet) {
         System.out.print("From " + ctx.channel().remoteAddress() + ": ");
         System.out.println(packet);
@@ -26,7 +31,6 @@ public class ClientHandler extends PacketHandler {
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        cause.printStackTrace();
-        ctx.close();
+        System.out.println("Connection reset: " + ctx.channel().remoteAddress());
     }
 }

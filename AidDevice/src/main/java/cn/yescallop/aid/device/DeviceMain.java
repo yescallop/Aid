@@ -1,5 +1,6 @@
 package cn.yescallop.aid.device;
 
+import cn.yescallop.aid.device.handler.DeviceHandler;
 import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.util.NetUtil;
 import io.netty.channel.Channel;
@@ -11,9 +12,9 @@ import java.util.Map;
 /**
  * @author Scallop Ye
  */
-public class Device {
+public class DeviceMain {
 
-    protected static Map<Inet4Address, byte[]> addresses;
+    private static Map<Inet4Address, byte[]> addresses;
 
     static {
         try {
@@ -25,12 +26,17 @@ public class Device {
         }
     }
 
+    public static Map<Inet4Address, byte[]> addresses() {
+        return addresses;
+    }
+
     public static void main(String[] args) {
         try {
-            Channel channel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
-            System.out.println("Connected to " + channel.remoteAddress());
+//            Channel serverChannel = Network.startServer("0.0.0.0", 9001, new DeviceServerHandler());
+            Channel clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
+            System.out.println("Connected to " + clientChannel.remoteAddress());
             System.in.read();
-            channel.close().sync();
+            clientChannel.close().sync();
         } catch (Exception e) {
             e.printStackTrace();
         }

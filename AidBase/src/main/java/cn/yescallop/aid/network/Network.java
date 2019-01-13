@@ -7,6 +7,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+import io.netty.handler.timeout.IdleStateHandler;
 
 /**
  * @author Scallop Ye
@@ -14,12 +15,17 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 public class Network {
 
     public static final byte[] MAGIC = new byte[]{(byte) 0xA1, (byte) 0xD0, 0x03, (byte) 0xAA};
+    public static final int IDLE_TIMEOUT = 5; //TODO: Configuration files
+    public static final int MAXIMUM_TIMEOUT_COUNT = 2;
 
     private Network() {
         //no instance
     }
 
-    public static Channel startServer(String host, int port, ChannelInboundHandlerAdapter handler) throws Exception {
+    /**
+     * Runs a Netty server on host:port, with ChannelHandler handler.
+     */
+    public static Channel startServer(String host, int port, ChannelHandler handler) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -29,6 +35,7 @@ public class Network {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         ch.pipeline()
+                                .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, 0, 0))
                                 .addLast("Decoder", new PacketDecoder())
                                 .addLast("Encoder", new PacketEncoder())
                                 .addLast(handler);
@@ -45,7 +52,10 @@ public class Network {
         return channel;
     }
 
-    public static Channel startClient(String host, int port, ChannelInboundHandlerAdapter handler) throws Exception {
+    /**
+     * Runs a Netty client on host:port, with ChannelHandler handler.
+     */
+    public static Channel startClient(String host, int port, ChannelHandler handler) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(workerGroup)
@@ -54,6 +64,7 @@ public class Network {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         ch.pipeline()
+                                .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, 0, 0))
                                 .addLast("Decoder", new PacketDecoder())
                                 .addLast("Encoder", new PacketEncoder())
                                 .addLast(handler);

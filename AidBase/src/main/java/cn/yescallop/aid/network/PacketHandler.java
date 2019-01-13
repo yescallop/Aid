@@ -6,15 +6,15 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
 
 /**
  * @author Scallop Ye
+ * Base abstract class of ChannelHandler implementation
+ * for Packet handling with idle management.
  */
 public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
-        if (msg instanceof Packet) {
-            this.handle(ctx, (Packet) msg);
-        }
-    }
+    public abstract void exceptionCaught(ChannelHandlerContext ctx, Throwable cause);
+
+    protected abstract void connectionLost(ChannelHandlerContext ctx);
 
     protected abstract void handle(ChannelHandlerContext ctx, Packet packet);
 }

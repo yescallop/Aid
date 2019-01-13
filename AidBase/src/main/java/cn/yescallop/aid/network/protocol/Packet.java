@@ -10,10 +10,11 @@ public abstract class Packet {
     public static final int ID_SERVER_HELLO = 0x00;
     public static final int ID_CLIENT_HELLO = 0x01;
     public static final int ID_DEVICE_HELLO = 0x02;
-    public static final int ID_STATUS = 0x03;
-    public static final int ID_EVENT = 0x04;
-    public static final int ID_VIDEO = 0x05;
-    public static final int ID_DEVICE_LIST = 0x06;
+    public static final int ID_ECHO = 0x03;
+    public static final int ID_STATUS = 0x04;
+    public static final int ID_EVENT = 0x05;
+    public static final int ID_VIDEO = 0x06;
+    public static final int ID_DEVICE_LIST = 0x07;
 
 
     public static Packet from(int id, ByteBuf in) {
@@ -28,8 +29,14 @@ public abstract class Packet {
             case ID_DEVICE_HELLO:
                 packet = new DeviceHelloPacket();
                 break;
+            case ID_ECHO:
+                packet = in.readBoolean() ? EchoPacket.PONG : EchoPacket.PING;
+                return packet;
             case ID_STATUS:
                 packet = new StatusPacket();
+                break;
+            case ID_EVENT:
+                packet = new EventPacket();
                 break;
             case ID_VIDEO:
                 packet = new VideoPacket();

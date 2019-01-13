@@ -7,10 +7,9 @@ import io.netty.buffer.ByteBuf;
  */
 public class StatusPacket extends Packet {
 
-    public static final int FINE = 0;
-    public static final int ERROR = 1;
-    public static final int DISCONNECTING = 2;
-    public static final int UPNP_UNREACHABLE = 3;
+    public static final int STATUS_ERROR = 0;
+    public static final int STATUS_DISCONNECTING = 1;
+    public static final int STATUS_UPNP_UNREACHABLE = 2;
 
     public int status;
 
