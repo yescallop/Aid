@@ -5,6 +5,9 @@ import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
 
+/**
+ * @author Scallop Ye
+ */
 public class ClientHandler extends PacketHandler {
 
     @Override

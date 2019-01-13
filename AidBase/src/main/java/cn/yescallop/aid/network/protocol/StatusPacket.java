@@ -2,6 +2,9 @@ package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 
+/**
+ * @author Scallop Ye
+ */
 public class StatusPacket extends Packet {
 
     public static final int FINE = 0;

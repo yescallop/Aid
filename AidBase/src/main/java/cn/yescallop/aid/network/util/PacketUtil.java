@@ -4,6 +4,9 @@ import io.netty.buffer.ByteBuf;
 
 import java.nio.charset.StandardCharsets;
 
+/**
+ * @author Scallop Ye
+ */
 public class PacketUtil {
 
     private PacketUtil() {

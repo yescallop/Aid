@@ -2,6 +2,9 @@ package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 
+/**
+ * @author Scallop Ye
+ */
 public class DeviceListPacket extends Packet {
     @Override
     public int id() {

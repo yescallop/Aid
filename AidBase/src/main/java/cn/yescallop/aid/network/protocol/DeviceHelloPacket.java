@@ -3,6 +3,9 @@ package cn.yescallop.aid.network.protocol;
 import cn.yescallop.aid.network.util.PacketUtil;
 import io.netty.buffer.ByteBuf;
 
+/**
+ * @author Scallop Ye
+ */
 public class DeviceHelloPacket extends Packet {
 
     public String name;

@@ -2,6 +2,9 @@ package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 
+/**
+ * @author Scallop Ye
+ */
 public class VideoPacket extends Packet {
 
     public long time;

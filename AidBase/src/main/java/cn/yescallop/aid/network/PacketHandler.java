@@ -4,6 +4,9 @@ import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 
+/**
+ * @author Scallop Ye
+ */
 public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
     @Override

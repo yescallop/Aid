@@ -1,5 +1,8 @@
 package cn.yescallop.aid.device.util;
 
+/**
+ * @author Scallop Ye
+ */
 public class Util {
 
     private Util() {
