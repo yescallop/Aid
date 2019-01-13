@@ -1,6 +1,5 @@
 package cn.yescallop.aid.device;
 
-import cn.yescallop.aid.device.util.Util;
 import cn.yescallop.aid.network.PacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -15,7 +14,7 @@ public class DeviceHandler extends PacketHandler {
     public void channelActive(ChannelHandlerContext ctx) {
         DeviceHelloPacket p = new DeviceHelloPacket();
         p.name = "测试设备";
-        p.macs = Util.getMacAddresses();
+        p.addresses = Device.addresses;
         ctx.channel().writeAndFlush(p);
     }
 

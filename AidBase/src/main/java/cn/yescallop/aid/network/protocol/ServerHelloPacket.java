@@ -7,8 +7,6 @@ import io.netty.buffer.ByteBuf;
  */
 public class ServerHelloPacket extends Packet {
 
-    public int mtu;
-
     @Override
     public int id() {
         return ID_SERVER_HELLO;
@@ -16,11 +14,9 @@ public class ServerHelloPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
-        mtu = in.readShort() & 0xffff;
     }
 
     @Override
     public void writeTo(ByteBuf out) {
-        out.writeShort(mtu);
     }
 }
