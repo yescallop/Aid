@@ -20,8 +20,8 @@ public abstract class ClientPacketHandler extends PacketHandler {
         idleCount = 0;
         if (msg instanceof Packet) {
             if (msg instanceof EchoPacket) {
-                if (msg == EchoPacket.PING) {
-                    ctx.writeAndFlush(EchoPacket.PONG);
+                if (msg == EchoPacket.INSTANCE_PING) {
+                    ctx.writeAndFlush(EchoPacket.INSTANCE_PONG);
                     return;
                 }
             }

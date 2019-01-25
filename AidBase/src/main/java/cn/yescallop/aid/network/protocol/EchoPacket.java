@@ -4,25 +4,19 @@ import io.netty.buffer.ByteBuf;
 
 /**
  * @author Scallop Ye
- * A simple hack?? for EchoPacket, 0 for Ping, 1 for Pong
  */
-public abstract class EchoPacket extends Packet {
+public class EchoPacket extends Packet {
 
-    public static final EchoPacket PING = new EchoPacket() {
-        @Override
-        public void writeTo(ByteBuf out) {
-            out.writeBoolean(false);
-        }
-    };
+    public static final int TYPE_PING = 0;
+    public static final int TYPE_PONG = 1;
 
-    public static final EchoPacket PONG = new EchoPacket() {
-        @Override
-        public void writeTo(ByteBuf out) {
-            out.writeBoolean(true);
-        }
-    };
+    public static final EchoPacket INSTANCE_PING = new EchoPacket(TYPE_PING);
+    public static final EchoPacket INSTANCE_PONG = new EchoPacket(TYPE_PONG);
 
-    private EchoPacket() {
+    public final int type;
+
+    private EchoPacket(int type) {
+        this.type = type;
     }
 
     @Override
@@ -32,6 +26,11 @@ public abstract class EchoPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
-        //not implemented
+        //not implemented, use INSTANCE_PING and INSTANCE_PONG instead
+    }
+
+    @Override
+    public void writeTo(ByteBuf out) {
+        out.writeByte(type);
     }
 }

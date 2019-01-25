@@ -30,7 +30,7 @@ public abstract class Packet {
                 packet = new DeviceHelloPacket();
                 break;
             case ID_ECHO:
-                packet = in.readBoolean() ? EchoPacket.PONG : EchoPacket.PING;
+                packet = in.readBoolean() ? EchoPacket.INSTANCE_PONG : EchoPacket.INSTANCE_PING;
                 return packet;
             case ID_STATUS:
                 packet = new StatusPacket();
