@@ -23,9 +23,9 @@ public class Network {
     }
 
     /**
-     * Runs a Netty server on host:port, with ChannelHandler handler.
+     * Runs a Netty server on host:port with specific handlers.
      */
-    public static Channel startServer(String host, int port, ChannelHandler handler) throws Exception {
+    public static Channel startServer(String host, int port, ChannelHandler... handlers) throws Exception {
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap bootstrap = new ServerBootstrap();
@@ -38,7 +38,7 @@ public class Network {
                                 .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, 0, 0))
                                 .addLast("Decoder", new PacketDecoder())
                                 .addLast("Encoder", new PacketEncoder())
-                                .addLast(handler);
+                                .addLast(handlers);
                     }
                 })
                 .option(ChannelOption.SO_BACKLOG, 128)
@@ -53,9 +53,9 @@ public class Network {
     }
 
     /**
-     * Runs a Netty client on host:port, with ChannelHandler handler.
+     * Runs a Netty client on host:port with specific handlers.
      */
-    public static Channel startClient(String host, int port, ChannelHandler handler) throws Exception {
+    public static Channel startClient(String host, int port, ChannelHandler... handlers) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(workerGroup)
@@ -67,7 +67,7 @@ public class Network {
                                 .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, 0, 0))
                                 .addLast("Decoder", new PacketDecoder())
                                 .addLast("Encoder", new PacketEncoder())
-                                .addLast(handler);
+                                .addLast(handlers);
                     }
                 })
                 .option(ChannelOption.SO_KEEPALIVE, true)
