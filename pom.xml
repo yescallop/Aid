@@ -6,8 +6,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>AidBase</module>
-        <module>AidConsoleBase</module>
+        <module>AidBase_Network</module>
+        <module>AidBase_Console</module>
         <module>AidClient_UI</module>
         <module>AidClient_Console</module>
         <module>AidDevice</module>
