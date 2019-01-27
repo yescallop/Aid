@@ -1,6 +1,6 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.client.MainFrame.Frame;
+import cn.yescallop.aid.client.frame.Frame;
 import cn.yescallop.aid.network.Network;
 import com.jfoenix.controls.JFXDecorator;
 import io.datafx.controller.context.FXMLViewContext;

@@ -1,8 +1,8 @@
-package cn.yescallop.aid.client.MainFrame;
+package cn.yescallop.aid.client.frame;
 
-import cn.yescallop.aid.client.PageController.HomePageController;
-import cn.yescallop.aid.client.SideMenu.ExtendedAnimatedFlowContainer;
-import cn.yescallop.aid.client.SideMenu.SideMenuController;
+import cn.yescallop.aid.client.controller.HomePageController;
+import cn.yescallop.aid.client.menu.ExtendedAnimatedFlowContainer;
+import cn.yescallop.aid.client.menu.SideMenuController;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import io.datafx.controller.ViewController;

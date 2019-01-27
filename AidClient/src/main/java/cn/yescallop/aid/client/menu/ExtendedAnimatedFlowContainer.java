@@ -1,4 +1,4 @@
-package cn.yescallop.aid.client.SideMenu;
+package cn.yescallop.aid.client.menu;
 
 import io.datafx.controller.context.ViewContext;
 import io.datafx.controller.flow.FlowContainer;

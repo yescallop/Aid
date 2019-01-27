@@ -1,4 +1,4 @@
-package cn.yescallop.aid.client.PageController;
+package cn.yescallop.aid.client.controller;
 
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
@@ -10,8 +10,8 @@ import javafx.scene.text.Text;
 
 import javax.annotation.PostConstruct;
 
-@ViewController(value = "/page/DeviceStatusPage.fxml", title = "DeviceStatus")
-public class DeviceStatusPageController {
+@ViewController(value = "/page/ServerStatusPage.fxml", title = "ServerStatus")
+public class ServerStatusPageController {
 
     @FXML
     private StackPane root;
