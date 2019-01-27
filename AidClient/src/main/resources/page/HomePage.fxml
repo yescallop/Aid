@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.layout.HBox?>
+<?import com.jfoenix.controls.JFXButton?>
+<StackPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox maxWidth="400" maxHeight="400" spacing="10">
+        <HBox spacing="40" style="-fx-padding: 0 0 0 50;">
+            <JFXButton fx:id="test1" prefWidth="100" prefHeight="40" buttonType="RAISED" text="test1"
+                       style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+            <JFXButton fx:id="test2" prefWidth="100" prefHeight="40" buttonType="RAISED" text="test2"
+                       style="-fx-text-fill:WHITE;-fx-background-color:#5264AE;-fx-font-size:14px;"/>
+        </HBox>
+    </VBox>
+</StackPane>
