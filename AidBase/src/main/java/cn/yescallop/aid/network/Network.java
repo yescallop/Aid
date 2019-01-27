@@ -70,6 +70,7 @@ public class Network {
                                 .addLast(handlers);
                     }
                 })
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true);
         Channel channel = bootstrap.connect(host, port).sync().channel();

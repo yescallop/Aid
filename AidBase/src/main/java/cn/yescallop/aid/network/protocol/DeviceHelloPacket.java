@@ -16,7 +16,7 @@ import java.util.StringJoiner;
 public class DeviceHelloPacket extends Packet {
 
     public String name;
-    public Map<Inet4Address, byte[]> addresses;
+    public Map<Inet4Address, byte[]> localAddresses;
 
     @Override
     public int id() {
@@ -27,14 +27,14 @@ public class DeviceHelloPacket extends Packet {
     public void readFrom(ByteBuf in) {
         name = NetUtil.readUTF8(in);
         int cnt = in.readInt();
-        addresses = new HashMap<>(cnt);
+        localAddresses = new HashMap<>(cnt);
         for (int i = 0; i < cnt; i++) {
             byte[] addr = new byte[4];
             byte[] mac = new byte[6];
             in.readBytes(addr);
             in.readBytes(mac);
             try {
-                addresses.put((Inet4Address) Inet4Address.getByAddress(addr), mac);
+                localAddresses.put((Inet4Address) Inet4Address.getByAddress(addr), mac);
             } catch (UnknownHostException e) {
                 //ignored
             }
@@ -44,8 +44,8 @@ public class DeviceHelloPacket extends Packet {
     @Override
     public void writeTo(ByteBuf out) {
         NetUtil.writeUTF8(out, name);
-        out.writeInt(addresses.size());
-        addresses.forEach((addr, mac) -> {
+        out.writeInt(localAddresses.size());
+        localAddresses.forEach((addr, mac) -> {
             out.writeBytes(addr.getAddress());
             out.writeBytes(mac);
         });
@@ -54,7 +54,7 @@ public class DeviceHelloPacket extends Packet {
     @Override
     public String toString() {
         StringJoiner sj = new StringJoiner(", ");
-        addresses.forEach((addr, mac) -> sj.add(addr.getHostAddress() + ":" + ByteBufUtil.hexDump(mac)));
+        localAddresses.forEach((addr, mac) -> sj.add(addr.getHostAddress() + ":" + ByteBufUtil.hexDump(mac)));
         return "DeviceHelloPacket{" +
                 "name='" + name + '\'' +
                 ", addresses=[" + sj.toString() +

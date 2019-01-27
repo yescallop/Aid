@@ -1,30 +1,29 @@
-package cn.yescallop.aid.device.handler;
+package cn.yescallop.aid.client;
 
 import cn.yescallop.aid.console.CommandReader;
-import cn.yescallop.aid.device.DeviceMain;
 import cn.yescallop.aid.network.ClientPacketHandler;
-import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
 
 /**
  * @author Scallop Ye
  */
-public class DeviceHandler extends ClientPacketHandler {
+public class ClientHandler extends ClientPacketHandler {
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) {
-        DeviceHelloPacket p = new DeviceHelloPacket();
-        p.name = "测试设备";
-        p.localAddresses = DeviceMain.localAddresses();
-        ctx.channel().writeAndFlush(p);
+        for (int i = 0; i < 5; i++) {
+            ClientHelloPacket p = new ClientHelloPacket();
+            ctx.channel().writeAndFlush(p);
+        }
     }
 
     @Override
     public void channelInactive(ChannelHandlerContext ctx) {
-        if (!DeviceMain.isStopping()) {
-            CommandReader.warning("Server unexpectedly closed the connection");
-            DeviceMain.attemptReconnecting();
+        if (!ClientConsoleMain.isStopping()) {
+            CommandReader.info("Server unexpected closed the connection");
+            ClientConsoleMain.stop();
         }
     }
 

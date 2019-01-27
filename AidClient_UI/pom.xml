@@ -9,33 +9,38 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>AidClient</artifactId>
+    <artifactId>AidClient_UI</artifactId>
 
     <dependencies>
         <dependency>
             <groupId>cn.yescallop.aid</groupId>
             <artifactId>AidBase</artifactId>
             <version>1.0-SNAPSHOT</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.datafx</groupId>
             <artifactId>datafx</artifactId>
             <version>8.0.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>com.jfoenix</groupId>
             <artifactId>jfoenix</artifactId>
             <version>8.0.8</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.datafx</groupId>
             <artifactId>core</artifactId>
             <version>8.0.1</version>
+            <scope>compile</scope>
         </dependency>
         <dependency>
             <groupId>io.datafx</groupId>
             <artifactId>flow</artifactId>
             <version>8.0.1</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 </project>

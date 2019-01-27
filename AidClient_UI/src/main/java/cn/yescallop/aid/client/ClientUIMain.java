@@ -15,7 +15,7 @@ import javafx.stage.Stage;
 /**
  * @author Scallop Ye
  */
-public class ClientMain extends Application {
+public class ClientUIMain extends Application {
 
     @FXMLViewContext
     private ViewFlowContext flowContext;
