@@ -11,7 +11,7 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
-    protected ChannelState state = ChannelState.INACTIVE;
+    ChannelState state = ChannelState.INACTIVE;
     private Throwable closeCause = null;
 
     @Override

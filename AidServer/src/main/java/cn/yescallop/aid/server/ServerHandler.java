@@ -46,7 +46,7 @@ public class ServerHandler extends ServerPacketHandler {
     @Override
     protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
         SocketAddress addr = ctx.channel().remoteAddress();
-        switch (state) {
+        switch (lastState) {
             case FINE:
                 Logger.info("Disconnected: " + addr);
                 break;
