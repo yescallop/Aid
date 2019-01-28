@@ -1,6 +1,7 @@
 package cn.yescallop.aid.server.management;
 
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import io.netty.channel.Channel;
 
 import java.net.Inet4Address;
@@ -15,12 +16,15 @@ public class Device {
     private String name;
     private Channel channel;
     private Map<Inet4Address, byte[]> localAddresses;
+    private long registerTime;
 
-    protected Device(int id, DeviceHelloPacket packet, Channel channel) {
+    Device(int id, DeviceHelloPacket packet, Channel channel) {
         this.id = id;
         this.name = packet.name;
         this.localAddresses = packet.localAddresses;
         this.channel = channel;
+
+        this.registerTime = System.currentTimeMillis();
     }
 
     public int id() {
@@ -37,5 +41,18 @@ public class Device {
 
     public Map<Inet4Address, byte[]> localAddresses() {
         return localAddresses;
+    }
+
+    public long registerTime() {
+        return registerTime;
+    }
+
+    public DeviceListPacket.DeviceInfo toDeviceInfo() {
+        DeviceListPacket.DeviceInfo info = new DeviceListPacket.DeviceInfo();
+        info.id = this.id;
+        info.name = this.name;
+        info.localAddresses = this.localAddresses;
+        info.registerTime = this.registerTime;
+        return info;
     }
 }

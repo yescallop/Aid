@@ -12,55 +12,60 @@ import java.util.Map;
  */
 public class DeviceManager {
 
-    private static int nextId = 0;
-    private static Map<Integer, Device> deviceMap = new LinkedHashMap<>();
-    private static Map<Channel, Integer> channelIndex = new HashMap<>();
+    private static Map<Integer, Device> idDeviceMap = new LinkedHashMap<>();
+    private static Map<Channel, Device> channelDeviceMap = new HashMap<>();
 
     private DeviceManager() {
         //no instance
     }
 
     public static int count() {
-        return deviceMap.size();
+        return idDeviceMap.size();
     }
 
     public static Device[] deviceArray() {
-        return deviceMap.values().toArray(new Device[0]);
+        return idDeviceMap.values().toArray(new Device[0]);
     }
 
-    public static Device registerDevice(Channel channel, DeviceHelloPacket packet) {
-        Device device = new Device(nextId, packet, channel);
-        deviceMap.put(nextId, device);
-        channelIndex.put(channel, nextId);
-        nextId++;
-        return device;
+    public static boolean isRegistered(Channel channel) {
+        return channelDeviceMap.containsKey(channel);
     }
 
-    public static boolean unregisterDevice(int id) {
-        return deviceMap.remove(id) != null;
-    }
-
-    public static boolean unregisterDevice(Channel channel) {
-        Integer id = channelIndex.remove(channel);
-        if (id == null) // no such channel registered
+    public static boolean registerDevice(Channel channel, DeviceHelloPacket packet) {
+        if (idDeviceMap.containsKey(packet.id))
             return false;
-        deviceMap.remove(id);
+        Device device = new Device(packet.id, packet, channel);
+        idDeviceMap.put(packet.id, device);
+        channelDeviceMap.put(channel, device);
         return true;
     }
 
-    public static Integer idByChannel(Channel channel) {
-        return channelIndex.get(channel);
+    public static boolean unregisterDevice(int id) {
+        Device dev = idDeviceMap.remove(id);
+        if (dev == null)
+            return false;
+        channelDeviceMap.remove(dev.channel());
+        return true;
+    }
+
+    public static boolean unregisterDevice(Channel channel) {
+        Device dev = channelDeviceMap.remove(channel);
+        if (dev == null)
+            return false;
+        idDeviceMap.remove(dev.id());
+        return true;
+    }
+
+    public static int idByChannel(Channel channel) {
+        return channelDeviceMap.get(channel).id();
     }
 
     public static Device deviceById(int id) {
-        return deviceMap.get(id);
+        return idDeviceMap.get(id);
     }
 
     public static Device deviceByChannel(Channel channel) {
-        Integer id = channelIndex.get(channel);
-        if (id == null) // no such channel registered
-            return null;
-        return deviceMap.get(id);
+        return channelDeviceMap.get(channel);
     }
 
 }

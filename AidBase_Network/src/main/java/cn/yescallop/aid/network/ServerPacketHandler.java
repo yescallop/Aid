@@ -30,7 +30,7 @@ public abstract class ServerPacketHandler extends PacketHandler {
                 state = ChannelState.CONNECTION_LOST;
                 ctx.close();
             }
-            ctx.writeAndFlush(EchoPacket.INSTANCE_PING);
+            ctx.channel().writeAndFlush(EchoPacket.INSTANCE_PING);
             idleCount++;
         } else {
             super.userEventTriggered(ctx, evt);

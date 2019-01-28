@@ -5,28 +5,29 @@ import io.netty.buffer.ByteBuf;
 /**
  * @author Scallop Ye
  */
-public class EventPacket extends Packet {
+public class RequestPacket extends Packet {
 
-    public static final int EVENT_DEVICE_REGISTERED = 0;
-    public static final int EVENT_CAMERA_DETECTED = 1;
+    public static final int TYPE_DEVICE_LIST = 0;
+    public static final int TYPE_START_FORWARDING = 1;
+    public static final int TYPE_STOP_FORWARDING = 2;
 
-    public int event;
+    public int type;
     public int deviceId = -1;
 
     @Override
     public int id() {
-        return ID_EVENT;
+        return ID_REQUEST;
     }
 
     @Override
     public void readFrom(ByteBuf in) {
-        event = in.readByte() & 0xff;
+        type = in.readByte() & 0xff;
         deviceId = in.readInt();
     }
 
     @Override
     public void writeTo(ByteBuf out) {
-        out.writeByte(event);
+        out.writeByte(type);
         out.writeInt(deviceId);
     }
 }

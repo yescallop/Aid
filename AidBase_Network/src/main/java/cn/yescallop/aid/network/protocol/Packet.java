@@ -15,6 +15,7 @@ public abstract class Packet {
     public static final int ID_EVENT = 0x05;
     public static final int ID_VIDEO = 0x06;
     public static final int ID_DEVICE_LIST = 0x07;
+    public static final int ID_REQUEST = 0x08;
 
 
     public static Packet from(int id, ByteBuf in) {
@@ -43,6 +44,9 @@ public abstract class Packet {
                 break;
             case ID_DEVICE_LIST:
                 packet = new DeviceListPacket();
+                break;
+            case ID_REQUEST:
+                packet = new RequestPacket();
                 break;
             default:
                 return null;

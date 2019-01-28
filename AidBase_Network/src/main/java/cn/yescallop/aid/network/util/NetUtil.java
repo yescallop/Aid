@@ -2,10 +2,7 @@ package cn.yescallop.aid.network.util;
 
 import io.netty.buffer.ByteBuf;
 
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.NetworkInterface;
-import java.net.SocketException;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -37,6 +34,31 @@ public class NetUtil {
         byte[] buf = str.getBytes(StandardCharsets.UTF_8);
         out.writeInt(buf.length);
         out.writeBytes(buf);
+    }
+
+    public static Map<Inet4Address, byte[]> readLocalAddresses(ByteBuf in) {
+        int cnt = in.readInt();
+        Map<Inet4Address, byte[]> res = new HashMap<>(cnt);
+        for (int i = 0; i < cnt; i++) {
+            byte[] addr = new byte[4];
+            byte[] mac = new byte[6];
+            in.readBytes(addr);
+            in.readBytes(mac);
+            try {
+                res.put((Inet4Address) Inet4Address.getByAddress(addr), mac);
+            } catch (UnknownHostException e) {
+                //ignored
+            }
+        }
+        return res;
+    }
+
+    public static void writeLocalAddresses(ByteBuf out, Map<Inet4Address, byte[]> addrs) {
+        out.writeInt(addrs.size());
+        addrs.forEach((addr, mac) -> {
+            out.writeBytes(addr.getAddress());
+            out.writeBytes(mac);
+        });
     }
 
     /**

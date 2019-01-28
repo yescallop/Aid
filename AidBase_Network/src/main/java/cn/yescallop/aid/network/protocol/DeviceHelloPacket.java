@@ -5,8 +5,6 @@ import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufUtil;
 
 import java.net.Inet4Address;
-import java.net.UnknownHostException;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.StringJoiner;
 
@@ -15,6 +13,7 @@ import java.util.StringJoiner;
  */
 public class DeviceHelloPacket extends Packet {
 
+    public int id;
     public String name;
     public Map<Inet4Address, byte[]> localAddresses;
 
@@ -25,30 +24,16 @@ public class DeviceHelloPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
+        id = in.readInt();
         name = NetUtil.readUTF8(in);
-        int cnt = in.readInt();
-        localAddresses = new HashMap<>(cnt);
-        for (int i = 0; i < cnt; i++) {
-            byte[] addr = new byte[4];
-            byte[] mac = new byte[6];
-            in.readBytes(addr);
-            in.readBytes(mac);
-            try {
-                localAddresses.put((Inet4Address) Inet4Address.getByAddress(addr), mac);
-            } catch (UnknownHostException e) {
-                //ignored
-            }
-        }
+        localAddresses = NetUtil.readLocalAddresses(in);
     }
 
     @Override
     public void writeTo(ByteBuf out) {
+        out.writeInt(id);
         NetUtil.writeUTF8(out, name);
-        out.writeInt(localAddresses.size());
-        localAddresses.forEach((addr, mac) -> {
-            out.writeBytes(addr.getAddress());
-            out.writeBytes(mac);
-        });
+        NetUtil.writeLocalAddresses(out, localAddresses);
     }
 
     @Override
@@ -56,7 +41,8 @@ public class DeviceHelloPacket extends Packet {
         StringJoiner sj = new StringJoiner(", ");
         localAddresses.forEach((addr, mac) -> sj.add(addr.getHostAddress() + ":" + ByteBufUtil.hexDump(mac)));
         return "DeviceHelloPacket{" +
-                "name='" + name + '\'' +
+                "id=" + id +
+                ",name='" + name + '\'' +
                 ", addresses=[" + sj.toString() +
                 "]}";
     }
