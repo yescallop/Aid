@@ -16,7 +16,7 @@ public abstract class ClientPacketHandler extends PacketHandler {
     private int idleCount = 0;
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public final void channelRead(ChannelHandlerContext ctx, Object msg) {
         idleCount = 0;
         if (msg instanceof Packet) {
             if (msg instanceof EchoPacket) {
@@ -25,27 +25,20 @@ public abstract class ClientPacketHandler extends PacketHandler {
                     return;
                 }
             }
-            this.handle(ctx, (Packet) msg);
+            this.packetReceived(ctx, (Packet) msg);
         }
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public final void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent && ((IdleStateEvent) evt).state() == IdleState.READER_IDLE) {
             if (idleCount >= Network.MAXIMUM_TIMEOUT_COUNT) {
+                state = ChannelState.CONNECTION_LOST;
                 ctx.close();
-                connectionLost(ctx);
             }
             idleCount++;
         } else {
             super.userEventTriggered(ctx, evt);
         }
     }
-
-    @Override
-    public abstract void exceptionCaught(ChannelHandlerContext ctx, Throwable cause);
-
-    protected abstract void connectionLost(ChannelHandlerContext ctx);
-
-    protected abstract void handle(ChannelHandlerContext ctx, Packet packet);
 }

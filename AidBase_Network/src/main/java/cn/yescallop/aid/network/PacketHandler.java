@@ -11,10 +11,34 @@ import io.netty.channel.ChannelInboundHandlerAdapter;
  */
 public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
+    protected ChannelState state = ChannelState.INACTIVE;
+    private Throwable closeCause = null;
+
     @Override
-    public abstract void exceptionCaught(ChannelHandlerContext ctx, Throwable cause);
+    public final void channelActive(ChannelHandlerContext ctx) {
+        state = ChannelState.FINE;
+        connectionEstablished(ctx);
+    }
 
-    protected abstract void connectionLost(ChannelHandlerContext ctx);
+    @Override
+    public final void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+        state = ChannelState.EXCEPTION_CAUGHT;
+        closeCause = cause;
+    }
 
-    protected abstract void handle(ChannelHandlerContext ctx, Packet packet);
+    @Override
+    public final void channelInactive(ChannelHandlerContext ctx) {
+        connectionClosed(ctx, state, closeCause);
+    }
+
+    protected abstract void connectionEstablished(ChannelHandlerContext ctx);
+
+    /**
+     * 在连接断开时触发
+     * @param lastState 连接断开前 Channel 的状态
+     * @param cause 若 lastState 为 EXCEPTION_CAUGHT，为异常实例，其余为 null
+     */
+    protected abstract void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause);
+
+    protected abstract void packetReceived(ChannelHandlerContext ctx, Packet packet);
 }

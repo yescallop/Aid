@@ -1,5 +1,6 @@
 package cn.yescallop.aid.server.util;
 
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.server.management.Device;
 
 /**
@@ -8,19 +9,15 @@ import cn.yescallop.aid.server.management.Device;
  */
 public class Util {
 
-    private static final String LINE_SEPARATOR = System.lineSeparator();
-
     private Util() {
         //no instance
     }
 
-    public static String createMessageForDeviceList(Device[] devices) {
-        StringBuilder sb = new StringBuilder();
+    public static void logDeviceList(Device[] devices) {
         int count = devices.length;
-        sb.append("------ List of ").append(count).append(" device(s) ------").append(LINE_SEPARATOR);
+        Logger.info("List of " + count + " device(s):");
         for (Device one : devices) {
-            sb.append(String.format("[%d] %s: %s", one.id(), one.name(), one.channel().remoteAddress())).append(LINE_SEPARATOR);
+            Logger.info(String.format("[%d] %s: %s", one.id(), one.name(), one.channel().remoteAddress()));
         }
-        return sb.toString();
     }
 }

@@ -1,6 +1,7 @@
 package cn.yescallop.aid.client;
 
 import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.Network;
 import io.netty.channel.Channel;
 
@@ -18,9 +19,9 @@ public class ClientConsoleMain {
 //            Channel serverChannel = Network.startServer("0.0.0.0", 9001, new DeviceServerHandler());
             new CommandReader(new ClientCommandHandler(), "> ").start();
             channel = Network.startClient("127.0.0.1", 9000, new ClientHandler());
-            CommandReader.info("Connected to " + channel.remoteAddress());
+            Logger.info("Connected to " + channel.remoteAddress());
         } catch (Exception e) {
-            CommandReader.info("Error while connecting to server");
+            Logger.info("Error while connecting to server");
             e.printStackTrace();
             System.exit(1);
         }
@@ -28,13 +29,15 @@ public class ClientConsoleMain {
 
     public static void stop() {
         stopping = true;
-        CommandReader.info("Closing client channel...");
-        try {
-            channel.close().sync();
-        } catch (InterruptedException e) {
-            //ignored
+        if (channel != null) {
+            Logger.info("Closing client channel...");
+            try {
+                channel.close().sync();
+            } catch (Exception e) {
+                //ignored
+            }
         }
-        CommandReader.info("Client stopped");
+        Logger.info("Client stopped");
         System.exit(0);
     }
 

@@ -1,6 +1,7 @@
 package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.console.CommandHandler;
+import cn.yescallop.aid.console.Logger;
 
 /**
  * @author Scallop Ye
@@ -13,7 +14,7 @@ public class DeviceCommandHandler implements CommandHandler {
                 DeviceMain.stop();
                 break;
             default:
-                System.out.println("Invalid command");
+                Logger.info("Invalid command");
         }
     }
 

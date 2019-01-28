@@ -1,7 +1,8 @@
 package cn.yescallop.aid.device.handler;
 
-import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.DeviceMain;
+import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -13,7 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class DeviceHandler extends ClientPacketHandler {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
+    public void connectionEstablished(ChannelHandlerContext ctx) {
         DeviceHelloPacket p = new DeviceHelloPacket();
         p.name = "测试设备";
         p.localAddresses = DeviceMain.localAddresses();
@@ -21,25 +22,19 @@ public class DeviceHandler extends ClientPacketHandler {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
+    protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
         if (!DeviceMain.isStopping()) {
-            CommandReader.warning("Server unexpectedly closed the connection");
+            if (lastState == ChannelState.FINE) {
+                Logger.info("Server closed");
+            } else {
+                Logger.warning("Server unexpectedly closed the connection");
+            }
             DeviceMain.attemptReconnecting();
         }
     }
 
     @Override
-    protected void connectionLost(ChannelHandlerContext ctx) {
-        CommandReader.info("Connection lost: " + ctx.channel().remoteAddress());
-    }
-
-    @Override
-    protected void handle(ChannelHandlerContext ctx, Packet packet) {
-        CommandReader.info("From " + ctx.channel().remoteAddress() + ": " + packet);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        CommandReader.info("Connection reset: " + ctx.channel().remoteAddress());
+    protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
     }
 }

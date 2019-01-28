@@ -1,19 +1,19 @@
 package cn.yescallop.aid.client;
 
 import cn.yescallop.aid.client.frame.Frame;
-import cn.yescallop.aid.network.Network;
 import com.jfoenix.controls.JFXDecorator;
 import io.datafx.controller.context.FXMLViewContext;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.container.DefaultFlowContainer;
 import io.datafx.controller.flow.context.ViewFlowContext;
-import io.netty.channel.Channel;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * @author Magical Sheep
+ * @author Scallop Ye
+ * @author MagicalSheep
+ * TODO: Finish the UI
  */
 public class ClientUIMain extends Application {
 

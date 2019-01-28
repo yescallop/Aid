@@ -1,6 +1,7 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
+import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -12,7 +13,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class ClientHandler extends ClientPacketHandler {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
+    protected void connectionEstablished(ChannelHandlerContext ctx) {
         for (int i = 0; i < 5; i++) {
             ClientHelloPacket p = new ClientHelloPacket();
             ctx.channel().writeAndFlush(p);
@@ -20,25 +21,19 @@ public class ClientHandler extends ClientPacketHandler {
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
+    protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+    }
+
+    @Override
+    protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
         if (!ClientConsoleMain.isStopping()) {
-            CommandReader.info("Server unexpected closed the connection");
+            if (lastState == ChannelState.FINE) {
+                Logger.info("Server closed");
+            } else {
+                Logger.warning("Server unexpectedly closed the connection");
+            }
             ClientConsoleMain.stop();
         }
-    }
-
-    @Override
-    protected void connectionLost(ChannelHandlerContext ctx) {
-        CommandReader.info("Connection lost: " + ctx.channel().remoteAddress());
-    }
-
-    @Override
-    protected void handle(ChannelHandlerContext ctx, Packet packet) {
-        CommandReader.info("From " + ctx.channel().remoteAddress() + ": " + packet);
-    }
-
-    @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        CommandReader.info("Connection reset: " + ctx.channel().remoteAddress());
     }
 }
