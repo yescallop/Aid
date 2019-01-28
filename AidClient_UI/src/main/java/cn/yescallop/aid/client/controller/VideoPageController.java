@@ -6,10 +6,14 @@ import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
 import javax.annotation.PostConstruct;
+import java.awt.*;
+import java.io.File;
 
 /**
  * @author Magical Sheep
@@ -18,6 +22,8 @@ import javax.annotation.PostConstruct;
 public class VideoPageController implements UIHandler {
     @FXML
     private StackPane root;
+    @FXML
+    private ImageView screen;
 
     @PostConstruct
     public void init() {

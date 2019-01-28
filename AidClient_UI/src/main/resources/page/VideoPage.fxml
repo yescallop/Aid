@@ -3,11 +3,17 @@
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.control.Label?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/2.2">
     <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
-        <ImageView>
-        </ImageView>
+        <Label>
+            <graphic>
+                <ImageView fitWidth="1000" fitHeight="500" preserveRatio="true" fx:id="screen">
+                </ImageView>
+            </graphic>
+        </Label>
+
     </VBox>
 
 </StackPane>
