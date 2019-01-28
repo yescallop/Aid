@@ -1,9 +1,37 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.control.Label?>
+<?import com.jfoenix.controls.JFXTreeTableView?>
+<?import com.jfoenix.controls.JFXTreeTableColumn?>
+<?import javafx.scene.image.ImageView?>
+
 <StackPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea"
            xmlns:fx="http://javafx.com/fxml/1">
-    <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
-    </VBox>
+    <BorderPane maxWidth="1000" maxHeight="500">
+        <left>
+            <JFXTreeTableView fx:id="onlineDeviceList">
+                <columns>
+                    <JFXTreeTableColumn fx:id="deviceNumColumn"
+                                        minWidth="100" text="设备号" prefWidth="100"
+                                        resizable="false"></JFXTreeTableColumn>
+                    <JFXTreeTableColumn fx:id="regTimeColumn" text="注册时间"
+                                        minWidth="100" resizable="false"></JFXTreeTableColumn>
+                    <JFXTreeTableColumn fx:id="loginTimeColumn" text="登录时间"
+                                        minWidth="100" resizable="false"></JFXTreeTableColumn>
+                </columns>
+            </JFXTreeTableView>
+        </left>
+        <center>
+            <StackPane style="-fx-padding: 0 0 0 20">
+                <Label styleClass="card">
+                    <graphic>
+                        <ImageView fx:id="screen" fitWidth="680" fitHeight="500" preserveRatio="true">
+                        </ImageView>
+                    </graphic>
+                </Label>
+            </StackPane>
+        </center>
+    </BorderPane>
 </StackPane>

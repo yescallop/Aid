@@ -10,6 +10,7 @@ import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXTextArea;
 import io.datafx.controller.ViewController;
 import io.netty.channel.Channel;
+import javafx.application.Platform;
 import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
@@ -25,7 +26,6 @@ public class ConsolePageController implements UIHandler {
 
     @FXML
     private StackPane root;
-
     @FXML
     private JFXTextArea console;
     @FXML
@@ -35,10 +35,7 @@ public class ConsolePageController implements UIHandler {
     public void init() {
         Factory.regPage(this);
         sync();
-        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            new Thread(this::start).start();
-            connect.setDisable(true);
-        });
+        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new Thread(this::start).start());
     }
 
     @Override
@@ -66,9 +63,11 @@ public class ConsolePageController implements UIHandler {
         try {
             Channel channel = Network.startClient("127.0.0.1", 9000, new ClientHandler());
             Factory.println("Connected to " + channel.remoteAddress());
+            Platform.runLater(() -> connect.setDisable(true));
             channel.closeFuture().sync();
         } catch (Exception e) {
-            e.printStackTrace();
+            Factory.println(e.getMessage());
+            Platform.runLater(() -> connect.setDisable(false));
         }
     }
 }
