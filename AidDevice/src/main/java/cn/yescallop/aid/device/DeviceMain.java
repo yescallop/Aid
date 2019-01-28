@@ -25,7 +25,7 @@ public class DeviceMain {
 
     static {
         try {
-            addresses = NetUtil.siteLocalAddressesWithMAC();
+            addresses = NetUtil.getSiteLocalAddressesWithMAC();
         } catch (SocketException e) {
             System.out.println("Unable to get network interface info");
             e.printStackTrace();
@@ -44,7 +44,7 @@ public class DeviceMain {
             clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
             Logger.info("Connected to " + clientChannel.remoteAddress());
         } catch (Exception e) {
-            Logger.info("Error while connecting to server");
+            Logger.severe("Error while connecting to server");
             e.printStackTrace();
             System.exit(1);
         }

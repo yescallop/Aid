@@ -42,10 +42,9 @@ public class NetUtil {
     /**
      * 获取所有局域网 IPv4 网络适配器的 IP 地址与其对应的 MAC 地址
      */
-    public static Map<Inet4Address, byte[]> siteLocalAddressesWithMAC() throws SocketException {
+    public static Map<Inet4Address, byte[]> getSiteLocalAddressesWithMAC() throws SocketException {
         Map<Inet4Address, byte[]> res = new HashMap<>();
         Enumeration<NetworkInterface> nis = NetworkInterface.getNetworkInterfaces();
-        nis:
         while (nis.hasMoreElements()) {
             NetworkInterface ni = nis.nextElement();
             if (ni.isUp() && !ni.isLoopback() && !ni.isVirtual() && !ni.isPointToPoint()) {
@@ -54,7 +53,6 @@ public class NetUtil {
                     InetAddress addr = addrs.nextElement();
                     if (addr instanceof Inet4Address && addr.isSiteLocalAddress()) {
                         res.put((Inet4Address) addr, ni.getHardwareAddress());
-                        continue nis;
                     }
                 }
             }

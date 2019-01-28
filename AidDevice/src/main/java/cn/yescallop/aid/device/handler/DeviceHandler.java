@@ -14,7 +14,7 @@ import io.netty.channel.ChannelHandlerContext;
 public class DeviceHandler extends ClientPacketHandler {
 
     @Override
-    public void connectionEstablished(ChannelHandlerContext ctx) {
+    protected void connectionEstablished(ChannelHandlerContext ctx) {
         DeviceHelloPacket p = new DeviceHelloPacket();
         p.name = "测试设备";
         p.localAddresses = DeviceMain.localAddresses();

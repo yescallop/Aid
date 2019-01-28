@@ -21,7 +21,7 @@ import java.net.SocketAddress;
 public class ServerHandler extends ServerPacketHandler {
 
     @Override
-    public void connectionEstablished(ChannelHandlerContext ctx) {
+    protected void connectionEstablished(ChannelHandlerContext ctx) {
         Logger.info("Connected: " + ctx.channel().remoteAddress());
     }
 
