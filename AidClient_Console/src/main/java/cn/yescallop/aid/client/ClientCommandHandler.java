@@ -1,6 +1,7 @@
 package cn.yescallop.aid.client;
 
 import cn.yescallop.aid.console.CommandHandler;
+import cn.yescallop.aid.console.Logger;
 
 /**
  * @author Scallop Ye
@@ -14,7 +15,7 @@ public class ClientCommandHandler implements CommandHandler {
                 ClientConsoleMain.stop();
                 break;
             default:
-                System.out.println("Invalid command");
+                Logger.info("Invalid command");
         }
     }
 

@@ -1,5 +1,6 @@
 package cn.yescallop.aid.device.handler;
 
+import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
@@ -9,18 +10,19 @@ import io.netty.channel.ChannelHandlerContext;
  * TODO: Finish Device Server part
  */
 public class DeviceServerHandler extends ServerPacketHandler {
+
     @Override
-    protected void connectionLost(ChannelHandlerContext ctx) {
+    protected void connectionEstablished(ChannelHandlerContext ctx) {
 
     }
 
     @Override
-    protected void handle(ChannelHandlerContext ctx, Packet packet) {
+    protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
 
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
+    protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
 
     }
 }

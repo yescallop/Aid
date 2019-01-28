@@ -1,6 +1,7 @@
 package cn.yescallop.aid.server;
 
 import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.Network;
 import io.netty.channel.Channel;
 
@@ -19,20 +20,22 @@ public class ServerMain {
         try {
             new CommandReader(new ServerCommandHandler(), "> ").start();
             channel = Network.startServer(HOST, PORT, new ServerHandler());
-            CommandReader.info("Server started on " + HOST + ":" + PORT);
+            Logger.info("Server started on " + HOST + ":" + PORT);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public static void stop() {
-        CommandReader.info("Closing server channel...");
-        try {
-            channel.close().sync();
-        } catch (InterruptedException e) {
-            //ignored
+        if (channel != null) {
+            Logger.info("Closing server channel...");
+            try {
+                channel.close().sync();
+            } catch (Exception e) {
+                //ignored
+            }
         }
-        CommandReader.info("Server stopped");
+        Logger.info("Server stopped");
         System.exit(0);
     }
 }

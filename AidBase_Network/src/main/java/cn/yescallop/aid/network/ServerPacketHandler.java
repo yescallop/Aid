@@ -16,19 +16,19 @@ public abstract class ServerPacketHandler extends PacketHandler {
     private int idleCount = 0;
 
     @Override
-    public void channelRead(ChannelHandlerContext ctx, Object msg) {
+    public final void channelRead(ChannelHandlerContext ctx, Object msg) {
         idleCount = 0;
         if (msg instanceof Packet && !(msg instanceof EchoPacket)) {
-            this.handle(ctx, (Packet) msg);
+            this.packetReceived(ctx, (Packet) msg);
         }
     }
 
     @Override
-    public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+    public final void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent && ((IdleStateEvent) evt).state() == IdleState.READER_IDLE) {
             if (idleCount >= Network.MAXIMUM_TIMEOUT_COUNT) {
+                state = ChannelState.CONNECTION_LOST;
                 ctx.close();
-                connectionLost(ctx);
             }
             ctx.writeAndFlush(EchoPacket.INSTANCE_PING);
             idleCount++;

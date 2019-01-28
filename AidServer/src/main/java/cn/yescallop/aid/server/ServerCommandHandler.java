@@ -1,6 +1,7 @@
 package cn.yescallop.aid.server;
 
 import cn.yescallop.aid.console.CommandHandler;
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.server.management.DeviceManager;
 import cn.yescallop.aid.server.util.Util;
 
@@ -17,14 +18,13 @@ public class ServerCommandHandler implements CommandHandler {
                 break;
             case "list":
                 if (DeviceManager.count() == 0) {
-                    System.out.println("No device is connected at present.");
+                    Logger.info("No device is connected at present.");
                 } else {
-                    String msg = Util.createMessageForDeviceList(DeviceManager.deviceArray());
-                    System.out.println(msg);
+                    Util.logDeviceList(DeviceManager.deviceArray());
                 }
                 break;
             default:
-                System.out.println("Invalid command");
+                Logger.info("Invalid command");
         }
     }
 

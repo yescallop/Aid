@@ -1,6 +1,7 @@
 package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.handler.DeviceHandler;
 import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.util.NetUtil;
@@ -19,6 +20,8 @@ public class DeviceMain {
     protected static Channel serverChannel;
     private static Map<Inet4Address, byte[]> addresses;
     private static boolean stopping = false;
+
+    private static final long RECONNECTING_DELAY_MILLIS = 5000; //TODO: Move this to a configuration file
 
     static {
         try {
@@ -39,35 +42,47 @@ public class DeviceMain {
 //            Channel serverChannel = Network.startServer("0.0.0.0", 9001, new DeviceServerHandler());
             new CommandReader(new DeviceCommandHandler(), "> ").start();
             clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
-            CommandReader.info("Connected to " + clientChannel.remoteAddress());
+            Logger.info("Connected to " + clientChannel.remoteAddress());
         } catch (Exception e) {
-            CommandReader.info("Error while connecting to server");
+            Logger.info("Error while connecting to server");
             e.printStackTrace();
             System.exit(1);
         }
     }
 
-    public static void attemptReconnecting() {
+    private static Runnable RECONNECTING_RUNNABLE = () -> {
         while (true) {
-            CommandReader.info("Attempting reconnecting to server...");
+            Logger.info("Attempting reconnecting to server...");
             try {
                 clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
             } catch (Exception e) {
+                try {
+                    Thread.sleep(RECONNECTING_DELAY_MILLIS);
+                } catch (InterruptedException e1) {
+                    return;
+                }
                 continue;
             }
+            Logger.info("Reconnected to server");
             break;
         }
+    };
+
+    public static void attemptReconnecting() {
+        new Thread(RECONNECTING_RUNNABLE, "Re-connector").start();
     }
 
     public static void stop() {
         stopping = true;
-        CommandReader.info("Closing client channel...");
-        try {
-            clientChannel.close().sync();
-        } catch (InterruptedException e) {
-            //ignored
+        if (clientChannel != null) {
+            Logger.info("Closing client channel...");
+            try {
+                clientChannel.close().sync();
+            } catch (Exception e) {
+                //ignored
+            }
         }
-        CommandReader.info("Device stopped");
+        Logger.info("Device stopped");
         System.exit(0);
     }
 

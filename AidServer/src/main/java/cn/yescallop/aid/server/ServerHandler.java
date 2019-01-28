@@ -1,6 +1,7 @@
 package cn.yescallop.aid.server;
 
-import cn.yescallop.aid.console.CommandReader;
+import cn.yescallop.aid.console.Logger;
+import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -11,6 +12,8 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
+import java.net.SocketAddress;
+
 /**
  * @author Scallop Ye
  */
@@ -18,24 +21,13 @@ import io.netty.channel.ChannelHandlerContext;
 public class ServerHandler extends ServerPacketHandler {
 
     @Override
-    public void channelActive(ChannelHandlerContext ctx) {
-        CommandReader.info("Connected: " + ctx.channel().remoteAddress());
+    public void connectionEstablished(ChannelHandlerContext ctx) {
+        Logger.info("Connected: " + ctx.channel().remoteAddress());
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) {
-        DeviceManager.unregisterDevice(ctx.channel());
-        CommandReader.info("Disconnected: " + ctx.channel().remoteAddress());
-    }
-
-    @Override
-    protected void connectionLost(ChannelHandlerContext ctx) {
-        CommandReader.info("Connection lost: " + ctx.channel().remoteAddress());
-    }
-
-    @Override
-    protected void handle(ChannelHandlerContext ctx, Packet packet) {
-        CommandReader.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+    protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
         Channel channel = ctx.channel();
         switch (packet.id()) {
             case Packet.ID_CLIENT_HELLO:
@@ -52,7 +44,18 @@ public class ServerHandler extends ServerPacketHandler {
     }
 
     @Override
-    public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        CommandReader.info("Connection reset: " + ctx.channel().remoteAddress());
+    protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
+        SocketAddress addr = ctx.channel().remoteAddress();
+        switch (state) {
+            case FINE:
+                Logger.info("Disconnected: " + addr);
+                break;
+            case EXCEPTION_CAUGHT:
+                Logger.warning("Connection reset: " + addr);
+                break;
+            case CONNECTION_LOST:
+                Logger.warning("Connection lost:" + addr);
+                break;
+        }
     }
 }
