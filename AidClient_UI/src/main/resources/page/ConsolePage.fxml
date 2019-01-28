@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.layout.StackPane?>
+
+<?import javafx.scene.layout.BorderPane?>
+<?import com.jfoenix.controls.JFXTextArea?>
+<?import javafx.scene.layout.VBox?>
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <BorderPane maxWidth="1000" maxHeight="500">
+        <center>
+            <StackPane styleClass="card">
+                <JFXTextArea fx:id="console" minWidth="720" editable="false" style="-fx-font-size:16px">
+                </JFXTextArea>
+            </StackPane>
+        </center>
+        <right>
+            <VBox spacing="20" style="-fx-padding: 0 0 0 30;">
+                <JFXButton fx:id="connect" prefWidth="180" prefHeight="50" buttonType="RAISED" text="连接服务器"
+                           style="-fx-text-fill:WHITE;-fx-background-color:#008577;-fx-font-size:16px;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作1"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作2"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作3"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作4"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作5"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+                <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作6"
+                           style="-fx-font-size:14px;-fx-background-color:WHITE;"/>
+            </VBox>
+        </right>
+    </BorderPane>
+</StackPane>

@@ -15,8 +15,8 @@
 }
 
 .title-label {
-    -fx-font-size: 16.0px;
-    -fx-padding: 14.0px;
+    -fx-font-size: 32.0px;
+    -fx-padding: 24.0px;
     -fx-text-fill: rgba(0.0, 0.0, 0.0, 0.87);
 }
 
@@ -28,12 +28,25 @@
 
 /*******************************************************************************
  *                                                                             *
+ * My card view                                                                *
+ *                                                                             *
+ ******************************************************************************/
+.card {
+	-fx-background-color: rgb(255.0, 255.0, 255.0);
+	-fx-background-radius: 3;
+	-fx-effect: dropshadow(gaussian, rgb(0.0, 0.0, 0.0, 0.15), 6.0, 0.7, 0.0,
+		1.5);
+	-fx-padding: 16 16 16 16;
+}
+
+/*******************************************************************************
+ *                                                                             *
  * JFX Drawer                                                                  *
  *                                                                             *
  ******************************************************************************/
 
 .jfx-drawer-overlay-pane {
-    -fx-background-color: rgba(0.0, 0.0, 0.0, 0.1)
+    -fx-background-color: rgba(0.0, 0.0, 0.0, 0.3)
 }
 
 .jfx-drawer-side-pane {
@@ -47,7 +60,7 @@
  ******************************************************************************/
 
 .jfx-dialog-overlay-pane {
-    -fx-background-color: rgba(0.0, 0.0, 0.0, 0.1);
+    -fx-background-color: rgba(0.0, 0.0, 0.0, 0.3);
 }
 
 .dialog-trigger {
@@ -396,17 +409,16 @@
 
 .jfx-text-field, .jfx-password-field, .jfx-text-area {
     -fx-background-color: transparent;
-    -fx-font-weight: BOLD;
     -fx-prompt-text-fill: #808080;
     -fx-alignment: top-left;
     -fx-max-width: 300.0;
     -fx-pref-width: 300.0;
-    -jfx-focus-color: #4059A9;
+    -jfx-focus-color: #008577;
     -jfx-unfocus-color: #4d4d4d;
 }
 
 .jfx-text-area .viewport {
-    -fx-background-color: #F4F4F4;
+    -fx-background-color: #FFFFFF;
 }
 
 /*******************************************************************************

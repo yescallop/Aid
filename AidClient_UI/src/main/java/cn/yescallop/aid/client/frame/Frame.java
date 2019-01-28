@@ -1,6 +1,6 @@
 package cn.yescallop.aid.client.frame;
 
-import cn.yescallop.aid.client.controller.HomePageController;
+import cn.yescallop.aid.client.controller.ConsolePageController;
 import cn.yescallop.aid.client.menu.ExtendedAnimatedFlowContainer;
 import cn.yescallop.aid.client.menu.SideMenuController;
 import com.jfoenix.controls.JFXDrawer;
@@ -19,6 +19,9 @@ import javax.annotation.PostConstruct;
 
 import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT;
 
+/**
+ * @author Magical Sheep
+ */
 @ViewController(value = "/Frame.fxml",title = "Main Frame")
 public class Frame {
 
@@ -56,18 +59,17 @@ public class Frame {
         });
         context = new ViewFlowContext();
 
-        Flow exhibitionArea = new Flow(HomePageController.class);
+        Flow exhibitionArea = new Flow(ConsolePageController.class);
         final FlowHandler flowHandler = exhibitionArea.createHandler(context);
         context.register("ContentFlowHandler",flowHandler);
         context.register("ContentFlow",exhibitionArea);
-        final Duration containerAnimationDuration = Duration.millis(120);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration)));
+        final Duration containerAnimationDuration = Duration.millis(300);
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
         Flow sideMenuFlow = new Flow(SideMenuController.class);
         final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,SWIPE_LEFT)));
-
 
     }
 }

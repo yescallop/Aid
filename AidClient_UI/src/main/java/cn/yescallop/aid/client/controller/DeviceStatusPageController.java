@@ -1,5 +1,6 @@
 package cn.yescallop.aid.client.controller;
 
+import cn.yescallop.aid.client.api.UIHandler;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -10,8 +11,11 @@ import javafx.scene.text.Text;
 
 import javax.annotation.PostConstruct;
 
+/**
+ * @author Magical Sheep
+ */
 @ViewController(value = "/page/DeviceStatusPage.fxml", title = "DeviceStatus")
-public class DeviceStatusPageController {
+public class DeviceStatusPageController implements UIHandler {
 
     @FXML
     private StackPane root;
@@ -20,6 +24,12 @@ public class DeviceStatusPageController {
     public void init() {
     }
 
+    @Override
+    public void sync() {
+
+    }
+
+    @Override
     public void showDialog(String heading, String body) {
         JFXButton ok = new JFXButton("确定");
         ok.setPrefSize(70, 35);

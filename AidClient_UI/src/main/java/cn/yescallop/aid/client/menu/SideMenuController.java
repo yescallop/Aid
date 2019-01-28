@@ -18,7 +18,10 @@ import javafx.scene.control.Label;
 import javax.annotation.PostConstruct;
 import java.util.Objects;
 
-@ViewController(value = "/SideMenu.fxml",title = "UITest")
+/**
+ * @author Magical Sheep
+ */
+@ViewController(value = "/SideMenu.fxml",title = "AidClient")
 public class SideMenuController {
 
     @FXMLViewFlowContext
@@ -58,7 +61,7 @@ public class SideMenuController {
             }
         })).start());
         Flow contentFlow = (Flow) context.getRegisteredObject("ContentFlow");
-        bindNodeToController(home, HomePageController.class, contentFlow, contentFlowHandler);
+        bindNodeToController(home, ConsolePageController.class, contentFlow, contentFlowHandler);
         bindNodeToController(deviceStatus, DeviceStatusPageController.class, contentFlow, contentFlowHandler);
         bindNodeToController(video, VideoPageController.class, contentFlow, contentFlowHandler);
         bindNodeToController(serverStatus, ServerStatusPageController.class, contentFlow, contentFlowHandler);

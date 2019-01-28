@@ -5,9 +5,8 @@
 <?import javafx.scene.layout.*?>
 <StackPane fx:id="root"
            xmlns="http://javafx.com/javafx"
-           xmlns:fx="http://javafx.com/fxml"
-           prefHeight="400.0" prefWidth="600.0">
-    <VBox maxWidth="400" maxHeight="400" spacing="10">
+           xmlns:fx="http://javafx.com/fxml">
+    <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
         <Label styleClass="title-label">Flat Buttons</Label>
         <HBox spacing="20" style="-fx-padding: 0 0 0 50;">
             <JFXButton prefWidth="100" prefHeight="40" buttonType="FLAT" text="BUTTON"

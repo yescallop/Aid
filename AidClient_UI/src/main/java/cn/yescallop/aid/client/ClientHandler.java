@@ -1,5 +1,6 @@
 package cn.yescallop.aid.client;
 
+import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -20,17 +21,17 @@ public class ClientHandler extends ClientPacketHandler {
 
     @Override
     protected void connectionLost(ChannelHandlerContext ctx) {
-        System.out.println("Connection lost: " + ctx.channel().remoteAddress());
+        Factory.println("Connection lost: " + ctx.channel().remoteAddress());
     }
 
     @Override
     protected void handle(ChannelHandlerContext ctx, Packet packet) {
-        System.out.print("From " + ctx.channel().remoteAddress() + ": ");
-        System.out.println(packet);
+        Factory.println("From " + ctx.channel().remoteAddress() + ": ");
+        Factory.println(packet.toString());
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        System.out.println("Connection reset: " + ctx.channel().remoteAddress());
+        Factory.println("Connection reset: " + ctx.channel().remoteAddress());
     }
 }

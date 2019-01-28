@@ -9,7 +9,7 @@
         <String fx:value="side-menu"/>
     </styleClass>
     <JFXListView fx:id="sideList">
-        <Label fx:id="home">首页</Label>
+        <Label fx:id="home">控制台</Label>
         <Label fx:id="video">设备录像</Label>
         <Label fx:id="deviceStatus">设备运行状态</Label>
         <Label fx:id="serverStatus">服务器运行状态</Label>

@@ -13,7 +13,7 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 /**
- * @author Scallop Ye
+ * @author Magical Sheep
  */
 public class ClientUIMain extends Application {
 
@@ -22,6 +22,7 @@ public class ClientUIMain extends Application {
 
     public static void main(String[] args) {
         launch(args);
+        System.exit(0);
     }
 
     @Override
@@ -37,16 +38,8 @@ public class ClientUIMain extends Application {
         scene.getStylesheets().add(getClass().getClassLoader().getResource("style/material-designs-style.css").toExternalForm());
         primaryStage.setTitle("AidClient");
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 
-    public void start() {
-        try {
-            Channel channel = Network.startClient("127.0.0.1", 9000, new ClientHandler());
-            System.out.println("Connected to " + channel.remoteAddress());
-            channel.closeFuture().sync();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
 }

@@ -1,7 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.image.ImageView?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/2.2">
+    <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
+        <ImageView>
+        </ImageView>
+    </VBox>
 
 </StackPane>

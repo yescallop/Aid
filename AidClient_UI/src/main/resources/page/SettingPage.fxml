@@ -2,7 +2,7 @@
 
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<StackPane fx:id="root" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
-    <VBox maxHeight="600" maxWidth="600" spacing="10">
+<StackPane fx:id="root" xmlns="http://javafx.com/javafx/8.0.172-ea" xmlns:fx="http://javafx.com/fxml/1">
+    <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
     </VBox>
 </StackPane>
