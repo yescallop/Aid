@@ -1,6 +1,6 @@
-package cn.yescallop.aid.client.controller;
+package cn.yescallop.aid.client.ui.controller;
 
-import cn.yescallop.aid.client.Device;
+import cn.yescallop.aid.client.network.DeviceInfo;
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
 import com.jfoenix.controls.*;
@@ -26,23 +26,26 @@ public class DeviceStatusPageController implements UIHandler {
     @FXML
     private StackPane root;
     @FXML
-    private JFXTreeTableView<Device> onlineDeviceList;
+    private JFXTreeTableView<DeviceInfo> onlineDeviceList;
     @FXML
-    private JFXTreeTableColumn<Device, String> deviceNumColumn;
+    private JFXTreeTableColumn<DeviceInfo, String> nameColumn;
     @FXML
-    private JFXTreeTableColumn<Device, String> regTimeColumn;
+    private JFXTreeTableColumn<DeviceInfo, String> idColumn;
     @FXML
-    private JFXTreeTableColumn<Device, String> loginTimeColumn;
+    private JFXTreeTableColumn<DeviceInfo, String> registerTimeColumn;
     @FXML
     private ImageView screen;
 
     @PostConstruct
     public void init() {
-        setupCellValueFactory(deviceNumColumn,Device::deviceNumProperty);
-        setupCellValueFactory(regTimeColumn,Device::regTimeProperty);
-        setupCellValueFactory(loginTimeColumn,Device::loginTimeProperty);
+        Factory.UIData.regPage(this);
+        setupCellValueFactory(nameColumn, DeviceInfo::nameProperty);
+        setupCellValueFactory(idColumn, d -> d.idProperty().asString());
+        setupCellValueFactory(registerTimeColumn, d -> d.registerTimeProperty().asString());
 
-        onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
+        new Thread(Factory.Network::list).start();
+        sync();
+
         onlineDeviceList.setShowRoot(false);
 
         /*
@@ -50,14 +53,14 @@ public class DeviceStatusPageController implements UIHandler {
          */
         onlineDeviceList.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                showDialog("Test",onlineDeviceList.getSelectionModel().getSelectedItem().toString());
+                showDialog("Test", onlineDeviceList.getSelectionModel().getSelectedItem().toString());
             }
         });
 
     }
 
-    private <T> void setupCellValueFactory(JFXTreeTableColumn<Device, T> column, Function<Device, ObservableValue<T>> mapper) {
-        column.setCellValueFactory((TreeTableColumn.CellDataFeatures<Device, T> param) -> {
+    private <T> void setupCellValueFactory(JFXTreeTableColumn<DeviceInfo, T> column, Function<DeviceInfo, ObservableValue<T>> mapper) {
+        column.setCellValueFactory((TreeTableColumn.CellDataFeatures<DeviceInfo, T> param) -> {
             if (column.validateValue(param)) {
                 return mapper.apply(param.getValue().getValue());
             } else {
@@ -68,7 +71,7 @@ public class DeviceStatusPageController implements UIHandler {
 
     @Override
     public void sync() {
-        onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
+        onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.UIData.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
     }
 
     @Override

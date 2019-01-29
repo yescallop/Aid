@@ -1,8 +1,8 @@
-package cn.yescallop.aid.client.frame;
+package cn.yescallop.aid.client.ui.frame;
 
-import cn.yescallop.aid.client.controller.ConsolePageController;
-import cn.yescallop.aid.client.menu.ExtendedAnimatedFlowContainer;
-import cn.yescallop.aid.client.menu.SideMenuController;
+import cn.yescallop.aid.client.ui.controller.ConsolePageController;
+import cn.yescallop.aid.client.ui.menu.ExtendedAnimatedFlowContainer;
+import cn.yescallop.aid.client.ui.menu.SideMenuController;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
 import io.datafx.controller.ViewController;
@@ -22,7 +22,7 @@ import static io.datafx.controller.flow.container.ContainerAnimations.SWIPE_LEFT
 /**
  * @author Magical Sheep
  */
-@ViewController(value = "/Frame.fxml",title = "Main Frame")
+@ViewController(value = "/Frame.fxml", title = "Main Frame")
 public class Frame {
 
     @FXMLViewFlowContext
@@ -61,15 +61,15 @@ public class Frame {
 
         Flow exhibitionArea = new Flow(ConsolePageController.class);
         final FlowHandler flowHandler = exhibitionArea.createHandler(context);
-        context.register("ContentFlowHandler",flowHandler);
-        context.register("ContentFlow",exhibitionArea);
+        context.register("ContentFlowHandler", flowHandler);
+        context.register("ContentFlow", exhibitionArea);
         final Duration containerAnimationDuration = Duration.millis(300);
-        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,SWIPE_LEFT)));
+        drawer.setContent(flowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
         context.register("ContentPane", drawer.getContent().get(0));
 
         Flow sideMenuFlow = new Flow(SideMenuController.class);
         final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
-        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration,SWIPE_LEFT)));
+        drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
 
     }
 }

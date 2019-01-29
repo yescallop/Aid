@@ -1,6 +1,6 @@
-package cn.yescallop.aid.client.menu;
+package cn.yescallop.aid.client.ui.menu;
 
-import cn.yescallop.aid.client.controller.*;
+import cn.yescallop.aid.client.ui.controller.*;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;

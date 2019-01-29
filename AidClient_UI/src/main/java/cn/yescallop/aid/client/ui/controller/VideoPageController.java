@@ -1,11 +1,13 @@
-package cn.yescallop.aid.client.controller;
+package cn.yescallop.aid.client.ui.controller;
 
+import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
 import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -14,14 +16,17 @@ import javax.annotation.PostConstruct;
 /**
  * @author Magical Sheep
  */
-@ViewController(value = "/page/ServerStatusPage.fxml", title = "ServerStatus")
-public class ServerStatusPageController implements UIHandler {
-
+@ViewController(value = "/page/VideoPage.fxml", title = "Video")
+public class VideoPageController implements UIHandler {
     @FXML
     private StackPane root;
+    @FXML
+    private ImageView screen;
 
     @PostConstruct
     public void init() {
+        Factory.UIData.regPage(this);
+        sync();
     }
 
     @Override

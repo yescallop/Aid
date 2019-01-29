@@ -1,11 +1,16 @@
-package cn.yescallop.aid.client.controller;
+package cn.yescallop.aid.client.ui.controller;
 
+import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
+import com.jfoenix.controls.JFXTextArea;
 import io.datafx.controller.ViewController;
+
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 
@@ -14,19 +19,27 @@ import javax.annotation.PostConstruct;
 /**
  * @author Magical Sheep
  */
-@ViewController(value = "/page/SettingPage.fxml", title = "Setting")
-public class SettingPageController implements UIHandler {
+@ViewController(value = "/page/ConsolePage.fxml", title = "Console")
+public class ConsolePageController implements UIHandler {
 
     @FXML
     private StackPane root;
+    @FXML
+    private JFXTextArea console;
+    @FXML
+    private JFXButton connect;
 
     @PostConstruct
     public void init() {
+        Factory.UIData.regPage(this);
+        sync();
+        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new Thread(Factory.Network::start).start());
     }
 
     @Override
     public void sync() {
-
+        console.textProperty().bind(Factory.UIData.getConsoleInfo());
+        connect.disableProperty().bind(new SimpleBooleanProperty(Factory.Network.isConnected()));
     }
 
     @Override
@@ -41,4 +54,5 @@ public class SettingPageController implements UIHandler {
         dialog.show();
         ok.setOnAction(event -> dialog.close());
     }
+
 }

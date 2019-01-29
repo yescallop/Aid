@@ -13,12 +13,12 @@
         <left>
             <JFXTreeTableView fx:id="onlineDeviceList">
                 <columns>
-                    <JFXTreeTableColumn fx:id="deviceNumColumn"
-                                        minWidth="100" text="设备号" prefWidth="100"
+                    <JFXTreeTableColumn fx:id="nameColumn"
+                                        minWidth="100" text="设备名" prefWidth="100"
                                         resizable="false"></JFXTreeTableColumn>
-                    <JFXTreeTableColumn fx:id="regTimeColumn" text="注册时间"
+                    <JFXTreeTableColumn fx:id="idColumn" text="设备号"
                                         minWidth="100" resizable="false"></JFXTreeTableColumn>
-                    <JFXTreeTableColumn fx:id="loginTimeColumn" text="登录时间"
+                    <JFXTreeTableColumn fx:id="registerTimeColumn" text="注册时间"
                                         minWidth="100" resizable="false"></JFXTreeTableColumn>
                 </columns>
             </JFXTreeTableView>
