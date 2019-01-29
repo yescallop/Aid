@@ -19,7 +19,7 @@ public class ClientHandler extends ClientPacketHandler {
     @Override
     protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
         if (!Factory.Network.isStopping()) {
-            if (lastState == ChannelState.FINE) {
+            if (lastState == ChannelState.ACTIVE) {
                 Factory.UI.showDialog("Notice", "Server closed");
             } else {
                 Factory.UI.showDialog("Notice", "Server unexpectedly closed the connection");
@@ -41,5 +41,10 @@ public class ClientHandler extends ClientPacketHandler {
                 Factory.UI.println("Event " + eventPacket.event + " from device " + eventPacket.deviceId);
                 break;
         }
+    }
+
+    @Override
+    protected void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re) {
+        Factory.UI.showDialog("RuntimeException", re.getMessage());
     }
 }

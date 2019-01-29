@@ -43,12 +43,17 @@ public class ClientHandler extends ClientPacketHandler {
     @Override
     protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
         if (!ClientConsoleMain.isStopping()) {
-            if (lastState == ChannelState.FINE) {
+            if (lastState == ChannelState.ACTIVE) {
                 Logger.info("Server closed");
             } else {
                 Logger.warning("Server unexpectedly closed the connection");
             }
             ClientConsoleMain.stop();
         }
+    }
+
+    @Override
+    protected void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re) {
+        Logger.logException(re);
     }
 }

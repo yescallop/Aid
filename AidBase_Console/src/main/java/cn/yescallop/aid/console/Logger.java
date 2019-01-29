@@ -3,6 +3,8 @@ package cn.yescallop.aid.console;
 import org.fusesource.jansi.Ansi;
 import org.jline.reader.LineReader;
 
+import java.io.CharArrayWriter;
+import java.io.PrintWriter;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
@@ -18,6 +20,13 @@ public final class Logger {
 
     private Logger() {
         //no instance
+    }
+
+    public static void logException(Exception e) {
+        Logger.severe("A RuntimeException occurred");
+        CharArrayWriter caw = new CharArrayWriter();
+        e.printStackTrace(new PrintWriter(caw));
+        lineReader.printAbove(Ansi.ansi().fgRed().a(caw.toCharArray()).fgDefault().toString());
     }
 
     public static void info(String str) {

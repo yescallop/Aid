@@ -16,15 +16,24 @@ public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
     @Override
     public final void channelActive(ChannelHandlerContext ctx) {
-        state = ChannelState.FINE;
+        state = ChannelState.ACTIVE;
         connectionEstablished(ctx);
     }
 
+    /**
+     * 判断该异常是否运行时异常，是则交由 runtimeExceptionCaught 处理，否则改变状态，存入变量。
+     */
     @Override
     public final void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
-        state = ChannelState.EXCEPTION_CAUGHT;
-        closeCause = cause;
+        if (cause instanceof RuntimeException) {
+            runtimeExceptionCaught(ctx, (RuntimeException) cause);
+        } else {
+            state = ChannelState.EXCEPTION_CAUGHT;
+            closeCause = cause;
+        }
     }
+
+
 
     @Override
     public final void channelInactive(ChannelHandlerContext ctx) {
@@ -41,4 +50,6 @@ public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
     protected abstract void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause);
 
     protected abstract void packetReceived(ChannelHandlerContext ctx, Packet packet);
+
+    protected abstract void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re);
 }

@@ -22,6 +22,11 @@ public class DeviceServerHandler extends ServerPacketHandler {
     }
 
     @Override
+    protected void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re) {
+
+    }
+
+    @Override
     protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
 
     }

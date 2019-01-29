@@ -5,7 +5,7 @@ package cn.yescallop.aid.network;
  */
 public enum ChannelState {
     INACTIVE,
-    FINE,
+    ACTIVE,
     EXCEPTION_CAUGHT,
     CONNECTION_LOST
 }

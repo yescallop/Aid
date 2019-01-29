@@ -85,7 +85,7 @@ public class ServerHandler extends ServerPacketHandler {
 
         SocketAddress addr = ctx.channel().remoteAddress();
         switch (lastState) {
-            case FINE:
+            case ACTIVE:
                 Logger.info("Disconnected: " + addr);
                 break;
             case EXCEPTION_CAUGHT:
@@ -95,5 +95,10 @@ public class ServerHandler extends ServerPacketHandler {
                 Logger.warning("Connection lost:" + addr);
                 break;
         }
+    }
+
+    @Override
+    protected void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re) {
+        Logger.logException(re);
     }
 }
