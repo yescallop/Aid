@@ -6,6 +6,9 @@ import gnu.io.*;
 import java.io.*;
 import java.util.TooManyListenersException;
 
+/**
+ * @author Magical Sheep
+ */
 public class BluetoothHandler {
 
     private SerialPort serialPort;//串口对象
