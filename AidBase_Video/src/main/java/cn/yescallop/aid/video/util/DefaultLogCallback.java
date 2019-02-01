@@ -22,6 +22,7 @@ public class DefaultLogCallback implements LogCallback {
     public synchronized void call(int level, String msg) {
         if (level >= 0)
             level &= 0xff;
+        else return;
 
         if (level > AV_LOG_INFO)
             return;
