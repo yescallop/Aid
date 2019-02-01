@@ -28,9 +28,9 @@ public class DefaultLogCallback implements LogCallback {
             return;
 
         if (level == AV_LOG_INFO) {
-            System.out.println(msg);
+            System.out.print(msg);
         } else {
-            System.err.println(msg);
+            System.err.print(msg);
         }
     }
 }
