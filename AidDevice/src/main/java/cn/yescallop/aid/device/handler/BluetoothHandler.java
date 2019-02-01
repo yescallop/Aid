@@ -1,7 +1,7 @@
 package cn.yescallop.aid.device.handler;
 
 import cn.yescallop.aid.console.Logger;
-import gnu.io.*;
+import purejavacomm.*;
 
 import java.io.*;
 import java.util.TooManyListenersException;

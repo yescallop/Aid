@@ -6,9 +6,9 @@ import cn.yescallop.aid.device.handler.BluetoothHandler;
 import cn.yescallop.aid.device.handler.DeviceHandler;
 import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.util.NetUtil;
-import gnu.io.NoSuchPortException;
-import gnu.io.PortInUseException;
 import io.netty.channel.Channel;
+import purejavacomm.NoSuchPortException;
+import purejavacomm.PortInUseException;
 
 import java.net.Inet4Address;
 import java.net.SocketException;
