@@ -1,6 +1,7 @@
 package cn.yescallop.aid.video.device.dshow;
 
 import cn.yescallop.aid.video.util.Logging;
+import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 
@@ -17,6 +18,9 @@ public class DshowDeviceListHelper {
 
     private static final String VIDEO_HEADER = "DirectShow video devices (some may be both video and audio devices)";
     private static final String AUDIO_HEADER = "DirectShow audio devices";
+    private static final String VIDEO_NONE = "Could not enumerate video devices (or none found).";
+    private static final String AUDIO_NONE = "Could not enumerate audio only devices (or none found).";
+
     private static final String NAME_PREFIX = " \"";
     private static final String ALTERNATIVE_NAME_PREFIX = "    Alternative name \"";
 
@@ -29,9 +33,9 @@ public class DshowDeviceListHelper {
         //no instance
     }
 
-    private static final Callback_Pointer_int_String_Pointer CALLBACK_POINTER = new Callback_Pointer_int_String_Pointer() {
+    private static final Callback_Pointer_int_BytePointer_Pointer CALLBACK_POINTER = new Callback_Pointer_int_BytePointer_Pointer() {
         @Override
-        public void call(Pointer avcl, int level, String fmt, Pointer vl) {
+        public void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
             PointerPointer<AVClass> pp = new PointerPointer<>(avcl);
             AVClass avc = pp.get(AVClass.class);
             String ctxName = avc.item_name().call(avcl).getString();
@@ -48,8 +52,12 @@ public class DshowDeviceListHelper {
             int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
             String msg = new String(line, 0, len - 1); //skip a \n
 
-            if (level != AV_LOG_INFO) //error occurred
-                errMsg = msg;
+            if (level != AV_LOG_INFO) { //error occurred
+                if (!msg.equals(VIDEO_NONE) && !msg.equals(AUDIO_NONE)) {
+                    errMsg = msg;
+                }
+                return;
+            }
 
             if (msg.equals(VIDEO_HEADER))
                 audioOnly = false;
