@@ -47,6 +47,9 @@ class DshowDeviceListHelper {
             int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
             String msg = new String(line, 0, len - 1); //skip a \n
 
+            if (level != AV_LOG_INFO) //error occurred
+                throw new RuntimeException("dshow: " + msg);
+
             if (msg.equals(VIDEO_HEADER))
                 audioOnly = false;
             else if (msg.equals(AUDIO_HEADER))
