@@ -1,5 +1,8 @@
 package cn.yescallop.aid.video.device;
 
+import cn.yescallop.aid.video.device.dshow.DshowDevice;
+import cn.yescallop.aid.video.device.dshow.DshowDeviceListHelper;
+import cn.yescallop.aid.video.device.dshow.DshowException;
 import org.bytedeco.javacpp.avdevice;
 
 /**
@@ -15,7 +18,7 @@ public class Devices {
         //no instance
     }
 
-    public static DshowDevice[] getDshowDeviceList() {
+    public synchronized static DshowDevice[] getDshowDeviceList() throws DshowException {
         return DshowDeviceListHelper.getDshowDeviceList();
     }
 

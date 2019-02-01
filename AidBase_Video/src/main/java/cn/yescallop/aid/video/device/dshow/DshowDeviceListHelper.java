@@ -1,4 +1,4 @@
-package cn.yescallop.aid.video.device;
+package cn.yescallop.aid.video.device.dshow;
 
 import cn.yescallop.aid.video.util.Logging;
 import org.bytedeco.javacpp.Pointer;
@@ -13,7 +13,7 @@ import static org.bytedeco.javacpp.avutil.*;
 /**
  * @author Scallop Ye
  */
-class DshowDeviceListHelper {
+public class DshowDeviceListHelper {
 
     private static final String VIDEO_HEADER = "DirectShow video devices (some may be both video and audio devices)";
     private static final String AUDIO_HEADER = "DirectShow audio devices";
@@ -23,6 +23,7 @@ class DshowDeviceListHelper {
     private static List<DshowDevice> list;
     private static Boolean audioOnly;
     private static String name;
+    private static String errMsg;
 
     private DshowDeviceListHelper() {
         //no instance
@@ -48,7 +49,7 @@ class DshowDeviceListHelper {
             String msg = new String(line, 0, len - 1); //skip a \n
 
             if (level != AV_LOG_INFO) //error occurred
-                throw new RuntimeException("dshow: " + msg);
+                errMsg = msg;
 
             if (msg.equals(VIDEO_HEADER))
                 audioOnly = false;
@@ -63,10 +64,11 @@ class DshowDeviceListHelper {
         }
     };
 
-    synchronized static DshowDevice[] getDshowDeviceList() {
+    public synchronized static DshowDevice[] getDshowDeviceList() throws DshowException {
         list = new ArrayList<>();
         audioOnly = null;
         name = null;
+        errMsg = null;
 
         AVFormatContext ctx = avformat_alloc_context();
         AVDictionary options = new AVDictionary();
@@ -77,12 +79,16 @@ class DshowDeviceListHelper {
         avformat_close_input(ctx);
         Logging.registerCallback();
 
+        if (errMsg != null)
+            throw new DshowException(errMsg);
+
         DshowDevice[] res = new DshowDevice[list.size()];
         list.toArray(res);
 
         list = null;
         audioOnly = null;
         name = null;
+        errMsg = null;
 
         return res;
     }

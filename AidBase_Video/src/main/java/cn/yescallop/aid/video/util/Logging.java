@@ -10,11 +10,11 @@ import static org.bytedeco.javacpp.avutil.*;
  */
 public class Logging {
 
-    private static LogCallback callback = (level, msg) -> System.out.print(msg);
+    private static LogCallback callback = DefaultLogCallback.INSTANCE;
 
     private static final Callback_Pointer_int_BytePointer_Pointer CALLBACK_POINTER = new Callback_Pointer_int_BytePointer_Pointer() {
         @Override
-        public void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
+        public synchronized void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
             int[] print_prefix = {1};
             byte[] line = new byte[1024];
             int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
