@@ -30,9 +30,9 @@ class DshowDeviceListHelper {
 
     private static final Callback_Pointer_int_String_Pointer CALLBACK_POINTER = new Callback_Pointer_int_String_Pointer() {
         @Override
-        public synchronized void call(Pointer avcl, int level, String fmt, Pointer vl) {
-            PointerPointer<Pointer> pp = new PointerPointer<>(avcl);
-            AVClass avc = new AVClass(pp.get());
+        public void call(Pointer avcl, int level, String fmt, Pointer vl) {
+            PointerPointer<AVClass> pp = new PointerPointer<>(avcl);
+            AVClass avc = pp.get(AVClass.class);
             String ctxName = avc.item_name().call(avcl).getString();
             int[] print_prefix = {0}; //not printing the prefix
             byte[] line = new byte[1024];
