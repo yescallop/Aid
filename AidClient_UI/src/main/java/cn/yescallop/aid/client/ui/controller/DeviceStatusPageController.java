@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Function;
@@ -44,7 +45,7 @@ public class DeviceStatusPageController implements UIHandler {
         setupCellValueFactory(registerTimeColumn, d -> d.registerTimeProperty().asString());
 
         new Thread(Factory.Network::list).start();
-        sync();
+        onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.UIData.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
 
         onlineDeviceList.setShowRoot(false);
 
@@ -67,11 +68,6 @@ public class DeviceStatusPageController implements UIHandler {
                 return column.getComputedValue(param);
             }
         });
-    }
-
-    @Override
-    public void sync() {
-        onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.UIData.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
     }
 
     @Override

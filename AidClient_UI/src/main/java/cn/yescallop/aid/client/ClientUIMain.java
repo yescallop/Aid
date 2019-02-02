@@ -11,9 +11,6 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.Timer;
-import java.util.TimerTask;
-
 /**
  * @author Scallop Ye
  * @author MagicalSheep
@@ -23,6 +20,8 @@ public class ClientUIMain extends Application {
 
     @FXMLViewContext
     private ViewFlowContext flowContext;
+
+    private Stage stage;
 
     public static void main(String[] args) {
         launch(args);
@@ -40,16 +39,16 @@ public class ClientUIMain extends Application {
         JFXDecorator decorator = new JFXDecorator(primaryStage, container.getView(), true, true, true);
         Scene scene = new Scene(decorator, 1100, 680);
         scene.getStylesheets().add(getClass().getClassLoader().getResource("style/material-designs-style.css").toExternalForm());
+
         primaryStage.setTitle("AidClient");
         primaryStage.setScene(scene);
         primaryStage.setResizable(false);
+
+        stage = primaryStage;
+        Factory.UIData.setStage(stage);
+
         primaryStage.show();
-        new Timer().schedule(new TimerTask() {
-            @Override
-            public void run() {
-                if (Factory.UI.getCurrentPage() != null) Factory.Network.list();
-            }
-        }, 0, 2000);
+
     }
 
 }

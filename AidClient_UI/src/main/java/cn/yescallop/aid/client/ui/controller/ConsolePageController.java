@@ -13,6 +13,7 @@ import javafx.fxml.FXML;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
@@ -32,14 +33,9 @@ public class ConsolePageController implements UIHandler {
     @PostConstruct
     public void init() {
         Factory.UIData.regPage(this);
-        sync();
-        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new Thread(Factory.Network::start).start());
-    }
-
-    @Override
-    public void sync() {
         console.textProperty().bind(Factory.UIData.getConsoleInfo());
         connect.disableProperty().bind(new SimpleBooleanProperty(Factory.Network.isConnected()));
+        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new Thread(Factory.Network::start).start());
     }
 
     @Override

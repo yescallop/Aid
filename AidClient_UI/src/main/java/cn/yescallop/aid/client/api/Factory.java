@@ -10,6 +10,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,8 @@ public class Factory {
 
     private static boolean connectStatus = false;
     private static boolean stopping = false;
+
+    private static Stage stage;
 
     private Factory() {
     }
@@ -66,6 +69,14 @@ public class Factory {
         public static StringProperty getConsoleInfo() {
             return consoleInfo;
         }
+
+        public static void setStage(Stage stage1){
+            stage = stage1;
+        }
+
+        public static Stage getStage() {
+            return stage;
+        }
     }
 
     public static class UI {
@@ -87,7 +98,6 @@ public class Factory {
         public static void println(String msg) {
             Platform.runLater(() -> {
                 consoleInfo.setValue(consoleInfo.getValue() + msg + "\n");
-                currentPage.sync();
             });
         }
 
@@ -113,7 +123,6 @@ public class Factory {
                 list.add(new DeviceInfo(deviceInfo));
             }
             onlineDeviceList.addAll(list);
-            Platform.runLater(() -> currentPage.sync());
         }
     }
 
@@ -126,11 +135,10 @@ public class Factory {
             try {
                 channel = cn.yescallop.aid.network.Network.startClient("127.0.0.1", 9000, new ClientHandler());
                 Factory.UI.println("Connected to " + channel.remoteAddress());
-                setConnectStatus(true);
-                channel.closeFuture().sync();
+                connectStatus = true;
             } catch (Exception e) {
                 Factory.UI.println(e.getMessage());
-                setConnectStatus(false);
+                connectStatus = false;
             }
         }
 
@@ -141,7 +149,7 @@ public class Factory {
             stopping = true;
             if (channel != null) {
                 Factory.UI.println("Closing client channel...");
-                setConnectStatus(false);
+                connectStatus = false;
                 onlineDeviceList.clear();
                 try {
                     channel.close().sync();
@@ -149,6 +157,7 @@ public class Factory {
                     //ignored
                 }
             }
+            stopping = false;
         }
 
         /**
@@ -170,10 +179,6 @@ public class Factory {
             return connectStatus;
         }
 
-        private static void setConnectStatus(boolean flag) {
-            connectStatus = flag;
-            currentPage.sync();
-        }
     }
 
 }

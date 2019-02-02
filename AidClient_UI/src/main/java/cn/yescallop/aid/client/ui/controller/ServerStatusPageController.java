@@ -9,6 +9,7 @@ import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
@@ -24,12 +25,6 @@ public class ServerStatusPageController implements UIHandler {
     @PostConstruct
     public void init() {
         Factory.UIData.regPage(this);
-        sync();
-    }
-
-    @Override
-    public void sync() {
-
     }
 
     @Override

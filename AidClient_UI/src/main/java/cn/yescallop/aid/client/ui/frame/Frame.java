@@ -5,6 +5,7 @@ import cn.yescallop.aid.client.ui.menu.ExtendedAnimatedFlowContainer;
 import cn.yescallop.aid.client.ui.menu.SideMenuController;
 import com.jfoenix.controls.JFXDrawer;
 import com.jfoenix.controls.JFXHamburger;
+import com.jfoenix.controls.JFXToolbar;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
 import io.datafx.controller.flow.FlowHandler;
@@ -37,6 +38,8 @@ public class Frame {
     private JFXHamburger titleBurger;
     @FXML
     private JFXDrawer drawer;
+    @FXML
+    private static JFXToolbar toolbar;
 
     @PostConstruct
     public void init() throws Exception {
@@ -71,5 +74,8 @@ public class Frame {
         final FlowHandler sideMenuFlowHandler = sideMenuFlow.createHandler(context);
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
 
+    }
+    public static double getToolbarHeight(){
+        return toolbar.getHeight();
     }
 }

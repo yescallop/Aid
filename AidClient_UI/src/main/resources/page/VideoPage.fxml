@@ -1,19 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.layout.StackPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.image.ImageView?>
-<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.canvas.Canvas?>
+<?import com.jfoenix.controls.JFXButton?>
+<?import com.jfoenix.controls.JFXSlider?>
 <StackPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1"
            xmlns="http://javafx.com/javafx/2.2">
-    <VBox maxWidth="1000" maxHeight="500" spacing="10" styleClass="card">
-        <Label>
-            <graphic>
-                <ImageView fitWidth="1000" fitHeight="500" preserveRatio="true" fx:id="screen">
-                </ImageView>
-            </graphic>
-        </Label>
-
-    </VBox>
-
+    <AnchorPane>
+        <Canvas fx:id="screen" styleClass="card">
+        </Canvas>
+        <JFXSlider fx:id="slider" visible="false" disable="true">
+        </JFXSlider>
+    </AnchorPane>
+    <JFXButton fx:id="play" prefWidth="180" prefHeight="50" buttonType="RAISED" text="选择录像文件" disable="true"
+               style="-fx-text-fill:WHITE;-fx-background-color:#008577;-fx-font-size:16px;"/>
 </StackPane>
