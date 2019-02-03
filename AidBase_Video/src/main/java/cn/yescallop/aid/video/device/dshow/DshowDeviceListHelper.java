@@ -13,20 +13,21 @@ import static org.bytedeco.javacpp.avutil.*;
 
 /**
  * @author Scallop Ye
+ * See libavdevice/dshow.c
  */
-public class DshowDeviceListHelper {
+class DshowDeviceListHelper {
 
     private static final String VIDEO_HEADER = "DirectShow video devices (some may be both video and audio devices)";
     private static final String AUDIO_HEADER = "DirectShow audio devices";
     private static final String VIDEO_NONE = "Could not enumerate video devices (or none found).";
     private static final String AUDIO_NONE = "Could not enumerate audio only devices (or none found).";
 
-    private static final String NAME_PREFIX = " \"";
-    private static final String ALTERNATIVE_NAME_PREFIX = "    Alternative name \"";
+    private static final String FRIENDLY_NAME_PREFIX = " \"";
+    private static final String UNIQUE_NAME_PREFIX = "    Alternative name \"";
 
-    private static List<DshowDevice> list;
-    private static Boolean audioOnly;
-    private static String name;
+    private static List<DshowDeviceInfo> list;
+    private static boolean audioOnly;
+    private static String friendlyName;
     private static String errMsg;
 
     private DshowDeviceListHelper() {
@@ -63,19 +64,18 @@ public class DshowDeviceListHelper {
                 audioOnly = false;
             else if (msg.equals(AUDIO_HEADER))
                 audioOnly = true;
-            else if (msg.startsWith(NAME_PREFIX)) { //name
-                name = msg.substring(NAME_PREFIX.length(), msg.length() - 1);
-            } else if (msg.startsWith("    Alternative name \"")) { //alternative name
-                String alternativeName = msg.substring(ALTERNATIVE_NAME_PREFIX.length(), msg.length() - 1);
-                list.add(new DshowDevice(name, alternativeName, audioOnly));
+            else if (msg.startsWith(FRIENDLY_NAME_PREFIX)) { //name
+                friendlyName = msg.substring(FRIENDLY_NAME_PREFIX.length(), msg.length() - 1);
+            } else if (msg.startsWith(UNIQUE_NAME_PREFIX)) { //alternative name
+                String uniqueName = msg.substring(UNIQUE_NAME_PREFIX.length(), msg.length() - 1);
+                list.add(new DshowDeviceInfo(friendlyName, uniqueName, audioOnly));
             }
         }
     };
 
-    public synchronized static DshowDevice[] getDshowDeviceList() throws DshowException {
+    synchronized static DshowDeviceInfo[] listDevices() throws DshowException {
         list = new ArrayList<>();
-        audioOnly = null;
-        name = null;
+        friendlyName = null;
         errMsg = null;
 
         AVFormatContext ctx = avformat_alloc_context();
@@ -90,12 +90,11 @@ public class DshowDeviceListHelper {
         if (errMsg != null)
             throw new DshowException(errMsg);
 
-        DshowDevice[] res = new DshowDevice[list.size()];
+        DshowDeviceInfo[] res = new DshowDeviceInfo[list.size()];
         list.toArray(res);
 
         list = null;
-        audioOnly = null;
-        name = null;
+        friendlyName = null;
         errMsg = null;
 
         return res;
