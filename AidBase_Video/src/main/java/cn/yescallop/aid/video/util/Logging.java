@@ -7,6 +7,8 @@ import static org.bytedeco.javacpp.avutil.*;
 
 /**
  * @author Scallop Ye
+ * We can't have more than one FunctionPointer.
+ * See https://github.com/bytedeco/javacpp-presets/issues/683
  */
 public class Logging {
 
@@ -15,11 +17,7 @@ public class Logging {
     private static final Callback_Pointer_int_BytePointer_Pointer CALLBACK_POINTER = new Callback_Pointer_int_BytePointer_Pointer() {
         @Override
         public synchronized void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
-            int[] print_prefix = {1};
-            byte[] line = new byte[1024];
-            int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
-            String msg = new String(line, 0, len);
-            Logging.callback.call(level, msg);
+            callback.call(avcl, level, fmt, vl);
         }
     };
 
@@ -27,12 +25,15 @@ public class Logging {
         return callback;
     }
 
-    public static void registerCallback(LogCallback callback) {
+    public static void setCallback(LogCallback callback) {
         Logging.callback = callback;
-        registerCallback();
     }
 
-    public static void registerCallback() {
+    /**
+     * Sets the log callback in avutil
+     * Remember to call this function before registering a callback
+     */
+    public static void init() {
         av_log_set_callback(CALLBACK_POINTER);
     }
 }

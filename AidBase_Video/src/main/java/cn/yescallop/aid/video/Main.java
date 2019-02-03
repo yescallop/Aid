@@ -3,10 +3,12 @@ package cn.yescallop.aid.video;
 import cn.yescallop.aid.video.device.dshow.DshowDeviceInfo;
 import cn.yescallop.aid.video.device.dshow.DshowDevices;
 import cn.yescallop.aid.video.device.dshow.DshowException;
+import cn.yescallop.aid.video.util.DefaultLogCallback;
 import cn.yescallop.aid.video.util.Logging;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.avdevice;
+import org.bytedeco.javacpp.avutil;
 
 import static org.bytedeco.javacpp.avformat.*;
 
@@ -17,7 +19,8 @@ import static org.bytedeco.javacpp.avformat.*;
 public class Main {
 
     public static void main(String[] args) {
-        Logging.registerCallback();
+        Logging.init();
+        DefaultLogCallback.logLevel = avutil.AV_LOG_TRACE;
         avdevice.avdevice_register_all();
 
         DshowDeviceInfo[] devices;
@@ -38,7 +41,6 @@ public class Main {
         }
 
         int i = avformat_find_stream_info(ctx, (PointerPointer<Pointer>) null);
-        //TODO: Find out why this native method leads to exit code -1073741819 (0xC0000005)
         System.out.println(i);
 
         avformat_close_input(ctx);

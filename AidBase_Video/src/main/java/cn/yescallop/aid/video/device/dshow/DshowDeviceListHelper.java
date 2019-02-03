@@ -1,5 +1,7 @@
 package cn.yescallop.aid.video.device.dshow;
 
+import cn.yescallop.aid.video.util.DefaultLogCallback;
+import cn.yescallop.aid.video.util.LogCallback;
 import cn.yescallop.aid.video.util.Logging;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
@@ -34,21 +36,20 @@ class DshowDeviceListHelper {
         //no instance
     }
 
-    private static final Callback_Pointer_int_BytePointer_Pointer CALLBACK_POINTER = new Callback_Pointer_int_BytePointer_Pointer() {
+    private static final LogCallback LOG_CALLBACK = new LogCallback() {
         @Override
         public void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
             PointerPointer<AVClass> pp = new PointerPointer<>(avcl);
             AVClass avc = pp.get(AVClass.class);
             String ctxName = avc.item_name().call(avcl).getString();
-            int[] print_prefix = {0}; //not printing the prefix
-            byte[] line = new byte[1024];
-            if (!ctxName.equals("dshow")) { //callback normally if not logged by dshow
-                print_prefix[0] = 1; //printing the prefix
-                int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
-                String msg = new String(line, 0, len);
-                Logging.getCallback().call(level, msg);
+
+            if (!ctxName.equals("dshow")) { //callback by default if not logged by dshow
+                DefaultLogCallback.INSTANCE.call(avcl, level, fmt, vl);
                 return;
             }
+
+            int[] print_prefix = {0}; //not printing the prefix
+            byte[] line = new byte[1024];
 
             int len = av_log_format_line2(avcl, level, fmt, vl, line, line.length, print_prefix);
             String msg = new String(line, 0, len - 1); //skip a \n
@@ -82,10 +83,10 @@ class DshowDeviceListHelper {
         AVDictionary options = new AVDictionary();
         av_dict_set(options, "list_devices", "true", 0);
         AVInputFormat fmt = av_find_input_format("dshow");
-        av_log_set_callback(CALLBACK_POINTER);
+        Logging.setCallback(LOG_CALLBACK);
         avformat_open_input(ctx, "dummy", fmt, options);
         avformat_close_input(ctx);
-        Logging.registerCallback();
+        Logging.setCallback(DefaultLogCallback.INSTANCE);
 
         if (errMsg != null)
             throw new DshowException(errMsg);
