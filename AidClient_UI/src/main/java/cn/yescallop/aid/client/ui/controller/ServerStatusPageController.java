@@ -28,6 +28,11 @@ public class ServerStatusPageController implements UIHandler {
     }
 
     @Override
+    public void resize() {
+
+    }
+
+    @Override
     public void showDialog(String heading, String body) {
         JFXButton ok = new JFXButton("确定");
         ok.setPrefSize(70, 35);

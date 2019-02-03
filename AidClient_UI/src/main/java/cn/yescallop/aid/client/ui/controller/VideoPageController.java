@@ -22,11 +22,9 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.StringConverter;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.MediaPlayer;
-import uk.co.caprica.vlcj.player.MediaPlayerEventAdapter;
 import uk.co.caprica.vlcj.player.direct.BufferFormat;
 import uk.co.caprica.vlcj.player.direct.BufferFormatCallback;
 import uk.co.caprica.vlcj.player.direct.DefaultDirectMediaPlayer;
@@ -51,24 +49,15 @@ public class VideoPageController implements UIHandler {
     private JFXSlider slider;
 
     private PixelWriter pixelWriter;
-
     private WritablePixelFormat<ByteBuffer> pixelFormat;
-
-    private DirectMediaPlayerComponent mediaPlayerComponent;
-    private boolean isPlaying = false;
-
-    private final double LRSpacing = 30;
-    private final double TBSpacing = 20;
-
-    private Stage stage;
-
-    private AnimationTimer timer;
-    private File video;
+    private DirectMediaPlayerComponent mediaPlayerComponent; // 媒体播放器
+    private AnimationTimer timer; // 帧绘图计时器
+    private File video; // 选中播放的视频文件
+    private float position = 0; // 播放位置
 
     @PostConstruct
     public void init() {
         Factory.UIData.regPage(this);
-        stage = Factory.UIData.getStage();
 
         new Thread(() -> {
             new NativeDiscovery().discover();
@@ -76,14 +65,14 @@ public class VideoPageController implements UIHandler {
             Platform.runLater(() -> play.setDisable(false));
         }).start();
 
-        AnchorPane.setLeftAnchor(screen, LRSpacing);
-        AnchorPane.setRightAnchor(screen, LRSpacing);
-        AnchorPane.setTopAnchor(screen, TBSpacing);
-        AnchorPane.setBottomAnchor(screen, TBSpacing);
+        AnchorPane.setLeftAnchor(screen, Factory.UIData.LRSpacing);
+        AnchorPane.setRightAnchor(screen, Factory.UIData.LRSpacing);
+        AnchorPane.setTopAnchor(screen, Factory.UIData.TBSpacing);
+        AnchorPane.setBottomAnchor(screen, Factory.UIData.TBSpacing);
 
-        AnchorPane.setLeftAnchor(slider, LRSpacing);
-        AnchorPane.setRightAnchor(slider, LRSpacing);
-        AnchorPane.setBottomAnchor(slider, TBSpacing-5);
+        AnchorPane.setLeftAnchor(slider, Factory.UIData.LRSpacing);
+        AnchorPane.setRightAnchor(slider, Factory.UIData.LRSpacing);
+        AnchorPane.setBottomAnchor(slider, Factory.UIData.TBSpacing - 5);
 
         pixelWriter = screen.getGraphicsContext2D().getPixelWriter();
         pixelFormat = PixelFormat.getByteBgraInstance();
@@ -96,40 +85,44 @@ public class VideoPageController implements UIHandler {
         };
         play.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
             video = chooseVideo();
-            if (video != null) play();
-        });
-        screen.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
-            if (isPlaying) {
-                mediaPlayerComponent.getMediaPlayer().pause();
-            } else if (mediaPlayerComponent.getMediaPlayer().getTime() != 0 && !isPlaying) {
-                mediaPlayerComponent.getMediaPlayer().play();
+            if (video != null) {
+                slider.setVisible(true);
+                play.setVisible(false);
+                screen.setVisible(true);
+                play();
             }
+
         });
+        screen.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> mediaPlayerComponent.getMediaPlayer().pause());
     }
 
-    private void stop(){
+    /**
+     * 视频播放结束时调用
+     */
+    private void stop() {
         timer.stop();
         mediaPlayerComponent.getMediaPlayer().stop();
-        mediaPlayerComponent.getMediaPlayer().release();
-        isPlaying = false;
         slider.setVisible(false);
         screen.setVisible(false);
         play.setVisible(true);
+        video = null;
+        position = 0;
     }
 
+    /**
+     * 开始播放视频时调用
+     */
     private void play() {
         mediaPlayerComponent.getMediaPlayer().playMedia(video.getPath());
-        mediaPlayerComponent.getMediaPlayer().addMediaPlayerEventListener(new MediaPlayerEventAdapter(){
-            @Override
-            public void finished(MediaPlayer mediaPlayer) {
-                stop();
-            }
-        });
-        play.setVisible(false);
+        mediaPlayerComponent.getMediaPlayer().setPosition(position);
         timer.start();
-        isPlaying = true;
     }
 
+    /**
+     * 选择视频文件
+     *
+     * @return 视频文件
+     */
     private File chooseVideo() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("选择录像");
@@ -139,9 +132,12 @@ public class VideoPageController implements UIHandler {
                 new FileChooser.ExtensionFilter("AVI", "*.avi"),
                 new FileChooser.ExtensionFilter("FLV", "*.flv")
         );
-        return fileChooser.showOpenDialog(stage);
+        return fileChooser.showOpenDialog(Factory.UIData.getStage());
     }
 
+    /**
+     * 视频绘图方法
+     */
     private void draw() {
         Memory[] nativeBuffers = mediaPlayerComponent.getMediaPlayer().lock();
         if (nativeBuffers != null) {
@@ -152,10 +148,23 @@ public class VideoPageController implements UIHandler {
                 if (bufferFormat.getWidth() > 0 && bufferFormat.getHeight() > 0) {
                     pixelWriter.setPixels(0, 0, bufferFormat.getWidth(), bufferFormat.getHeight(), pixelFormat, byteBuffer, bufferFormat.getPitches()[0]);
                     Platform.runLater(() -> slider.setValue(mediaPlayerComponent.getMediaPlayer().getTime()));
+                    position = mediaPlayerComponent.getMediaPlayer().getPosition();
                 }
             }
         }
         mediaPlayerComponent.getMediaPlayer().unlock();
+    }
+
+    /**
+     * 窗口大小改变时调用该方法，重新加载视频以调整视频大小
+     */
+    @Override
+    public void resize() {
+        if (position != 0) {
+            timer.stop();
+            mediaPlayerComponent.getMediaPlayer().stop();
+            play();
+        }
     }
 
     @Override
@@ -167,44 +176,42 @@ public class VideoPageController implements UIHandler {
         content.setBody(new Text(body));
         content.setActions(ok);
         JFXDialog dialog = new JFXDialog(root, content, JFXDialog.DialogTransition.BOTTOM);
+        if (position != 0) mediaPlayerComponent.getMediaPlayer().pause();
         dialog.show();
         ok.setOnAction(event -> dialog.close());
     }
 
-    private class DefaultMediaPlayerComponent extends DirectMediaPlayerComponent{
+    /**
+     * VLC媒体播放器
+     */
+    private class DefaultMediaPlayerComponent extends DirectMediaPlayerComponent {
 
         DefaultMediaPlayerComponent(BufferFormatCallback bufferFormatCallback) {
             super(bufferFormatCallback);
         }
+
+        public void finished(MediaPlayer mediaPlayer) {
+            stop();
+        }
     }
 
-    private class DefaultBufferFormatCallback implements BufferFormatCallback{
+    /**
+     * 加载视频时对每帧画面作格式处理
+     */
+    private class DefaultBufferFormatCallback implements BufferFormatCallback {
 
         @Override
         public BufferFormat getBufferFormat(int sourceWidth, int sourceHeight) {
 
-            double screenWidth = getScreenWidth();
-            double screenHeight = getScreenHeight();
+            double screenWidth = Factory.UIData.getScreenWidth();
+            double screenHeight = Factory.UIData.getScreenHeight();
 
             Platform.runLater(() -> {
                 screen.setWidth(screenWidth);
                 screen.setHeight(screenHeight);
-                slider.setVisible(true);
                 slider.setMax(mediaPlayerComponent.getMediaPlayer().getLength());
             });
             return new RV32BufferFormat((int) screenWidth, (int) screenHeight);
-        }
-
-        private double getScreenWidth() {
-            return stage.getWidth() - (2 * LRSpacing);
-        }
-
-        private double getScreenHeight() {
-            if (stage.isFullScreen()) {
-                return stage.getHeight() - Frame.getToolbarHeight() - (2 * TBSpacing);
-            } else {
-                return stage.getHeight() - Frame.getToolbarHeight() - (2 * TBSpacing) - 32;
-            }
         }
     }
 }

@@ -11,6 +11,8 @@ import javafx.fxml.FXML;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -36,10 +38,18 @@ public class DeviceStatusPageController implements UIHandler {
     private JFXTreeTableColumn<DeviceInfo, String> registerTimeColumn;
     @FXML
     private ImageView screen;
+    @FXML
+    private BorderPane container;
 
     @PostConstruct
     public void init() {
         Factory.UIData.regPage(this);
+
+        AnchorPane.setLeftAnchor(container, Factory.UIData.LRSpacing);
+        AnchorPane.setRightAnchor(container, Factory.UIData.LRSpacing);
+        AnchorPane.setTopAnchor(container, Factory.UIData.TBSpacing);
+        AnchorPane.setBottomAnchor(container, Factory.UIData.TBSpacing);
+
         setupCellValueFactory(nameColumn, DeviceInfo::nameProperty);
         setupCellValueFactory(idColumn, d -> d.idProperty().asString());
         setupCellValueFactory(registerTimeColumn, d -> d.registerTimeProperty().asString());
@@ -68,6 +78,11 @@ public class DeviceStatusPageController implements UIHandler {
                 return column.getComputedValue(param);
             }
         });
+    }
+
+    @Override
+    public void resize() {
+
     }
 
     @Override

@@ -2,6 +2,7 @@ package cn.yescallop.aid.client.api;
 
 import cn.yescallop.aid.client.network.ClientHandler;
 import cn.yescallop.aid.client.network.DeviceInfo;
+import cn.yescallop.aid.client.ui.frame.Frame;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import cn.yescallop.aid.network.protocol.RequestPacket;
 import io.netty.channel.Channel;
@@ -19,17 +20,11 @@ import java.util.List;
  * @author Magical Sheep
  */
 public class Factory {
-    private static UIHandler currentPage = null;
-    private static StringProperty consoleInfo;
-
-    private static ObservableList<DeviceInfo> onlineDeviceList;
-
-    private static Channel channel;
-
-    private static boolean connectStatus = false;
-    private static boolean stopping = false;
 
     private static Stage stage;
+    private static UIHandler currentPage = null;
+    private static StringProperty consoleInfo;
+    private static ObservableList<DeviceInfo> onlineDeviceList;
 
     private Factory() {
     }
@@ -40,6 +35,9 @@ public class Factory {
     }
 
     public static class UIData {
+
+        public final static double LRSpacing = 30; // 控件左右间距
+        public final static double TBSpacing = 20; // 控件上下间距
 
         /**
          * 注册页面
@@ -57,6 +55,10 @@ public class Factory {
             consoleInfo.setValue("");
         }
 
+        public static void setStage(Stage stage1){
+            stage = stage1;
+        }
+
         public static ObservableList<DeviceInfo> getOnlineDeviceList() {
             return onlineDeviceList;
         }
@@ -70,12 +72,30 @@ public class Factory {
             return consoleInfo;
         }
 
-        public static void setStage(Stage stage1){
-            stage = stage1;
-        }
-
         public static Stage getStage() {
             return stage;
+        }
+
+        /**
+         * 计算当前窗口大小下的控件宽度
+         *
+         * @return 控件宽度
+         */
+        public static double getScreenWidth() {
+            return stage.getWidth() - (2 * LRSpacing);
+        }
+
+        /**
+         * 计算当前窗口大小下的控件高度
+         *
+         * @return 控件高度
+         */
+        public static double getScreenHeight() {
+            if (stage.isFullScreen()) {
+                return stage.getHeight() - Frame.getToolbarHeight() - (2 * TBSpacing);
+            } else {
+                return stage.getHeight() - Frame.getToolbarHeight() - (2 * TBSpacing) - 32;
+            }
         }
     }
 
@@ -96,9 +116,7 @@ public class Factory {
          * @param msg 输出内容
          */
         public static void println(String msg) {
-            Platform.runLater(() -> {
-                consoleInfo.setValue(consoleInfo.getValue() + msg + "\n");
-            });
+            Platform.runLater(() -> consoleInfo.setValue(consoleInfo.getValue() + msg + "\n"));
         }
 
         /**
@@ -127,6 +145,10 @@ public class Factory {
     }
 
     public static class Network {
+
+        private static boolean connectStatus = false;
+        private static boolean stopping = false;
+        private static Channel channel;
 
         /**
          * 连接服务器
