@@ -1,8 +1,8 @@
-package cn.yescallop.aid.video.device.dshow;
+package cn.yescallop.aid.video.ffmpeg.device.dshow;
 
-import cn.yescallop.aid.video.util.DefaultLogCallback;
-import cn.yescallop.aid.video.util.LogCallback;
-import cn.yescallop.aid.video.util.Logging;
+import cn.yescallop.aid.video.ffmpeg.util.DefaultLogCallback;
+import cn.yescallop.aid.video.ffmpeg.util.LogCallback;
+import cn.yescallop.aid.video.ffmpeg.util.Logging;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
 import org.bytedeco.javacpp.PointerPointer;

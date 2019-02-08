@@ -1,4 +1,4 @@
-package cn.yescallop.aid.video.util;
+package cn.yescallop.aid.video.ffmpeg.util;
 
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;

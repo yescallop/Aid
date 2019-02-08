@@ -1,4 +1,4 @@
-package cn.yescallop.aid.video.device.dshow;
+package cn.yescallop.aid.video.ffmpeg.device.dshow;
 
 /**
  * @author Scallop Ye

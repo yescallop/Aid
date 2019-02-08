@@ -1,6 +1,6 @@
-package cn.yescallop.aid.video.device.dshow;
+package cn.yescallop.aid.video.ffmpeg.device.dshow;
 
-import cn.yescallop.aid.video.util.InputFormats;
+import cn.yescallop.aid.video.ffmpeg.util.InputFormats;
 
 import static org.bytedeco.javacpp.avformat.*;
 
