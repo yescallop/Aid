@@ -2,7 +2,6 @@ package cn.yescallop.aid.client.ui.controller;
 
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
-import cn.yescallop.aid.client.ui.frame.Frame;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -21,7 +20,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
-import javafx.stage.Stage;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
 import uk.co.caprica.vlcj.player.MediaPlayer;
@@ -165,6 +163,12 @@ public class VideoPageController implements UIHandler {
             mediaPlayerComponent.getMediaPlayer().stop();
             play();
         }
+    }
+
+    @Override
+    public void release() {
+        if (position != 0) stop();
+        mediaPlayerComponent.getMediaPlayer().release();
     }
 
     @Override

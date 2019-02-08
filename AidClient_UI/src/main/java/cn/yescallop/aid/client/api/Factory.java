@@ -45,6 +45,7 @@ public class Factory {
          * @param page 当前页面
          */
         public static void regPage(UIHandler page) {
+            if (currentPage != null) currentPage.release();
             currentPage = page;
         }
 

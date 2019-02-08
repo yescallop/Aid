@@ -15,7 +15,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 import java.util.function.Function;
@@ -82,6 +81,11 @@ public class DeviceStatusPageController implements UIHandler {
 
     @Override
     public void resize() {
+
+    }
+
+    @Override
+    public void release() {
 
     }
 

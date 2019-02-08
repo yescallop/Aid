@@ -9,7 +9,6 @@ import io.datafx.controller.ViewController;
 import javafx.fxml.FXML;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
@@ -29,6 +28,11 @@ public class ServerStatusPageController implements UIHandler {
 
     @Override
     public void resize() {
+
+    }
+
+    @Override
+    public void release() {
 
     }
 

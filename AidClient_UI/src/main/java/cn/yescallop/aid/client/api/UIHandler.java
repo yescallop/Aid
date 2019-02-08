@@ -5,5 +5,6 @@ package cn.yescallop.aid.client.api;
  */
 public interface UIHandler {
     void resize();
+    void release();
     void showDialog(String heading, String body);
 }

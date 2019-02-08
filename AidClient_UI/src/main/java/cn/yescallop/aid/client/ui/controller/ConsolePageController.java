@@ -2,7 +2,6 @@ package cn.yescallop.aid.client.ui.controller;
 
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
-import cn.yescallop.aid.client.ui.frame.Frame;
 import com.jfoenix.controls.JFXButton;
 import com.jfoenix.controls.JFXDialog;
 import com.jfoenix.controls.JFXDialogLayout;
@@ -16,7 +15,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
 
@@ -37,6 +35,7 @@ public class ConsolePageController implements UIHandler {
 
     @PostConstruct
     public void init() {
+        Factory.UIData.regPage(this);
         AnchorPane.setLeftAnchor(container, Factory.UIData.LRSpacing);
         AnchorPane.setRightAnchor(container, Factory.UIData.LRSpacing);
         AnchorPane.setTopAnchor(container, Factory.UIData.TBSpacing);
@@ -57,6 +56,11 @@ public class ConsolePageController implements UIHandler {
 
     @Override
     public void resize() {
+
+    }
+
+    @Override
+    public void release() {
 
     }
 
