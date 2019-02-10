@@ -38,7 +38,7 @@ class DshowDeviceListHelper {
 
     private static final LogCallback LOG_CALLBACK = new LogCallback() {
         @Override
-        public void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
+        public synchronized void call(Pointer avcl, int level, BytePointer fmt, Pointer vl) {
             PointerPointer<AVClass> pp = new PointerPointer<>(avcl);
             AVClass avc = pp.get(AVClass.class);
             String ctxName = avc.item_name().call(avcl).getString();
