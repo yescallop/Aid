@@ -16,8 +16,8 @@ public class FrameGrabber extends Thread {
 
     private AVFormatContext fmtCtx;
     private int videoStreamIndex;
-    private AVCodecContext codecCtx;
-    private AVCodecParameters codecpar;
+    private AVCodecContext decoder;
+    private AVCodecParameters par;
     private AVPacket packet;
     private AVFrame frame;
 
@@ -38,19 +38,25 @@ public class FrameGrabber extends Thread {
             throw new FFmpegException("Could not find video stream");
         videoStreamIndex = stream.index();
 
-        codecpar = stream.codecpar();
-        AVCodec codec = avcodec_find_decoder(codecpar.codec_id());
+        par = stream.codecpar();
+        AVCodec codec = avcodec_find_decoder(par.codec_id());
         if (codec == null)
             throw new FFmpegException("Codec not found");
 
-        codecCtx = avcodec_alloc_context3(codec);
-        if (codecCtx == null)
-            throw new FFmpegException("Could not allocate codec context");
+        decoder = avcodec_alloc_context3(codec);
+        if (decoder == null)
+            throw new FFmpegException("Could not allocate decoder codec context");
 
-        avcodec_parameters_to_context(codecCtx, codecpar);
+        AVRational frameRate = av_guess_frame_rate(fmtCtx, stream, null);
+        if (frameRate.num() == 0)
+            throw new FFmpegException("Could not guess the frame rate");
+        decoder.framerate(av_guess_frame_rate(fmtCtx, stream, null));
 
-        if (avcodec_open2(codecCtx, codec, (PointerPointer) null) < 0)
-            throw new FFmpegException("Could not open codec");
+        avcodec_parameters_to_context(decoder, par);
+        handler.init(decoder);
+
+        if (avcodec_open2(decoder, codec, (PointerPointer) null) < 0)
+            throw new FFmpegException("Could not open decoder codec");
 
         packet = av_packet_alloc();
         frame = av_frame_alloc();
@@ -59,9 +65,7 @@ public class FrameGrabber extends Thread {
     @Override
     public void run() {
         try {
-            do {
-                grabFrame();
-            } while (!isInterrupted());
+            while (!isInterrupted()) grabFrame();
         } catch (Exception e) {
             handler.exceptionCaught(e);
         } finally {
@@ -73,14 +77,13 @@ public class FrameGrabber extends Thread {
         int ret = av_read_frame(fmtCtx, packet);
         if (ret >= 0) {
             if (packet.stream_index() == videoStreamIndex) { //video packet
-                if (avcodec_send_packet(codecCtx, packet) < 0)
+                System.out.print(packet.size() + " -> ");
+                if (avcodec_send_packet(decoder, packet) < 0)
                     throw new FFmpegException("Error sending a packet for decoding");
-                ret = avcodec_receive_frame(codecCtx, frame);
-                if (ret < 0) {
-                    if (ret == AVERROR_EAGAIN() || ret == AVERROR_EOF) //just retry
-                        return;
+                if (avcodec_receive_frame(decoder, frame) < 0)
                     throw new FFmpegException("Error during decoding");
-                }
+
+
 
                 handler.frameGrabbed(frame);
             }
@@ -93,18 +96,18 @@ public class FrameGrabber extends Thread {
 
     private void free() {
         avformat_close_input(fmtCtx);
-        avcodec_free_context(codecCtx);
-        avcodec_parameters_free(codecpar);
+        avcodec_free_context(decoder);
+        avcodec_parameters_free(par);
         av_packet_free(packet);
         av_frame_free(frame);
 
         fmtCtx = null;
-        codecCtx = null;
-        codecpar = null;
+        decoder = null;
+        par = null;
         frame = null;
     }
 
     public AVCodecParameters codecpar() {
-        return codecpar;
+        return par;
     }
 }

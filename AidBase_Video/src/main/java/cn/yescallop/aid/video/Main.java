@@ -28,7 +28,7 @@ public class Main {
             return;
         }
 
-        DshowDeviceInfo in = devices[1];
+        DshowDeviceInfo in = devices[0];
         System.out.printf("Input device: %s (%s)\n", in.friendlyName(), in.uniqueName());
 
         AVFormatContext fmtCtx = avformat_alloc_context();
