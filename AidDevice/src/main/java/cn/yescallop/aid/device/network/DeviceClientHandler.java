@@ -1,4 +1,4 @@
-package cn.yescallop.aid.device.handler;
+package cn.yescallop.aid.device.network;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.DeviceMain;
@@ -12,7 +12,7 @@ import io.netty.channel.ChannelHandlerContext;
 /**
  * @author Scallop Ye
  */
-public class DeviceHandler extends ClientPacketHandler {
+public class DeviceClientHandler extends ClientPacketHandler {
 
     @Override
     protected void connectionEstablished(ChannelHandlerContext ctx) {

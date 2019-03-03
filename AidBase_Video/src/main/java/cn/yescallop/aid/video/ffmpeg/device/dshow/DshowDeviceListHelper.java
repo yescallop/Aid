@@ -44,7 +44,7 @@ class DshowDeviceListHelper {
             String ctxName = avc.item_name().call(avcl).getString();
 
             if (!ctxName.equals("dshow")) { //callback by default if not logged by dshow
-                DefaultLogCallback.INSTANCE.call(avcl, level, fmt, vl);
+                Logging.getDefaultCallback().call(avcl, level, fmt, vl);
                 return;
             }
 
@@ -86,7 +86,7 @@ class DshowDeviceListHelper {
         Logging.setCallback(LOG_CALLBACK);
         avformat_open_input(ctx, "dummy", fmt, options);
         avformat_close_input(ctx);
-        Logging.setCallback(DefaultLogCallback.INSTANCE);
+        Logging.resetDefaultCallback();
 
         if (errMsg != null)
             throw new DshowException(errMsg);

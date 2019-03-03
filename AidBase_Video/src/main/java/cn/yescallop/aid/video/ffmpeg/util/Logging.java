@@ -12,6 +12,7 @@ import static org.bytedeco.javacpp.avutil.*;
  */
 public class Logging {
 
+    private static LogCallback defaultCallback = DefaultLogCallback.INSTANCE;
     private static LogCallback callback = DefaultLogCallback.INSTANCE;
 
     private static final Callback_Pointer_int_BytePointer_Pointer CALLBACK_POINTER = new Callback_Pointer_int_BytePointer_Pointer() {
@@ -29,11 +30,27 @@ public class Logging {
         Logging.callback = callback;
     }
 
+    public static LogCallback getDefaultCallback() {
+        return defaultCallback;
+    }
+
+    public static void resetDefaultCallback() {
+        callback = defaultCallback;
+    }
+
+    public static void init() {
+        defaultCallback = DefaultLogCallback.INSTANCE;
+        callback = DefaultLogCallback.INSTANCE;
+        av_log_set_callback(CALLBACK_POINTER);
+    }
+
     /**
      * Sets the log callback in avutil
      * Remember to call this function before registering a callback
      */
-    public static void init() {
+    public static void init(LogCallback def) {
+        defaultCallback = def;
+        callback = def;
         av_log_set_callback(CALLBACK_POINTER);
     }
 }

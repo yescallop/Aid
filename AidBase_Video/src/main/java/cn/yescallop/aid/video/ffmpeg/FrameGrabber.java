@@ -77,25 +77,24 @@ public class FrameGrabber extends Thread {
         int ret = av_read_frame(fmtCtx, packet);
         if (ret >= 0) {
             if (packet.stream_index() == videoStreamIndex) { //video packet
-                System.out.print(packet.size() + " -> ");
                 if (avcodec_send_packet(decoder, packet) < 0)
                     throw new FFmpegException("Error sending a packet for decoding");
                 if (avcodec_receive_frame(decoder, frame) < 0)
                     throw new FFmpegException("Error during decoding");
 
-
-
                 handler.frameGrabbed(frame);
             }
-        } else if (ret == AVERROR_EOF) {
+        } else if (ret == AVERROR_EOF || ret == AVERROR_EIO()) {
+            free();
             handler.eofReached();
+            interrupt();
         } else if (ret != AVERROR_EAGAIN()) { //if EAGAIN retry
-            throw new FFmpegException("Error reading a frame");
+            throw new FFmpegException("Error reading a frame: " + ret);
         }
     }
 
     private void free() {
-        avformat_close_input(fmtCtx);
+//        avformat_close_input(fmtCtx);
         avcodec_free_context(decoder);
         avcodec_parameters_free(par);
         av_packet_free(packet);

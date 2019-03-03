@@ -1,5 +1,6 @@
-package cn.yescallop.aid.device.handler;
+package cn.yescallop.aid.device.network;
 
+import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.Packet;
@@ -13,11 +14,12 @@ public class DeviceServerHandler extends ServerPacketHandler {
 
     @Override
     protected void connectionEstablished(ChannelHandlerContext ctx) {
-
+        Logger.info("Connected: " + ctx.channel().remoteAddress());
     }
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
 
     }
 

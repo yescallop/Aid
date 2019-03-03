@@ -2,11 +2,22 @@ package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.console.CommandReader;
 import cn.yescallop.aid.console.Logger;
-import cn.yescallop.aid.device.handler.BluetoothHandler;
-import cn.yescallop.aid.device.handler.DeviceHandler;
+import cn.yescallop.aid.device.bluetooth.BluetoothHandler;
+import cn.yescallop.aid.device.network.DeviceClientHandler;
+import cn.yescallop.aid.device.network.DeviceServerHandler;
+import cn.yescallop.aid.device.video.DeviceFrameHandler;
+import cn.yescallop.aid.device.video.DeviceLogCallback;
 import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.util.NetUtil;
+import cn.yescallop.aid.video.ffmpeg.FFmpegException;
+import cn.yescallop.aid.video.ffmpeg.FrameGrabber;
+import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowDeviceInfo;
+import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowDevices;
+import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowException;
+import cn.yescallop.aid.video.ffmpeg.util.Logging;
 import io.netty.channel.Channel;
+import org.bytedeco.javacpp.avdevice;
+import org.bytedeco.javacpp.avformat;
 import purejavacomm.NoSuchPortException;
 import purejavacomm.PortInUseException;
 
@@ -14,10 +25,15 @@ import java.net.Inet4Address;
 import java.net.SocketException;
 import java.util.Map;
 
+import static org.bytedeco.javacpp.avformat.avformat_alloc_context;
+
 /**
  * @author Scallop Ye
  */
 public class DeviceMain {
+
+    public static final String HOST = "0.0.0.0"; //TODO: Move these arguments to a configuration file
+    public static final int PORT = 9001;
 
     protected static Channel clientChannel;
     protected static Channel serverChannel;
@@ -44,10 +60,15 @@ public class DeviceMain {
 
     public static void main(String[] args) {
         try {
-//            Channel serverChannel = Network.startServer("0.0.0.0", 9001, new DeviceServerHandler());
             new CommandReader(new DeviceCommandHandler(), "> ").start();
-            clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
+
+            clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceClientHandler());
             Logger.info("Connected to " + clientChannel.remoteAddress());
+
+            serverChannel = Network.startServer(HOST, PORT, new DeviceServerHandler());
+            Logger.info("Server started on " + HOST + ":" + PORT);
+
+            initVideo();
             bluetooth = new BluetoothHandler("COM1", 2000, 9600);
         } catch (NoSuchPortException e) {
             Logger.severe("Failed in connecting because of the wrong port");
@@ -62,11 +83,40 @@ public class DeviceMain {
         }
     }
 
+    private static void initVideo() throws FFmpegException {
+        Logging.init(DeviceLogCallback.INSTANCE);
+        avdevice.avdevice_register_all();
+
+        DshowDeviceInfo[] devices;
+        try {
+            devices = DshowDevices.listDevices();
+        } catch (DshowException e) {
+            e.printStackTrace();
+            return;
+        }
+
+        DshowDeviceInfo in = devices[0];
+        Logger.info(String.format("Input device: %s (%s)\n", in.friendlyName(), in.uniqueName()));
+
+        avformat.AVFormatContext fmtCtx = avformat_alloc_context();
+
+        if (DshowDevices.openInput(fmtCtx, in) == 0) {
+            Logger.info("Successfully opened input");
+        } else {
+            Logger.info("Could not open device input");
+            System.exit(1);
+            return;
+        }
+
+        FrameGrabber fg = new FrameGrabber(fmtCtx, new DeviceFrameHandler());
+        fg.start();
+    }
+
     private static Runnable RECONNECTING_RUNNABLE = () -> {
         while (true) {
             Logger.info("Attempting reconnecting to server...");
             try {
-                clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceHandler());
+                clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceClientHandler());
             } catch (Exception e) {
                 try {
                     Thread.sleep(RECONNECTING_DELAY_MILLIS);

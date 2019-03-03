@@ -1,4 +1,4 @@
-package cn.yescallop.aid.device.handler;
+package cn.yescallop.aid.device.bluetooth;
 
 import cn.yescallop.aid.console.Logger;
 import purejavacomm.*;
