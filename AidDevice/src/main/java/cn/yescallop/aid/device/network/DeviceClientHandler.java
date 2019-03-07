@@ -17,9 +17,10 @@ public class DeviceClientHandler extends ClientPacketHandler {
     @Override
     protected void connectionEstablished(ChannelHandlerContext ctx) {
         DeviceHelloPacket p = new DeviceHelloPacket();
-        p.id = 1;
-        p.name = "测试设备";
+        p.id = DeviceMain.ID;
+        p.name = DeviceMain.NAME;
         p.localAddresses = DeviceMain.localAddresses();
+        p.port = DeviceMain.PORT;
         ctx.channel().writeAndFlush(p);
     }
 

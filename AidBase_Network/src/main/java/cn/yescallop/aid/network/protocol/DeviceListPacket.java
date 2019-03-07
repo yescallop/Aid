@@ -27,6 +27,7 @@ public class DeviceListPacket extends Packet {
             info.id = in.readInt();
             info.name = NetUtil.readUTF8(in);
             info.localAddresses = NetUtil.readLocalAddresses(in);
+            info.port = in.readShort() & 0xffff;
             info.registerTime = in.readLong();
             deviceInfos[i] = info;
         }
@@ -39,6 +40,7 @@ public class DeviceListPacket extends Packet {
             out.writeInt(info.id);
             NetUtil.writeUTF8(out, info.name);
             NetUtil.writeLocalAddresses(out, info.localAddresses);
+            out.writeShort(info.port);
             out.writeLong(info.registerTime);
         }
     }
@@ -47,6 +49,7 @@ public class DeviceListPacket extends Packet {
         public int id;
         public String name;
         public Map<Inet4Address, byte[]> localAddresses;
+        public int port;
         public long registerTime;
     }
 }

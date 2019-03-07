@@ -16,6 +16,7 @@ public class Device {
     private String name;
     private Channel channel;
     private Map<Inet4Address, byte[]> localAddresses;
+    private int port;
     private long registerTime;
 
     Device(int id, DeviceHelloPacket packet, Channel channel) {
@@ -23,7 +24,7 @@ public class Device {
         this.name = packet.name;
         this.localAddresses = packet.localAddresses;
         this.channel = channel;
-
+        this.port = packet.port;
         this.registerTime = System.currentTimeMillis();
     }
 
@@ -43,6 +44,10 @@ public class Device {
         return localAddresses;
     }
 
+    public int port() {
+        return port;
+    }
+
     public long registerTime() {
         return registerTime;
     }
@@ -52,6 +57,7 @@ public class Device {
         info.id = this.id;
         info.name = this.name;
         info.localAddresses = this.localAddresses;
+        info.port = port;
         info.registerTime = this.registerTime;
         return info;
     }

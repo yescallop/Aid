@@ -35,6 +35,9 @@ public class DeviceMain {
     public static final String HOST = "0.0.0.0"; //TODO: Move these arguments to a configuration file
     public static final int PORT = 9001;
 
+    public static final int ID = 1;
+    public static final String NAME = "测试设备";
+
     protected static Channel clientChannel;
     protected static Channel serverChannel;
     private static Map<Inet4Address, byte[]> addresses;
@@ -46,7 +49,7 @@ public class DeviceMain {
 
     static {
         try {
-            addresses = NetUtil.getSiteLocalAddressesWithMAC();
+            addresses = NetUtil.getLocalAddressesWithMAC();
         } catch (SocketException e) {
             System.out.println("Unable to get network interface info");
             e.printStackTrace();

@@ -30,6 +30,7 @@ public class ClientHandler extends ClientPacketHandler {
                 if (deviceListPacket.deviceInfos.length == 0) {
                     Logger.info("No device is connected at present.");
                 } else {
+                    ClientConsoleMain.deviceInfos = deviceListPacket.deviceInfos;
                     Util.logDeviceList(deviceListPacket.deviceInfos);
                 }
                 break;

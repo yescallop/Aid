@@ -21,7 +21,11 @@ public class Util {
         for (DeviceListPacket.DeviceInfo one : deviceInfos) {
             StringJoiner sj = new StringJoiner(", ");
             one.localAddresses.forEach((addr, mac) -> sj.add(addr.getHostAddress() + ":" + ByteBufUtil.hexDump(mac)));
-            Logger.info(String.format("[%d] %s: %s: {%s}", one.id, one.name, one.registerTime, sj));
+            Logger.info(String.format("[%d] %s: %s: {%s}: %d", one.id, one.name, one.registerTime, sj, one.port));
         }
+    }
+
+    public static void tryConnect(DeviceListPacket.DeviceInfo info) {
+
     }
 }

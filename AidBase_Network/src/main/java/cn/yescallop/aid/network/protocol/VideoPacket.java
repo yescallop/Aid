@@ -2,13 +2,15 @@ package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
 
+import java.nio.ByteBuffer;
+
 /**
  * @author Scallop Ye
  */
 public class VideoPacket extends Packet {
 
     public long time;
-    public byte[] data;
+    public ByteBuffer data;
 
     @Override
     public int id() {
@@ -18,7 +20,7 @@ public class VideoPacket extends Packet {
     @Override
     public void readFrom(ByteBuf in) {
         time = in.readLong();
-        data = new byte[in.readableBytes()];
+        data = ByteBuffer.allocateDirect(in.readableBytes());
         in.readBytes(data);
     }
 

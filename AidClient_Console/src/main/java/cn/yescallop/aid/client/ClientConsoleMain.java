@@ -3,6 +3,7 @@ package cn.yescallop.aid.client;
 import cn.yescallop.aid.console.CommandReader;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.Network;
+import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import io.netty.channel.Channel;
 
 /**
@@ -11,6 +12,9 @@ import io.netty.channel.Channel;
 public class ClientConsoleMain {
 
     protected static Channel channel;
+    protected static Channel deviceChannel;
+
+    protected static DeviceListPacket.DeviceInfo[] deviceInfos;
 
     private static boolean stopping = false;
 

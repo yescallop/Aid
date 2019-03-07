@@ -1,6 +1,8 @@
 package cn.yescallop.aid.device.video;
 
 import cn.yescallop.aid.console.Logger;
+import cn.yescallop.aid.device.network.ClientManager;
+import cn.yescallop.aid.network.protocol.VideoPacket;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.FrameHandler;
 import org.bytedeco.javacpp.BytePointer;
@@ -65,6 +67,11 @@ public class DeviceFrameHandler implements FrameHandler {
             else if (ret < 0) {
                 throw new FFmpegException("Error during encoding: " + ret);
             }
+
+            VideoPacket p = new VideoPacket();
+            p.time = curTime;
+            p.data = packet.data().asByteBuffer();
+            ClientManager.batchPacket(p);
         }
     }
 
