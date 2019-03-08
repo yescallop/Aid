@@ -7,6 +7,7 @@ import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 
 import java.net.SocketAddress;
@@ -15,6 +16,7 @@ import java.net.SocketAddress;
  * @author Scallop Ye
  * TODO: Finish Device Server part
  */
+@ChannelHandler.Sharable
 public class DeviceServerHandler extends ServerPacketHandler {
 
     @Override

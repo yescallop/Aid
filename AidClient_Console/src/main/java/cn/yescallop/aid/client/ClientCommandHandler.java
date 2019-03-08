@@ -1,6 +1,5 @@
 package cn.yescallop.aid.client;
 
-import cn.yescallop.aid.client.util.Util;
 import cn.yescallop.aid.console.CommandHandler;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
@@ -34,6 +33,7 @@ public class ClientCommandHandler implements CommandHandler {
                     Logger.info("Device ID must be an integer");
                     break;
                 }
+
                 DeviceListPacket.DeviceInfo info = null;
                 for (DeviceListPacket.DeviceInfo one : ClientConsoleMain.deviceInfos) {
                     if (one.id == id)
@@ -43,7 +43,7 @@ public class ClientCommandHandler implements CommandHandler {
                     Logger.info("Device ID matching " + id + " not found");
                     break;
                 }
-                Util.tryConnect(info);
+                ClientConsoleMain.tryConnect(info);
                 break;
             default:
                 Logger.info("Invalid command");

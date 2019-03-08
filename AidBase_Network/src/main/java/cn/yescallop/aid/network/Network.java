@@ -9,6 +9,8 @@ import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.IdleStateHandler;
 
+import java.net.InetAddress;
+
 /**
  * @author Scallop Ye
  */
@@ -56,6 +58,10 @@ public class Network {
      * Runs a Netty client on host:port with specific handlers.
      */
     public static Channel startClient(String host, int port, ChannelHandler... handlers) throws Exception {
+        return startClient(InetAddress.getByName(host), port, handlers);
+    }
+
+    public static Channel startClient(InetAddress host, int port, ChannelHandler... handlers) throws Exception {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         Bootstrap bootstrap = new Bootstrap();
         bootstrap.group(workerGroup)
@@ -70,7 +76,7 @@ public class Network {
                                 .addLast(handlers);
                     }
                 })
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
                 .option(ChannelOption.SO_KEEPALIVE, true)
                 .option(ChannelOption.TCP_NODELAY, true);
         Channel channel = bootstrap.connect(host, port).sync().channel();

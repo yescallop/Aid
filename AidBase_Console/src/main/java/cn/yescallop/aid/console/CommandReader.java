@@ -53,7 +53,7 @@ public class CommandReader extends Thread {
                 handler.handle(line, new String[0]);
             } else {
                 String cmd = line.substring(0, index);
-                String[] args = line.substring(index).split(" +");
+                String[] args = line.substring(index + 1).split(" +");
                 handler.handle(cmd, args);
             }
         }

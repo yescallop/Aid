@@ -6,6 +6,8 @@ import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import io.netty.channel.Channel;
 
+import java.net.Inet4Address;
+
 /**
  * @author Scallop Ye
  */
@@ -47,5 +49,18 @@ public class ClientConsoleMain {
 
     public static boolean isStopping() {
         return stopping;
+    }
+
+    public static void tryConnect(DeviceListPacket.DeviceInfo info) {
+        for (Inet4Address addr : info.localAddresses.keySet()) {
+            Logger.info("Trying " + addr.getHostAddress() + ":" + info.port);
+            try {
+                deviceChannel = Network.startClient(addr, info.port, new DeviceHandler());
+            } catch (Exception e) {
+                Logger.warning("Unable to connect to " + addr.getHostAddress() + ":" + info.port);
+                continue;
+            }
+        }
+        Logger.severe("Device " + info.id + " seems unreachable");
     }
 }

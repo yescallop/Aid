@@ -25,7 +25,4 @@ public class Util {
         }
     }
 
-    public static void tryConnect(DeviceListPacket.DeviceInfo info) {
-
-    }
 }
