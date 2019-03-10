@@ -1,5 +1,6 @@
-package cn.yescallop.aid.client;
+package cn.yescallop.aid.client.network;
 
+import cn.yescallop.aid.client.ClientConsoleMain;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
@@ -45,6 +46,8 @@ public class DeviceHandler extends ClientPacketHandler {
                         lastTime = curTime;
                     }
                 } else lastTime = curTime;
+
+
                 break;
             default:
                 Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);

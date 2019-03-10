@@ -72,7 +72,7 @@ public class DeviceMain {
             Logger.info("Server started on " + HOST + ":" + PORT);
 
             initVideo();
-            bluetooth = new BluetoothHandler("COM1", 2000, 9600);
+//            bluetooth = new BluetoothHandler("COM1", 2000, 9600);
         } catch (NoSuchPortException e) {
             Logger.severe("Failed in connecting because of the wrong port");
             System.exit(1);
@@ -143,6 +143,14 @@ public class DeviceMain {
             Logger.info("Closing client channel...");
             try {
                 clientChannel.close().sync();
+            } catch (Exception e) {
+                //ignored
+            }
+        }
+        if (serverChannel != null) {
+            Logger.info("Closing server channel...");
+            try {
+                serverChannel.close().sync();
             } catch (Exception e) {
                 //ignored
             }

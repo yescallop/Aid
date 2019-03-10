@@ -1,5 +1,6 @@
-package cn.yescallop.aid.client;
+package cn.yescallop.aid.client.network;
 
+import cn.yescallop.aid.client.ClientConsoleMain;
 import cn.yescallop.aid.client.util.Util;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
@@ -30,7 +31,7 @@ public class ClientHandler extends ClientPacketHandler {
                 if (deviceListPacket.deviceInfos.length == 0) {
                     Logger.info("No device is connected at present.");
                 } else {
-                    ClientConsoleMain.deviceInfos = deviceListPacket.deviceInfos;
+                    ClientConsoleMain.updateDeviceInfos(deviceListPacket.deviceInfos)          ;
                     Util.logDeviceList(deviceListPacket.deviceInfos);
                 }
                 break;

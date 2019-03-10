@@ -1,5 +1,7 @@
 package cn.yescallop.aid.client;
 
+import cn.yescallop.aid.client.network.ClientHandler;
+import cn.yescallop.aid.client.network.DeviceHandler;
 import cn.yescallop.aid.console.CommandReader;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.Network;
@@ -43,8 +45,20 @@ public class ClientConsoleMain {
                 //ignored
             }
         }
+        if (deviceChannel != null) {
+            Logger.info("Closing device channel...");
+            try {
+                deviceChannel.close().sync();
+            } catch (Exception e) {
+                //ignored
+            }
+        }
         Logger.info("Client stopped");
         System.exit(0);
+    }
+
+    public static void updateDeviceInfos(DeviceListPacket.DeviceInfo[] deviceInfos) {
+        ClientConsoleMain.deviceInfos = deviceInfos;
     }
 
     public static boolean isStopping() {
@@ -60,6 +74,7 @@ public class ClientConsoleMain {
                 Logger.warning("Unable to connect to " + addr.getHostAddress() + ":" + info.port);
                 continue;
             }
+            return;
         }
         Logger.severe("Device " + info.id + " seems unreachable");
     }

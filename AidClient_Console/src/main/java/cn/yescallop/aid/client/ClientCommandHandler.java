@@ -34,6 +34,11 @@ public class ClientCommandHandler implements CommandHandler {
                     break;
                 }
 
+                if (ClientConsoleMain.deviceInfos == null || ClientConsoleMain.deviceInfos.length == 0) {
+                    Logger.warning("No device available, fetch a list first");
+                    break;
+                }
+
                 DeviceListPacket.DeviceInfo info = null;
                 for (DeviceListPacket.DeviceInfo one : ClientConsoleMain.deviceInfos) {
                     if (one.id == id)
