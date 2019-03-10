@@ -1,8 +1,8 @@
 package cn.yescallop.aid.client.ui.controller;
 
-import cn.yescallop.aid.client.network.DeviceInfo;
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
+import cn.yescallop.aid.client.network.DeviceInfo;
 import com.jfoenix.controls.*;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import io.datafx.controller.ViewController;

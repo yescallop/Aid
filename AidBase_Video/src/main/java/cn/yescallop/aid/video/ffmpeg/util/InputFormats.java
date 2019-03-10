@@ -1,7 +1,7 @@
 package cn.yescallop.aid.video.ffmpeg.util;
 
-import static org.bytedeco.javacpp.avformat.av_find_input_format;
 import static org.bytedeco.javacpp.avformat.AVInputFormat;
+import static org.bytedeco.javacpp.avformat.av_find_input_format;
 
 /**
  * @author Scallop Ye
