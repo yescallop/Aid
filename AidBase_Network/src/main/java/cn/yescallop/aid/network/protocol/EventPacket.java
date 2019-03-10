@@ -7,8 +7,7 @@ import io.netty.buffer.ByteBuf;
  */
 public class EventPacket extends Packet {
 
-    public static final int EVENT_DEVICE_REGISTERED = 0;
-    public static final int EVENT_CAMERA_DETECTED = 1;
+    public static final int EVENT_CAMERA_DETECTED = 0;
 
     public int event;
     public int deviceId = -1;

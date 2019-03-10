@@ -1,6 +1,7 @@
 package cn.yescallop.aid.server.management;
 
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import io.netty.channel.Channel;
 
 import java.util.HashMap;
@@ -31,13 +32,13 @@ public class DeviceManager {
         return channelDeviceMap.containsKey(channel);
     }
 
-    public static boolean registerDevice(Channel channel, DeviceHelloPacket packet) {
+    public static Device registerDevice(Channel channel, DeviceHelloPacket packet) {
         if (idDeviceMap.containsKey(packet.id))
-            return false;
+            return null;
         Device device = new Device(packet.id, packet, channel);
         idDeviceMap.put(packet.id, device);
         channelDeviceMap.put(channel, device);
-        return true;
+        return device;
     }
 
     public static boolean unregisterDevice(int id) {
@@ -45,6 +46,7 @@ public class DeviceManager {
         if (dev == null)
             return false;
         channelDeviceMap.remove(dev.channel());
+        updateListRemoval(dev);
         return true;
     }
 
@@ -53,7 +55,15 @@ public class DeviceManager {
         if (dev == null)
             return false;
         idDeviceMap.remove(dev.id());
+        updateListRemoval(dev);
         return true;
+    }
+
+    private static void updateListRemoval(Device dev) {
+        DeviceListPacket p = new DeviceListPacket();
+        p.type = DeviceListPacket.TYPE_REMOVE;
+        p.list = new DeviceListPacket.DeviceInfo[] { dev.toDeviceInfo() };
+        ClientManager.broadcastPacket(p);
     }
 
     public static int idByChannel(Channel channel) {

@@ -15,18 +15,20 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
 
     private SimpleIntegerProperty id;
     private StringProperty name;
-    private SimpleMapProperty localAddresses;
+    private SimpleMapProperty<Inet4Address, byte[]> localAddresses;
+    private SimpleIntegerProperty port;
     private SimpleLongProperty registerTime;
 
-    private DeviceInfo(int id, String name, Map<Inet4Address, byte[]> localAddresses, long registerTime) {
+    private DeviceInfo(int id, String name, Map<Inet4Address, byte[]> localAddresses, int port, long registerTime) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
-        this.localAddresses = new SimpleMapProperty(FXCollections.observableMap(localAddresses));
+        this.localAddresses = new SimpleMapProperty<>(FXCollections.observableMap(localAddresses));
+        this.port = new SimpleIntegerProperty(port);
         this.registerTime = new SimpleLongProperty(registerTime);
     }
 
     public DeviceInfo(DeviceListPacket.DeviceInfo deviceInfo) {
-        this(deviceInfo.id, deviceInfo.name, deviceInfo.localAddresses, deviceInfo.registerTime);
+        this(deviceInfo.id, deviceInfo.name, deviceInfo.localAddresses, deviceInfo.port, deviceInfo.registerTime);
     }
 
     public SimpleIntegerProperty idProperty() {
@@ -37,8 +39,12 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
         return name;
     }
 
-    public SimpleMapProperty localAddressesProperty() {
+    public SimpleMapProperty<Inet4Address, byte[]> localAddressesProperty() {
         return localAddresses;
+    }
+
+    public SimpleIntegerProperty portProperty() {
+        return port;
     }
 
     public SimpleLongProperty registerTimeProperty() {

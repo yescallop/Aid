@@ -5,6 +5,7 @@ import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.*;
 import cn.yescallop.aid.server.management.ClientManager;
+import cn.yescallop.aid.server.management.Device;
 import cn.yescallop.aid.server.management.DeviceManager;
 import cn.yescallop.aid.server.util.Util;
 import io.netty.channel.Channel;
@@ -26,7 +27,7 @@ public class ServerHandler extends ServerPacketHandler {
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
-        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet.getClass().getSimpleName());
         Channel channel = ctx.channel();
         int type = Util.identifyChannel(channel);
         if (type == -1) { //Unregistered
@@ -34,17 +35,19 @@ public class ServerHandler extends ServerPacketHandler {
                 case Packet.ID_CLIENT_HELLO:
                     ClientManager.registerClient(channel);
                     channel.writeAndFlush(new ServerHelloPacket());
+                    channel.writeAndFlush(Util.createFullDeviceListPacket());
                     break;
                 case Packet.ID_DEVICE_HELLO:
                     DeviceHelloPacket deviceHelloPacket = (DeviceHelloPacket) packet;
-                    if (DeviceManager.registerDevice(channel, deviceHelloPacket)) {
+                    Device device = DeviceManager.registerDevice(channel, deviceHelloPacket);
+                    if (device != null) {
                         Logger.info(String.format("Device [%s] %s: %s registered", deviceHelloPacket.id, deviceHelloPacket.name, channel.remoteAddress()));
                         channel.writeAndFlush(new ServerHelloPacket());
 
-                        EventPacket deviceRegisteredEvent = new EventPacket();
-                        deviceRegisteredEvent.event = EventPacket.EVENT_DEVICE_REGISTERED;
-                        deviceRegisteredEvent.deviceId = deviceHelloPacket.id;
-                        ClientManager.batchPacket(deviceRegisteredEvent);
+                        DeviceListPacket deviceListPacket = new DeviceListPacket();
+                        deviceListPacket.type = DeviceListPacket.TYPE_ADD;
+                        deviceListPacket.list = new DeviceListPacket.DeviceInfo[]{ device.toDeviceInfo() };
+                        ClientManager.broadcastPacket(deviceListPacket);
                     } else {
                         Logger.warning(String.format("Device %s's attempt to register with an existing id %d is refused.", deviceHelloPacket.name, deviceHelloPacket.id));
                         StatusPacket idOccupiedStatus = new StatusPacket();
@@ -60,7 +63,7 @@ public class ServerHandler extends ServerPacketHandler {
                 case Packet.ID_EVENT:
                     EventPacket eventPacket = (EventPacket) packet;
                     eventPacket.deviceId = DeviceManager.idByChannel(channel);
-                    ClientManager.batchPacket(eventPacket);
+                    ClientManager.broadcastPacket(eventPacket);
                     Logger.info("Event " + eventPacket.event + " from device " + eventPacket.deviceId);
                     break;
             }
@@ -69,7 +72,7 @@ public class ServerHandler extends ServerPacketHandler {
                 case Packet.ID_REQUEST:
                     RequestPacket requestPacket = (RequestPacket) packet;
                     if (requestPacket.type == RequestPacket.TYPE_DEVICE_LIST) {
-                        DeviceListPacket deviceListPacket = Util.createDeviceListPacket();
+                        DeviceListPacket deviceListPacket = Util.createFullDeviceListPacket();
                         channel.writeAndFlush(deviceListPacket);
                     } else {
                         //TODO

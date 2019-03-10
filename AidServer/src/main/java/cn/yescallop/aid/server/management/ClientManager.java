@@ -29,7 +29,7 @@ public class ClientManager {
         channelGroup.remove(channel);
     }
 
-    public static void batchPacket(Packet packet) {
+    public static void broadcastPacket(Packet packet) {
         channelGroup.writeAndFlush(packet);
     }
 

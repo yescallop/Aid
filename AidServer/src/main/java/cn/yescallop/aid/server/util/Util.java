@@ -19,6 +19,10 @@ public class Util {
 
     public static void logDeviceList(Device[] devices) {
         int count = devices.length;
+        if (count == 0) {
+            Logger.info("No device is connected at present");
+            return;
+        }
         Logger.info("List of " + count + " device(s):");
         for (Device one : devices) {
             Logger.info(String.format("[%d] %s: %s", one.id(), one.name(), one.channel().remoteAddress()));
@@ -37,12 +41,13 @@ public class Util {
         return -1;
     }
 
-    public static DeviceListPacket createDeviceListPacket() {
+    public static DeviceListPacket createFullDeviceListPacket() {
         DeviceListPacket res = new DeviceListPacket();
+        res.type = DeviceListPacket.TYPE_FULL;
         Device[] devices = DeviceManager.deviceArray();
-        res.deviceInfos = new DeviceListPacket.DeviceInfo[devices.length];
+        res.list = new DeviceListPacket.DeviceInfo[devices.length];
         for (int i = 0; i < devices.length; i++) {
-            res.deviceInfos[i] = devices[i].toDeviceInfo();
+            res.list[i] = devices[i].toDeviceInfo();
         }
         return res;
     }

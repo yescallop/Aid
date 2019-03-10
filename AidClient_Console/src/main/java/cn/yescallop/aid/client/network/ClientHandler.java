@@ -1,7 +1,6 @@
 package cn.yescallop.aid.client.network;
 
 import cn.yescallop.aid.client.ClientConsoleMain;
-import cn.yescallop.aid.client.util.Util;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
@@ -24,16 +23,11 @@ public class ClientHandler extends ClientPacketHandler {
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
-        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet.getClass().getSimpleName());
         switch (packet.id()) {
             case Packet.ID_DEVICE_LIST:
                 DeviceListPacket deviceListPacket = (DeviceListPacket) packet;
-                if (deviceListPacket.deviceInfos.length == 0) {
-                    Logger.info("No device is connected at present.");
-                } else {
-                    ClientConsoleMain.updateDeviceInfos(deviceListPacket.deviceInfos)          ;
-                    Util.logDeviceList(deviceListPacket.deviceInfos);
-                }
+                ClientConsoleMain.updateDeviceList(deviceListPacket.type, deviceListPacket.list);
                 break;
             case Packet.ID_EVENT:
                 EventPacket eventPacket = (EventPacket) packet;

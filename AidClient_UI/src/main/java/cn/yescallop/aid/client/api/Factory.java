@@ -13,8 +13,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Magical Sheep
@@ -24,6 +24,7 @@ public class Factory {
     private static Stage stage;
     private static UIHandler currentPage = null;
     private static StringProperty consoleInfo;
+    protected static Map<Integer, DeviceListPacket.DeviceInfo> deviceListMap = new LinkedHashMap<>();
     private static ObservableList<DeviceInfo> onlineDeviceList;
 
     private Factory() {
@@ -133,15 +134,29 @@ public class Factory {
         /**
          * 更新在线设备列表
          *
-         * @param deviceInfos 在线设备名单
+         * @param type 设备列表类型
+         * @param list 在线设备名单
          */
-        public static void updateDeviceList(DeviceListPacket.DeviceInfo[] deviceInfos) {
-            onlineDeviceList.clear();
-            List<DeviceInfo> list = new ArrayList<>();
-            for (DeviceListPacket.DeviceInfo deviceInfo : deviceInfos) {
-                list.add(new DeviceInfo(deviceInfo));
+        public static void updateDeviceList(int type, DeviceListPacket.DeviceInfo[] list) {
+            if (type == DeviceListPacket.TYPE_FULL) {
+                deviceListMap.clear();
+                for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                    deviceListMap.put(deviceInfo.id, deviceInfo);
+                }
+            } else if (type == DeviceListPacket.TYPE_ADD) {
+                for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                    deviceListMap.put(deviceInfo.id, deviceInfo);
+                }
+            } else if (type == DeviceListPacket.TYPE_REMOVE) {
+                for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                    deviceListMap.remove(deviceInfo.id);
+                }
             }
-            onlineDeviceList.addAll(list);
+
+            onlineDeviceList.clear();
+            for (DeviceListPacket.DeviceInfo deviceInfo : deviceListMap.values()) {
+                onlineDeviceList.add(new DeviceInfo(deviceInfo));
+            }
         }
     }
 

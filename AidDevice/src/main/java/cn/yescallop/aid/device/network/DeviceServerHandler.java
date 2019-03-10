@@ -26,7 +26,7 @@ public class DeviceServerHandler extends ServerPacketHandler {
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
-        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet.getClass().getSimpleName());
         Channel channel = ctx.channel();
         if (!ClientManager.isRegistered(channel)) {
             switch (packet.id()) {

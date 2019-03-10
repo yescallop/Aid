@@ -1,9 +1,11 @@
 package cn.yescallop.aid.client;
 
+import cn.yescallop.aid.client.util.Util;
 import cn.yescallop.aid.console.CommandHandler;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
-import cn.yescallop.aid.network.protocol.RequestPacket;
+
+import java.util.Map;
 
 /**
  * @author Scallop Ye
@@ -17,9 +19,7 @@ public class ClientCommandHandler implements CommandHandler {
                 ClientConsoleMain.stop();
                 break;
             case "list":
-                RequestPacket listRequest = new RequestPacket();
-                listRequest.type = RequestPacket.TYPE_DEVICE_LIST;
-                ClientConsoleMain.channel.writeAndFlush(listRequest);
+                Util.logDeviceList();
                 break;
             case "connect":
                 if (args.length != 1) {
@@ -34,16 +34,13 @@ public class ClientCommandHandler implements CommandHandler {
                     break;
                 }
 
-                if (ClientConsoleMain.deviceInfos == null || ClientConsoleMain.deviceInfos.length == 0) {
+                Map<Integer, DeviceListPacket.DeviceInfo> deviceList = ClientConsoleMain.deviceList();
+                if (deviceList.isEmpty()) {
                     Logger.warning("No device available, fetch a list first");
                     break;
                 }
 
-                DeviceListPacket.DeviceInfo info = null;
-                for (DeviceListPacket.DeviceInfo one : ClientConsoleMain.deviceInfos) {
-                    if (one.id == id)
-                        info = one;
-                }
+                DeviceListPacket.DeviceInfo info = deviceList.get(id);
                 if (info == null) {
                     Logger.info("Device ID matching " + id + " not found");
                     break;

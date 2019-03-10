@@ -38,7 +38,7 @@ public class DeviceClientHandler extends ClientPacketHandler {
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
-        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+        Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet.getClass().getSimpleName());
         switch (packet.id()) {
             case Packet.ID_STATUS:
                 StatusPacket statusPacket = (StatusPacket) packet;

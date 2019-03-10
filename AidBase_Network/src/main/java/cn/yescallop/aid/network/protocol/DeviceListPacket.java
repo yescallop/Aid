@@ -11,7 +11,12 @@ import java.util.Map;
  */
 public class DeviceListPacket extends Packet {
 
-    public DeviceInfo[] deviceInfos;
+    public static final int TYPE_FULL = 0;
+    public static final int TYPE_ADD = 1;
+    public static final int TYPE_REMOVE = 2;
+
+    public int type;
+    public DeviceInfo[] list;
 
     @Override
     public int id() {
@@ -20,28 +25,34 @@ public class DeviceListPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
+        type = in.readByte() & 0xff;
         int cnt = in.readInt();
-        deviceInfos = new DeviceInfo[cnt];
+        list = new DeviceInfo[cnt];
         for (int i = 0; i < cnt; i++) {
             DeviceInfo info = new DeviceInfo();
             info.id = in.readInt();
-            info.name = NetUtil.readUTF8(in);
-            info.localAddresses = NetUtil.readLocalAddresses(in);
-            info.port = in.readShort() & 0xffff;
-            info.registerTime = in.readLong();
-            deviceInfos[i] = info;
+            if (type != TYPE_REMOVE) {
+                info.name = NetUtil.readUTF8(in);
+                info.localAddresses = NetUtil.readLocalAddresses(in);
+                info.port = in.readShort() & 0xffff;
+                info.registerTime = in.readLong();
+            }
+            list[i] = info;
         }
     }
 
     @Override
     public void writeTo(ByteBuf out) {
-        out.writeInt(deviceInfos.length);
-        for (DeviceInfo info : deviceInfos) {
+        out.writeByte(type);
+        out.writeInt(list.length);
+        for (DeviceInfo info : list) {
             out.writeInt(info.id);
-            NetUtil.writeUTF8(out, info.name);
-            NetUtil.writeLocalAddresses(out, info.localAddresses);
-            out.writeShort(info.port);
-            out.writeLong(info.registerTime);
+            if (type != TYPE_REMOVE) {
+                NetUtil.writeUTF8(out, info.name);
+                NetUtil.writeLocalAddresses(out, info.localAddresses);
+                out.writeShort(info.port);
+                out.writeLong(info.registerTime);
+            }
         }
     }
 

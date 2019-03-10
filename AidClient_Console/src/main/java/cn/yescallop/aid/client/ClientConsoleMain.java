@@ -9,6 +9,8 @@ import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import io.netty.channel.Channel;
 
 import java.net.Inet4Address;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 /**
  * @author Scallop Ye
@@ -18,7 +20,7 @@ public class ClientConsoleMain {
     protected static Channel channel;
     protected static Channel deviceChannel;
 
-    protected static DeviceListPacket.DeviceInfo[] deviceInfos;
+    protected static Map<Integer, DeviceListPacket.DeviceInfo> deviceList = new LinkedHashMap<>();
 
     private static boolean stopping = false;
 
@@ -57,8 +59,25 @@ public class ClientConsoleMain {
         System.exit(0);
     }
 
-    public static void updateDeviceInfos(DeviceListPacket.DeviceInfo[] deviceInfos) {
-        ClientConsoleMain.deviceInfos = deviceInfos;
+    public static Map<Integer, DeviceListPacket.DeviceInfo> deviceList() {
+        return deviceList;
+    }
+
+    public static void updateDeviceList(int type, DeviceListPacket.DeviceInfo[] list) {
+        if (type == DeviceListPacket.TYPE_FULL) {
+            deviceList.clear();
+            for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                deviceList.put(deviceInfo.id, deviceInfo);
+            }
+        } else if (type == DeviceListPacket.TYPE_ADD) {
+            for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                deviceList.put(deviceInfo.id, deviceInfo);
+            }
+        } else if (type == DeviceListPacket.TYPE_REMOVE) {
+            for (DeviceListPacket.DeviceInfo deviceInfo : list) {
+                deviceList.remove(deviceInfo.id);
+            }
+        }
     }
 
     public static boolean isStopping() {

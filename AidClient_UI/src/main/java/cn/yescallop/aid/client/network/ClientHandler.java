@@ -30,11 +30,11 @@ public class ClientHandler extends ClientPacketHandler {
 
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
-        //Factory.UI.println("From " + ctx.channel().remoteAddress() + ": " + packet);
+        //Factory.UI.println("From " + ctx.channel().remoteAddress() + ": " + packet.getClass().getSimpleName());
         switch (packet.id()) {
             case Packet.ID_DEVICE_LIST:
                 DeviceListPacket deviceListPacket = (DeviceListPacket) packet;
-                Factory.UI.updateDeviceList(deviceListPacket.deviceInfos);
+                Factory.UI.updateDeviceList(deviceListPacket.type, deviceListPacket.list);
                 break;
             case Packet.ID_EVENT:
                 EventPacket eventPacket = (EventPacket) packet;
