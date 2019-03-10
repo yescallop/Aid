@@ -13,7 +13,8 @@
             </center>
             <right>
                 <VBox spacing="20" style="-fx-padding: 0 0 0 30;">
-                    <JFXButton fx:id="connect" prefWidth="180" prefHeight="50" buttonType="RAISED" text="连接服务器" disable="true"
+                    <JFXButton fx:id="connect" prefWidth="180" prefHeight="50" buttonType="RAISED" text="连接服务器"
+                               disable="true"
                                style="-fx-text-fill:WHITE;-fx-background-color:#008577;-fx-font-size:16px;"/>
                     <JFXButton prefWidth="180" prefHeight="50" buttonType="RAISED" text="操作1"
                                style="-fx-font-size:14px;-fx-background-color:WHITE;"/>

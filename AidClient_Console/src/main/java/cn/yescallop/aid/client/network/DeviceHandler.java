@@ -27,7 +27,6 @@ public class DeviceHandler extends ClientPacketHandler {
             } else {
                 Logger.warning("Device unexpectedly closed the connection");
             }
-            ClientConsoleMain.stop();
         }
     }
 

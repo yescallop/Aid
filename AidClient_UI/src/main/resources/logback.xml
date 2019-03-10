@@ -16,15 +16,15 @@
         </encoder>
     </appender>
 
-    <logger name="ch"                 level="ERROR"/>
-    <logger name="org"                level="ERROR"/>
-    <logger name="com"                level="ERROR"/>
+    <logger name="ch" level="ERROR"/>
+    <logger name="org" level="ERROR"/>
+    <logger name="com" level="ERROR"/>
 
     <logger name="uk.co.caprica.vlcj" level="DEBUG"/>
 
     <root level="debug">
         <appender-ref ref="CONSOLE"/>
-        <appender-ref ref="FILE"   />
+        <appender-ref ref="FILE"/>
     </root>
 
 </configuration>

@@ -40,10 +40,10 @@ public class ConsolePageController implements UIHandler {
         AnchorPane.setTopAnchor(container, Factory.UIData.TBSpacing);
         AnchorPane.setBottomAnchor(container, Factory.UIData.TBSpacing);
 
-        AnchorPane.setLeftAnchor(console,Factory.UIData.LRSpacing-15);
-        AnchorPane.setRightAnchor(console, Factory.UIData.LRSpacing-15);
-        AnchorPane.setTopAnchor(console, Factory.UIData.TBSpacing-15);
-        AnchorPane.setBottomAnchor(console, Factory.UIData.TBSpacing-15);
+        AnchorPane.setLeftAnchor(console, Factory.UIData.LRSpacing - 15);
+        AnchorPane.setRightAnchor(console, Factory.UIData.LRSpacing - 15);
+        AnchorPane.setTopAnchor(console, Factory.UIData.TBSpacing - 15);
+        AnchorPane.setBottomAnchor(console, Factory.UIData.TBSpacing - 15);
 
         container.setMaxWidth(Factory.UIData.getScreenWidth());
         container.setMaxHeight(Factory.UIData.getScreenHeight());

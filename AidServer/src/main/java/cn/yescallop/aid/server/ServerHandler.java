@@ -46,7 +46,7 @@ public class ServerHandler extends ServerPacketHandler {
 
                         DeviceListPacket deviceListPacket = new DeviceListPacket();
                         deviceListPacket.type = DeviceListPacket.TYPE_ADD;
-                        deviceListPacket.list = new DeviceListPacket.DeviceInfo[]{ device.toDeviceInfo() };
+                        deviceListPacket.list = new DeviceListPacket.DeviceInfo[]{device.toDeviceInfo()};
                         ClientManager.broadcastPacket(deviceListPacket);
                     } else {
                         Logger.warning(String.format("Device %s's attempt to register with an existing id %d is refused.", deviceHelloPacket.name, deviceHelloPacket.id));

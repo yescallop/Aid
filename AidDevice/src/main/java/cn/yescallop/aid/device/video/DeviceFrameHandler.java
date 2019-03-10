@@ -71,7 +71,7 @@ public class DeviceFrameHandler implements FrameHandler {
             VideoPacket p = new VideoPacket();
             p.time = curTime;
             p.data = packet.data().asByteBuffer();
-            ClientManager.batchPacket(p);
+            ClientManager.broadcastPacket(p);
         }
     }
 

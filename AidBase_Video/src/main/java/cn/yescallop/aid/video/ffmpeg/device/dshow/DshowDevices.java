@@ -2,7 +2,8 @@ package cn.yescallop.aid.video.ffmpeg.device.dshow;
 
 import cn.yescallop.aid.video.ffmpeg.util.InputFormats;
 
-import static org.bytedeco.javacpp.avformat.*;
+import static org.bytedeco.javacpp.avformat.AVFormatContext;
+import static org.bytedeco.javacpp.avformat.avformat_open_input;
 
 /**
  * @author Scallop Ye
@@ -26,6 +27,6 @@ public class DshowDevices {
         if (in1.isAudioOnly() == in2.isAudioOnly())
             throw new IllegalArgumentException("two inputs must be of different types");
         return avformat_open_input(ctx, in1.type() + "=" + in1.uniqueName() + ":" +
-                        in2.type() + "=" + in2.uniqueName(), InputFormats.DSHOW, null);
+                in2.type() + "=" + in2.uniqueName(), InputFormats.DSHOW, null);
     }
 }

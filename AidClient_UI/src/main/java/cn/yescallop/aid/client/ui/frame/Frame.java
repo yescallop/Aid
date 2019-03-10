@@ -75,7 +75,8 @@ public class Frame {
         drawer.setSidePane(sideMenuFlowHandler.start(new ExtendedAnimatedFlowContainer(containerAnimationDuration, SWIPE_LEFT)));
 
     }
-    public static double getToolbarHeight(){
+
+    public static double getToolbarHeight() {
         return toolbar.getHeight();
     }
 }

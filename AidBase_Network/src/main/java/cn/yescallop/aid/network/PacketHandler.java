@@ -21,7 +21,7 @@ public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
     }
 
     /**
-     * 判断该异常是否运行时异常，是则交由 runtimeExceptionCaught 处理，否则改变状态，存入变量。
+     * 判断该异常是否运行时异常，是则交由 runtimeExceptionCaught 处理，否则改变状态。
      */
     @Override
     public final void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
@@ -33,8 +33,6 @@ public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
         }
     }
 
-
-
     @Override
     public final void channelInactive(ChannelHandlerContext ctx) {
         connectionClosed(ctx, state, closeCause);
@@ -44,8 +42,9 @@ public abstract class PacketHandler extends ChannelInboundHandlerAdapter {
 
     /**
      * 在连接断开时触发
+     *
      * @param lastState 连接断开前 Channel 的状态
-     * @param cause 若 lastState 为 EXCEPTION_CAUGHT，为异常实例，其余为 null
+     * @param cause     若 lastState 为 EXCEPTION_CAUGHT，为异常实例，其余为 null
      */
     protected abstract void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause);
 

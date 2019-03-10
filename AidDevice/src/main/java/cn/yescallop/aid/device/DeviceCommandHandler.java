@@ -16,9 +16,9 @@ public class DeviceCommandHandler implements CommandHandler {
                 DeviceMain.stop();
                 break;
             case "write":
-                try{
+                try {
                     DeviceMain.bluetooth.write(args[0]);
-                }catch (IOException e){
+                } catch (IOException e) {
                     Logger.severe("Failed in sending the message");
                 }
                 break;

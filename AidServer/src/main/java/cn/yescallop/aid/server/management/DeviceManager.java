@@ -62,7 +62,7 @@ public class DeviceManager {
     private static void updateListRemoval(Device dev) {
         DeviceListPacket p = new DeviceListPacket();
         p.type = DeviceListPacket.TYPE_REMOVE;
-        p.list = new DeviceListPacket.DeviceInfo[] { dev.toDeviceInfo() };
+        p.list = new DeviceListPacket.DeviceInfo[]{dev.toDeviceInfo()};
         ClientManager.broadcastPacket(p);
     }
 

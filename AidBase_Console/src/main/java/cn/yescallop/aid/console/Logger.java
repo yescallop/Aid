@@ -43,6 +43,7 @@ public final class Logger {
 
 
     private static DateTimeFormatter FORMATTER_NORMAL; //HH:mm:ss
+
     static {
         FORMATTER_NORMAL = new DateTimeFormatterBuilder()
                 .appendValue(HOUR_OF_DAY, 2)

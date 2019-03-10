@@ -57,7 +57,7 @@ public class Factory {
             consoleInfo.setValue("");
         }
 
-        public static void setStage(Stage stage1){
+        public static void setStage(Stage stage1) {
             stage = stage1;
         }
 

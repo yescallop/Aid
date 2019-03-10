@@ -21,7 +21,7 @@ import java.util.Objects;
 /**
  * @author Magical Sheep
  */
-@ViewController(value = "/SideMenu.fxml",title = "AidClient")
+@ViewController(value = "/SideMenu.fxml", title = "AidClient")
 public class SideMenuController {
 
     @FXMLViewFlowContext
@@ -49,7 +49,7 @@ public class SideMenuController {
         Objects.requireNonNull(context, "context");
         FlowHandler contentFlowHandler = (FlowHandler) context.getRegisteredObject("ContentFlowHandler");
         sideList.propagateMouseEventsToParent();
-        sideList.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> new Thread(()-> Platform.runLater(()->{
+        sideList.getSelectionModel().selectedItemProperty().addListener((o, oldVal, newVal) -> new Thread(() -> Platform.runLater(() -> {
             if (newVal != null) {
                 try {
                     contentFlowHandler.handle(newVal.getId());
