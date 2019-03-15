@@ -18,7 +18,11 @@ import static org.bytedeco.javacpp.swscale.*;
  */
 public class DeviceFrameHandler implements FrameHandler {
 
-    private static final int PIX_FMT = AV_PIX_FMT_YUV420P;
+    public static final int CODEC_ID = AV_CODEC_ID_MPEG2VIDEO;
+    public static final int PIX_FMT = AV_PIX_FMT_YUV420P;
+    public static int width;
+    public static int height;
+    public static AVRational sampleAspectRatio;
 
     private long pts;
     private int frameCount = 0;
@@ -31,7 +35,7 @@ public class DeviceFrameHandler implements FrameHandler {
     private AVPacket packet;
 
     public DeviceFrameHandler() throws FFmpegException {
-        codec = avcodec_find_encoder(AV_CODEC_ID_MPEG2VIDEO);
+        codec = avcodec_find_encoder(CODEC_ID);
         if (codec == null)
             throw new FFmpegException("Codec not found");
 
@@ -87,14 +91,15 @@ public class DeviceFrameHandler implements FrameHandler {
 
     @Override
     public void init(AVCodecContext decoder) throws FFmpegException {
-        int width = decoder.width();
-        int height = decoder.height();
+        width = decoder.width();
+        height = decoder.height();
+        sampleAspectRatio = decoder.sample_aspect_ratio();
 
         encoder.bit_rate(1000 * 1024); //1000k
         encoder.pix_fmt(PIX_FMT);
         encoder.width(width);
         encoder.height(height);
-        encoder.sample_aspect_ratio(decoder.sample_aspect_ratio());
+        encoder.sample_aspect_ratio(sampleAspectRatio);
         AVRational fps = decoder.framerate();
         int intFps = Math.round(fps.num() / (float) fps.den());
         AVRational timeBase = av_make_q(1, intFps);
@@ -110,7 +115,7 @@ public class DeviceFrameHandler implements FrameHandler {
         swsFrame.height(height);
         av_image_fill_arrays(swsFrame.data(), swsFrame.linesize(), outBuffer, PIX_FMT, width, height, 1);
 
-        swsContext = sws_getContext(width, height, decoder.pix_fmt(), width, height, PIX_FMT, SWS_BICUBIC, null, null, (DoublePointer) null);
+        swsContext = sws_getContext(width, height, decoder.pix_fmt(), width, height, PIX_FMT, SWS_BILINEAR, null, null, (DoublePointer) null);
 
         packet = av_packet_alloc();
     }

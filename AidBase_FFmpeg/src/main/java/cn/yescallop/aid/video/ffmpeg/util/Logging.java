@@ -3,7 +3,8 @@ package cn.yescallop.aid.video.ffmpeg.util;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.Pointer;
 
-import static org.bytedeco.javacpp.avutil.*;
+import static org.bytedeco.javacpp.avutil.Callback_Pointer_int_BytePointer_Pointer;
+import static org.bytedeco.javacpp.avutil.av_log_set_callback;
 
 /**
  * @author Scallop Ye

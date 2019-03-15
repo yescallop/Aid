@@ -2,10 +2,12 @@ package cn.yescallop.aid.device.network;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.DeviceMain;
+import cn.yescallop.aid.device.video.DeviceFrameHandler;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
+import cn.yescallop.aid.network.protocol.VideoInfoPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -37,7 +39,17 @@ public class DeviceServerHandler extends ServerPacketHandler {
                     p.name = DeviceMain.NAME;
                     p.localAddresses = DeviceMain.localAddresses();
                     p.port = DeviceMain.PORT;
-                    channel.writeAndFlush(p);
+
+                    VideoInfoPacket vip = new VideoInfoPacket();
+                    vip.codecId = DeviceFrameHandler.CODEC_ID;
+                    vip.pixFmt = DeviceFrameHandler.PIX_FMT;
+                    vip.width = DeviceFrameHandler.width;
+                    vip.height = DeviceFrameHandler.height;
+                    vip.sarDen = DeviceFrameHandler.sampleAspectRatio.den();
+                    vip.sarNum = DeviceFrameHandler.sampleAspectRatio.num();
+
+                    channel.write(p);
+                    channel.writeAndFlush(vip);
                     break;
                 default:
                     Logger.warning("Unexpected packet before hello from " + channel.remoteAddress());
