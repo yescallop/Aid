@@ -84,6 +84,8 @@ public class FrameGrabber extends Thread {
 
                 handler.frameGrabbed(frame);
             }
+            av_packet_unref(packet);
+            av_frame_unref(frame);
         } else if (ret == AVERROR_EOF || ret == AVERROR_EIO()) {
             free();
             handler.eofReached();

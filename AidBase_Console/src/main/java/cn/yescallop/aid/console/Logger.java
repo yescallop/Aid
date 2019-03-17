@@ -22,10 +22,10 @@ public final class Logger {
         //no instance
     }
 
-    public static void logException(Exception e) {
-        Logger.severe("A RuntimeException occurred");
+    public static void logException(Throwable cause) {
+        Logger.severe("An exception occurred");
         CharArrayWriter caw = new CharArrayWriter();
-        e.printStackTrace(new PrintWriter(caw));
+        cause.printStackTrace(new PrintWriter(caw));
         lineReader.printAbove(Ansi.ansi().fgRed().a(caw.toCharArray()).fgDefault().toString());
     }
 

@@ -22,7 +22,7 @@ public class ServerMain {
             channel = Network.startServer(HOST, PORT, new ServerHandler());
             Logger.info("Server started on " + HOST + ":" + PORT);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.logException(e);
         }
     }
 

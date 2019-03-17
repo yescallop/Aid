@@ -2,7 +2,7 @@ package cn.yescallop.aid.device.video;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.network.ClientManager;
-import cn.yescallop.aid.network.protocol.VideoPacket;
+import cn.yescallop.aid.device.network.protocol.ReferenceCountedVideoPacket;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.FrameHandler;
 import org.bytedeco.javacpp.BytePointer;
@@ -58,25 +58,33 @@ public class DeviceFrameHandler implements FrameHandler {
             }
         } else lastTime = curTime;
 
+//        if (ClientManager.isEmpty()) {
+//            pts = 0;
+//            return;
+//        }
+
         sws_scale(swsContext, frame.data(), frame.linesize(), 0, frame.height(), swsFrame.data(), swsFrame.linesize());
 
         swsFrame.pts(pts++);
 
-        if (avcodec_send_frame(encoder, swsFrame) < 0)
+        if (avcodec_send_frame(encoder, swsFrame) < 0) {
             throw new FFmpegException("Error sending a frame for encoding");
+        }
         while (true) {
             int ret = avcodec_receive_packet(encoder, packet);
             if (ret == AVERROR_EAGAIN() || ret == AVERROR_EOF)
-                return;
+                break;
             else if (ret < 0) {
                 throw new FFmpegException("Error during encoding: " + ret);
             }
 
-            VideoPacket p = new VideoPacket();
+            ReferenceCountedVideoPacket p = new ReferenceCountedVideoPacket();
+            p.bufRef = av_buffer_ref(packet.buf());
             p.time = curTime;
-            p.data = packet.data().asByteBuffer();
+
             ClientManager.broadcastPacket(p);
         }
+        av_packet_unref(packet);
     }
 
     @Override
@@ -86,7 +94,7 @@ public class DeviceFrameHandler implements FrameHandler {
 
     @Override
     public void exceptionCaught(Throwable cause) {
-        cause.printStackTrace();
+        Logger.logException(cause);
     }
 
     @Override

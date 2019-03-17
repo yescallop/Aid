@@ -17,6 +17,14 @@ public class ClientManager {
         //no instance
     }
 
+    public static int size() {
+        return channelGroup.size();
+    }
+
+    public static boolean isEmpty() {
+        return channelGroup.isEmpty();
+    }
+
     public static boolean isRegistered(Channel channel) {
         return channelGroup.contains(channel);
     }

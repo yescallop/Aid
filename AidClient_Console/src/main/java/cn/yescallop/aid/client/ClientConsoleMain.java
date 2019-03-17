@@ -32,7 +32,7 @@ public class ClientConsoleMain {
             Logger.info("Connected to " + channel.remoteAddress());
         } catch (Exception e) {
             Logger.info("Error while connecting to server");
-            e.printStackTrace();
+            Logger.logException(e);
             System.exit(1);
         }
     }

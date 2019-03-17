@@ -94,7 +94,7 @@ public class DeviceMain {
         try {
             devices = DshowDevices.listDevices();
         } catch (DshowException e) {
-            e.printStackTrace();
+            Logger.logException(e);
             return;
         }
 

@@ -43,7 +43,7 @@ public class CommandReader extends Thread {
                 handler.userInterrupt();
                 return;
             } catch (EndOfFileException e) {
-                e.printStackTrace();
+                Logger.logException(e);
                 return;
             }
             if (line.isEmpty())
