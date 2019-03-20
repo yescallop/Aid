@@ -22,7 +22,9 @@ public class PacketDecoder extends ReplayingDecoder<Void> {
             return;
         }
         int id = in.readByte() & 0xff;
-        Packet packet = Packet.from(id, in.readBytes(in.readInt()));
+        ByteBuf data = in.readBytes(in.readInt());
+        Packet packet = Packet.from(id, data);
+        data.release();
         if (packet != null)
             out.add(packet);
     }

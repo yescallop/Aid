@@ -17,6 +17,7 @@ public class DeviceHelloPacket extends Packet {
     public String name;
     public Map<Inet4Address, byte[]> localAddresses;
     public int port;
+    public int codecId;
 
     @Override
     public int id() {
@@ -29,6 +30,7 @@ public class DeviceHelloPacket extends Packet {
         name = NetUtil.readUTF8(in);
         localAddresses = NetUtil.readLocalAddresses(in);
         port = in.readShort() & 0xffff;
+        codecId = in.readInt();
     }
 
     @Override
@@ -37,6 +39,7 @@ public class DeviceHelloPacket extends Packet {
         NetUtil.writeUTF8(out, name);
         NetUtil.writeLocalAddresses(out, localAddresses);
         out.writeShort(port);
+        out.writeInt(codecId);
     }
 
     @Override

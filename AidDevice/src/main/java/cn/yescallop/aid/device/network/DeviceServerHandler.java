@@ -7,7 +7,7 @@ import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
-import cn.yescallop.aid.network.protocol.VideoInfoPacket;
+import cn.yescallop.aid.network.protocol.RequestPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,23 +33,20 @@ public class DeviceServerHandler extends ServerPacketHandler {
         if (!ClientManager.isRegistered(channel)) {
             switch (packet.id()) {
                 case Packet.ID_CLIENT_HELLO:
-                    ClientManager.registerClient(channel);
                     DeviceHelloPacket p = new DeviceHelloPacket();
                     p.id = DeviceMain.ID;
                     p.name = DeviceMain.NAME;
                     p.localAddresses = DeviceMain.localAddresses();
                     p.port = DeviceMain.PORT;
+                    p.codecId = DeviceFrameHandler.CODEC_ID;
 
-                    VideoInfoPacket vip = new VideoInfoPacket();
-                    vip.codecId = DeviceFrameHandler.CODEC_ID;
-                    vip.pixFmt = DeviceFrameHandler.PIX_FMT;
-                    vip.width = DeviceFrameHandler.width;
-                    vip.height = DeviceFrameHandler.height;
-                    vip.sarDen = DeviceFrameHandler.sampleAspectRatio.den();
-                    vip.sarNum = DeviceFrameHandler.sampleAspectRatio.num();
-
-                    channel.write(p);
-                    channel.writeAndFlush(vip);
+                    channel.writeAndFlush(p);
+                    ClientManager.registerClient(channel);
+                    break;
+                case Packet.ID_REQUEST:
+                    if (((RequestPacket) packet).type == RequestPacket.TYPE_VIDEO) {
+                        ClientManager.registerClient(channel);
+                    }
                     break;
                 default:
                     Logger.warning("Unexpected packet before hello from " + channel.remoteAddress());

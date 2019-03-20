@@ -49,9 +49,6 @@ public abstract class Packet {
             case ID_REQUEST:
                 packet = new RequestPacket();
                 break;
-            case ID_VIDEO_INFO:
-                packet = new VideoInfoPacket();
-                break;
             default:
                 return null;
         }

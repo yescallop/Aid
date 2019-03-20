@@ -1,9 +1,10 @@
 package cn.yescallop.aid.device.network.protocol;
 
-import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.protocol.VideoPacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCounted;
+
+import java.nio.ByteBuffer;
 
 import static org.bytedeco.javacpp.avutil.*;
 
@@ -18,11 +19,13 @@ public class ReferenceCountedVideoPacket extends VideoPacket implements Referenc
 
     @Override
     public void writeTo(ByteBuf out) {
-        data = bufRef.data()
+        out.writeLong(time);
+        out.writeInt(size);
+        ByteBuffer data = bufRef.data()
                 .position(0)
                 .limit(bufRef.size())
                 .asByteBuffer();
-        super.writeTo(out);
+        out.writeBytes(data);
     }
 
     @Override
@@ -63,7 +66,6 @@ public class ReferenceCountedVideoPacket extends VideoPacket implements Referenc
         if (refCnt <= 0) {
             av_buffer_unref(bufRef);
             bufRef = null;
-            data = null;
             return true;
         }
         return false;

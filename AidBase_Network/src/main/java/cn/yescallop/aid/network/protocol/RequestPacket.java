@@ -8,11 +8,9 @@ import io.netty.buffer.ByteBuf;
 public class RequestPacket extends Packet {
 
     public static final int TYPE_DEVICE_LIST = 0;
-    public static final int TYPE_START_FORWARDING = 1;
-    public static final int TYPE_STOP_FORWARDING = 2;
+    public static final int TYPE_VIDEO = 1;
 
     public int type;
-    public int deviceId = -1;
 
     @Override
     public int id() {
@@ -22,12 +20,10 @@ public class RequestPacket extends Packet {
     @Override
     public void readFrom(ByteBuf in) {
         type = in.readByte() & 0xff;
-        deviceId = in.readInt();
     }
 
     @Override
     public void writeTo(ByteBuf out) {
         out.writeByte(type);
-        out.writeInt(deviceId);
     }
 }

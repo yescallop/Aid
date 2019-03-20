@@ -28,7 +28,7 @@ public class DeviceFrameHandler implements FrameHandler {
     private int frameCount = 0;
     private long lastTime = -1;
     private AVCodec codec;
-    private AVCodecContext encoder;
+    public static AVCodecContext encoder;
     private SwsContext swsContext;
 
     private AVFrame swsFrame;
@@ -58,10 +58,9 @@ public class DeviceFrameHandler implements FrameHandler {
             }
         } else lastTime = curTime;
 
-//        if (ClientManager.isEmpty()) {
-//            pts = 0;
-//            return;
-//        }
+        if (ClientManager.isEmpty()) {
+            return;
+        }
 
         sws_scale(swsContext, frame.data(), frame.linesize(), 0, frame.height(), swsFrame.data(), swsFrame.linesize());
 
@@ -80,6 +79,7 @@ public class DeviceFrameHandler implements FrameHandler {
 
             ReferenceCountedVideoPacket p = new ReferenceCountedVideoPacket();
             p.bufRef = av_buffer_ref(packet.buf());
+            p.size = packet.size();
             p.time = curTime;
 
             ClientManager.broadcastPacket(p);

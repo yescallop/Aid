@@ -1,8 +1,7 @@
 package cn.yescallop.aid.network.protocol;
 
 import io.netty.buffer.ByteBuf;
-
-import java.nio.ByteBuffer;
+import io.netty.buffer.Unpooled;
 
 /**
  * @author Scallop Ye
@@ -10,7 +9,8 @@ import java.nio.ByteBuffer;
 public class VideoPacket extends Packet {
 
     public long time;
-    public ByteBuffer data;
+    public int size;
+    public ByteBuf buf;
 
     @Override
     public int id() {
@@ -20,13 +20,16 @@ public class VideoPacket extends Packet {
     @Override
     public void readFrom(ByteBuf in) {
         time = in.readLong();
-        data = ByteBuffer.allocateDirect(in.readableBytes());
-        in.readBytes(data);
+        size = in.readInt();
+        int i = in.readableBytes();
+        buf = Unpooled.directBuffer(i, i);
+        in.readBytes(buf);
     }
 
     @Override
     public void writeTo(ByteBuf out) {
         out.writeLong(time);
-        out.writeBytes(data);
+        out.writeInt(size);
+        out.writeBytes(buf);
     }
 }

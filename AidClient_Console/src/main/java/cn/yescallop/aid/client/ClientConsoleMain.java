@@ -6,6 +6,7 @@ import cn.yescallop.aid.console.CommandReader;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
+import cn.yescallop.aid.video.ffmpeg.util.Logging;
 import io.netty.channel.Channel;
 
 import java.net.Inet4Address;
@@ -25,6 +26,7 @@ public class ClientConsoleMain {
     private static boolean stopping = false;
 
     public static void main(String[] args) {
+        Logging.init(ClientLogCallback.INSTANCE);
         try {
 //            Channel serverChannel = Network.startServer("0.0.0.0", 9001, new DeviceServerHandler());
             new CommandReader(new ClientCommandHandler(), "> ").start();

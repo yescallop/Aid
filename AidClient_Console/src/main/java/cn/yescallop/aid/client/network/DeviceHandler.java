@@ -4,21 +4,18 @@ import cn.yescallop.aid.client.ClientConsoleMain;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
-import cn.yescallop.aid.network.protocol.ClientHelloPacket;
-import cn.yescallop.aid.network.protocol.Packet;
-import cn.yescallop.aid.network.protocol.VideoInfoPacket;
-import cn.yescallop.aid.network.protocol.VideoPacket;
+import cn.yescallop.aid.network.protocol.*;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import io.netty.channel.ChannelHandlerContext;
-import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
+
+import java.nio.ByteBuffer;
 
 import static org.bytedeco.javacpp.avcodec.*;
 import static org.bytedeco.javacpp.avutil.*;
 
 public class DeviceHandler extends ClientPacketHandler {
 
-    private long pts;
     private int frameCount = 0;
     private long lastTime = -1;
 
@@ -50,16 +47,17 @@ public class DeviceHandler extends ClientPacketHandler {
     @Override
     protected void packetReceived(ChannelHandlerContext ctx, Packet packet) {
         switch (packet.id()) {
-            case Packet.ID_VIDEO:
+            case Packet.ID_DEVICE_HELLO:
+                DeviceHelloPacket dhp = (DeviceHelloPacket) packet;
                 try {
-                    processVideoPacket((VideoPacket) packet);
+                    initDecoder(dhp.codecId);
                 } catch (FFmpegException e) {
                     Logger.logException(e);
                 }
                 break;
-            case Packet.ID_VIDEO_INFO:
+            case Packet.ID_VIDEO:
                 try {
-                    initDecoder((VideoInfoPacket) packet);
+                    processVideoPacket((VideoPacket) packet);
                 } catch (FFmpegException e) {
                     Logger.logException(e);
                 }
@@ -74,19 +72,14 @@ public class DeviceHandler extends ClientPacketHandler {
         Logger.logException(re);
     }
 
-    private void initDecoder(VideoInfoPacket p) throws FFmpegException {
-        AVCodec codec = avcodec_find_decoder(p.codecId);
+    private void initDecoder(int codecId) throws FFmpegException {
+        AVCodec codec = avcodec_find_decoder(codecId);
         if (codec == null)
             throw new FFmpegException("Codec not found");
 
         decoder = avcodec_alloc_context3(codec);
         if (decoder == null)
             throw new FFmpegException("Could not allocate decoder codec context");
-
-        decoder.pix_fmt(p.pixFmt);
-        decoder.width(p.width);
-        decoder.height(p.height);
-        decoder.sample_aspect_ratio(av_make_q(p.sarNum, p.sarDen));
 
         if (avcodec_open2(decoder, codec, (PointerPointer) null) < 0)
             throw new FFmpegException("Could not open decoder codec");
@@ -97,6 +90,32 @@ public class DeviceHandler extends ClientPacketHandler {
     }
 
     private void processVideoPacket(VideoPacket p) throws FFmpegException {
+        ByteBuffer data = p.buf.nioBuffer();
+
+        av_packet_from_data(packet, data, p.size);
+
+        int ret;
+        if ((ret = avcodec_send_packet(decoder, packet)) < 0) {
+            if (ret == -1094995529) {
+                Logger.info("Waiting for stream info");
+            } else throw new FFmpegException("Error sending a packet for decoding: " + ret);
+        }
+        p.buf.release();
+
+        while (true) {
+            ret = avcodec_receive_frame(decoder, frame);
+            if (ret == AVERROR_EAGAIN() || ret == AVERROR_EOF)
+                break;
+            else if (ret < 0) {
+                throw new FFmpegException("Error during decoding: " + ret);
+            }
+
+            countFrame();
+            av_frame_unref(frame);
+        }
+    }
+
+    private void countFrame() {
         frameCount++;
         long curTime = System.currentTimeMillis();
         if (lastTime != -1) {
@@ -108,27 +127,5 @@ public class DeviceHandler extends ClientPacketHandler {
                 lastTime = curTime;
             }
         } else lastTime = curTime;
-
-        av_packet_from_data(packet, p.data, p.data.limit());
-
-//        packet.pts(pts++);
-//        System.out.println(packet.pts());
-
-        int ret;
-        if ((ret = avcodec_send_packet(decoder, packet)) < 0)
-            throw new FFmpegException("Error sending a packet for decoding: " + ret);
-        av_packet_unref(packet);
-
-        while (true) {
-            ret = avcodec_receive_frame(decoder, frame);
-            if (ret == AVERROR_EAGAIN() || ret == AVERROR_EOF)
-                break;
-            else if (ret < 0) {
-                throw new FFmpegException("Error during decoding: " + ret);
-            }
-
-            Logger.info("Frame decoded");
-            av_frame_unref(frame);
-        }
     }
 }
