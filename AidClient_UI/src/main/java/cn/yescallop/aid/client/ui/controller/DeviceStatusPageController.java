@@ -8,6 +8,8 @@ import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import io.datafx.controller.ViewController;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Scene;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -15,8 +17,11 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
+import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Function;
 
 /**
@@ -63,7 +68,15 @@ public class DeviceStatusPageController implements UIHandler {
          */
         onlineDeviceList.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                showDialog("Test", onlineDeviceList.getSelectionModel().getSelectedItem().toString());
+                try {
+                    Stage stage =new Stage();
+                    Scene scene = new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("Monitor.fxml"))));
+                    stage.setScene(scene);
+                    stage.show();
+                } catch (IOException e) {
+                    showDialog("Exception",e.getMessage());
+                }
+//                showDialog("Test", onlineDeviceList.getSelectionModel().getSelectedItem().toString());
             }
         });
 

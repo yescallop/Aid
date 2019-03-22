@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.image.ImageView?>
+<StackPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:id="root"
+           fx:controller="cn.yescallop.aid.client.ui.controller.MonitorController"
+           prefHeight="600.0" prefWidth="1000.0">
+    <ImageView fx:id="screen">
+
+    </ImageView>
+
+</StackPane>
