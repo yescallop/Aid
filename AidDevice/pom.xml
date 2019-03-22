@@ -31,6 +31,26 @@
             <scope>compile</scope>
         </dependency>
         <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>ffmpeg</artifactId>
+            <version>4.1-1.4.4</version>
+            <scope>compile</scope>
+            <classifier>windows-x86_64</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.0.1-1.4.4</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.bytedeco.javacpp-presets</groupId>
+            <artifactId>opencv</artifactId>
+            <version>4.0.1-1.4.4</version>
+            <scope>compile</scope>
+            <classifier>windows-x86_64</classifier>
+        </dependency>
+        <dependency>
             <groupId>com.github.purejavacomm</groupId>
             <artifactId>purejavacomm</artifactId>
             <version>1.0.1.RELEASE</version>

@@ -18,13 +18,6 @@
             <version>4.1-1.4.4</version>
             <scope>compile</scope>
         </dependency>
-        <dependency>
-            <groupId>org.bytedeco.javacpp-presets</groupId>
-            <artifactId>ffmpeg</artifactId>
-            <version>4.1-1.4.4</version>
-            <scope>compile</scope>
-            <classifier>windows-x86_64</classifier>
-        </dependency>
     </dependencies>
 
 </project>

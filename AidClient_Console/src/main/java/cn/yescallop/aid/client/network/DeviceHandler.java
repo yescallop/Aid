@@ -111,6 +111,7 @@ public class DeviceHandler extends ClientPacketHandler {
             }
 
             countFrame();
+            processFrame();
             av_frame_unref(frame);
         }
     }
@@ -127,5 +128,9 @@ public class DeviceHandler extends ClientPacketHandler {
                 lastTime = curTime;
             }
         } else lastTime = curTime;
+    }
+
+    private void processFrame() {
+
     }
 }
