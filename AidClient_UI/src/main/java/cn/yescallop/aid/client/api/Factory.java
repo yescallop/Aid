@@ -198,17 +198,6 @@ public class Factory {
             stopping = false;
         }
 
-        /**
-         * 请求在线设备名单
-         */
-        public static void list() {
-            if (isConnected()) {
-                RequestPacket listRequest = new RequestPacket();
-                listRequest.type = RequestPacket.TYPE_DEVICE_LIST;
-                channel.writeAndFlush(listRequest);
-            }
-        }
-
         public static boolean isStopping() {
             return stopping;
         }

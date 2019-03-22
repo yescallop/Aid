@@ -58,7 +58,6 @@ public class DeviceStatusPageController implements UIHandler {
         setupCellValueFactory(idColumn, d -> d.idProperty().asString());
         setupCellValueFactory(registerTimeColumn, d -> d.registerTimeProperty().asString());
 
-        new Thread(Factory.Network::list).start();
         onlineDeviceList.setRoot(new RecursiveTreeItem<>(Factory.UIData.getOnlineDeviceList(), RecursiveTreeObject::getChildren));
 
         onlineDeviceList.setShowRoot(false);

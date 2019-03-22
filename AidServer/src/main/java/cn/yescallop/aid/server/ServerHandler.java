@@ -69,14 +69,7 @@ public class ServerHandler extends ServerPacketHandler {
             }
         } else if (type == 1) { //Client
             switch (packet.id()) {
-                case Packet.ID_REQUEST:
-                    RequestPacket requestPacket = (RequestPacket) packet;
-                    if (requestPacket.type == RequestPacket.TYPE_DEVICE_LIST) {
-                        DeviceListPacket deviceListPacket = Util.createFullDeviceListPacket();
-                        channel.writeAndFlush(deviceListPacket);
-                    } else {
-                        //TODO
-                    }
+                //TODO
             }
         }
     }
