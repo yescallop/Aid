@@ -16,8 +16,7 @@ import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowDevices;
 import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowException;
 import cn.yescallop.aid.video.ffmpeg.util.Logging;
 import io.netty.channel.Channel;
-import org.bytedeco.javacpp.avdevice;
-import org.bytedeco.javacpp.avformat;
+import org.bytedeco.javacpp.*;
 import purejavacomm.NoSuchPortException;
 import purejavacomm.PortInUseException;
 
@@ -87,6 +86,9 @@ public class DeviceMain {
     }
 
     private static void initVideo() throws FFmpegException {
+        Loader.load(opencv_core.class);
+        Loader.load(opencv_imgproc.class);
+
         Logging.init(DeviceLogCallback.INSTANCE);
         avdevice.avdevice_register_all();
 

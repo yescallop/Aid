@@ -3,11 +3,11 @@ package cn.yescallop.aid.device.video;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.network.ClientManager;
 import cn.yescallop.aid.device.network.protocol.ReferenceCountedVideoPacket;
+import cn.yescallop.aid.device.video.opencv.DetectionHelper;
+import cn.yescallop.aid.device.video.opencv.MatHelper;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.FrameHandler;
-import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.DoublePointer;
-import org.bytedeco.javacpp.PointerPointer;
+import org.bytedeco.javacpp.*;
 
 import static org.bytedeco.javacpp.avcodec.*;
 import static org.bytedeco.javacpp.avutil.*;
@@ -58,8 +58,17 @@ public class DeviceFrameHandler implements FrameHandler {
             }
         } else lastTime = curTime;
 
+        if (!broadcastVideo(frame, curTime)) {
+            MatHelper.convert(frame);
+            if (DetectionHelper.detect()) {
+                Logger.warning("MOVEMENT DETECTED");
+            }
+        }
+    }
+
+    private boolean broadcastVideo(AVFrame frame, long curTime) throws FFmpegException {
         if (ClientManager.isEmpty()) {
-            return;
+            return false;
         }
 
         sws_scale(swsContext, frame.data(), frame.linesize(), 0, frame.height(), swsFrame.data(), swsFrame.linesize());
@@ -85,6 +94,8 @@ public class DeviceFrameHandler implements FrameHandler {
             ClientManager.broadcastPacket(p);
         }
         av_packet_unref(packet);
+
+        return true;
     }
 
     @Override
@@ -124,6 +135,9 @@ public class DeviceFrameHandler implements FrameHandler {
         av_image_fill_arrays(swsFrame.data(), swsFrame.linesize(), outBuffer, PIX_FMT, width, height, 1);
 
         swsContext = sws_getContext(width, height, decoder.pix_fmt(), width, height, PIX_FMT, SWS_BILINEAR, null, null, (DoublePointer) null);
+
+        MatHelper.init(decoder);
+        DetectionHelper.init(height, width);
 
         packet = av_packet_alloc();
     }

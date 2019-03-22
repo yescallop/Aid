@@ -6,7 +6,9 @@ import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.*;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
+import cn.yescallop.aid.video.ffmpeg.util.FXImageHelper;
 import io.netty.channel.ChannelHandlerContext;
+import javafx.scene.image.Image;
 import org.bytedeco.javacpp.PointerPointer;
 
 import java.nio.ByteBuffer;
@@ -22,6 +24,8 @@ public class DeviceHandler extends ClientPacketHandler {
     private AVCodecContext decoder;
     private AVPacket packet;
     private AVFrame frame;
+
+    private FXImageHelper fxImageHelper;
 
     public DeviceHandler() {
 
@@ -131,6 +135,10 @@ public class DeviceHandler extends ClientPacketHandler {
     }
 
     private void processFrame() {
+        if (fxImageHelper == null) {
+            fxImageHelper = new FXImageHelper(frame);
+        }
 
+        Image image = fxImageHelper.convertFromAVFrame(frame);
     }
 }
