@@ -15,20 +15,21 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
 
     private SimpleIntegerProperty id;
     private StringProperty name;
-    private SimpleMapProperty<Inet4Address, byte[]> localAddresses;
-    private SimpleIntegerProperty port;
     private SimpleLongProperty registerTime;
 
-    private DeviceInfo(int id, String name, Map<Inet4Address, byte[]> localAddresses, int port, long registerTime) {
+    private Map<Inet4Address, byte[]> localAddresses;
+    private int port;
+
+    private DeviceInfo(int id, String name, long registerTime, Map<Inet4Address, byte[]> localAddresses, int port) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
-        this.localAddresses = new SimpleMapProperty<>(FXCollections.observableMap(localAddresses));
-        this.port = new SimpleIntegerProperty(port);
         this.registerTime = new SimpleLongProperty(registerTime);
+        this.localAddresses = localAddresses;
+        this.port = port;
     }
 
     public DeviceInfo(DeviceListPacket.DeviceInfo deviceInfo) {
-        this(deviceInfo.id, deviceInfo.name, deviceInfo.localAddresses, deviceInfo.port, deviceInfo.registerTime);
+        this(deviceInfo.id, deviceInfo.name, deviceInfo.registerTime, deviceInfo.localAddresses, deviceInfo.port);
     }
 
     public SimpleIntegerProperty idProperty() {
@@ -39,15 +40,27 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
         return name;
     }
 
-    public SimpleMapProperty<Inet4Address, byte[]> localAddressesProperty() {
+    public SimpleLongProperty registerTimeProperty() {
+        return registerTime;
+    }
+
+    public Map<Inet4Address, byte[]> getLocalAddresses() {
         return localAddresses;
     }
 
-    public SimpleIntegerProperty portProperty() {
+    public int getPort() {
         return port;
     }
 
-    public SimpleLongProperty registerTimeProperty() {
-        return registerTime;
+    public int getId() {
+        return id.get();
+    }
+
+    public String getName() {
+        return name.get();
+    }
+
+    public long getRegisterTime() {
+        return registerTime.get();
     }
 }

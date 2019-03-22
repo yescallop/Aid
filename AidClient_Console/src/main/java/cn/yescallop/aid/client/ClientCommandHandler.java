@@ -36,7 +36,7 @@ public class ClientCommandHandler implements CommandHandler {
 
                 Map<Integer, DeviceListPacket.DeviceInfo> deviceList = ClientConsoleMain.deviceList();
                 if (deviceList.isEmpty()) {
-                    Logger.warning("No device available, fetch a list first");
+                    Logger.warning("No device is available");
                     break;
                 }
 

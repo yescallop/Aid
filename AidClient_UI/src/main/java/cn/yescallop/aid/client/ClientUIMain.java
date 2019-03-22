@@ -26,7 +26,6 @@ public class ClientUIMain extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        System.exit(0);
     }
 
     @Override
@@ -55,7 +54,14 @@ public class ClientUIMain extends Application {
             UIHandler page = Factory.UI.getCurrentPage();
             if (page != null) page.resize();
         });
-
+        primaryStage.setOnCloseRequest(event -> new Thread(() -> {
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                Factory.UI.showDialog("Exception", e.getMessage());
+            }
+            System.exit(0);
+        }).start());
         primaryStage.show();
 
     }

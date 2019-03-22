@@ -9,6 +9,7 @@ import io.datafx.controller.ViewController;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.image.ImageView;
@@ -67,14 +68,7 @@ public class DeviceStatusPageController implements UIHandler {
          */
         onlineDeviceList.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                try {
-                    Stage stage =new Stage();
-                    Scene scene = new Scene(FXMLLoader.load(Objects.requireNonNull(getClass().getClassLoader().getResource("Monitor.fxml"))));
-                    stage.setScene(scene);
-                    stage.show();
-                } catch (IOException e) {
-                    showDialog("Exception",e.getMessage());
-                }
+                new Thread(() -> Factory.Network.connect(onlineDeviceList.getSelectionModel().getSelectedItem().getValue())).start();
 //                showDialog("Test", onlineDeviceList.getSelectionModel().getSelectedItem().toString());
             }
         });

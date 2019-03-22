@@ -1,8 +1,10 @@
 package cn.yescallop.aid.client.api;
 
 import cn.yescallop.aid.client.network.ClientHandler;
+import cn.yescallop.aid.client.network.DeviceHandler;
 import cn.yescallop.aid.client.network.DeviceInfo;
 import cn.yescallop.aid.client.ui.frame.Frame;
+import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import cn.yescallop.aid.network.protocol.RequestPacket;
 import io.netty.channel.Channel;
@@ -13,6 +15,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
+import java.net.Inet4Address;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -165,6 +168,7 @@ public class Factory {
         private static boolean connectStatus = false;
         private static boolean stopping = false;
         private static Channel channel;
+        private static Channel deviceChannel;
 
         /**
          * 连接服务器
@@ -196,6 +200,24 @@ public class Factory {
                 }
             }
             stopping = false;
+        }
+
+        /**
+         * 连接设备端
+         * @param info 设备端信息
+         */
+        public static void connect(DeviceInfo info){
+            for (Inet4Address addr : info.getLocalAddresses().keySet()) {
+                Factory.UI.println("Trying " + addr.getHostAddress() + ":" + info.getPort());
+                try {
+                    deviceChannel = cn.yescallop.aid.network.Network.startClient(addr, info.getPort(), new DeviceHandler());
+                } catch (Exception e) {
+                    Factory.UI.println("Unable to connect to " + addr.getHostAddress() + ":" + info.getPort());
+                    continue;
+                }
+                return;
+            }
+            Factory.UI.println("Device " + info.getId() + " seems unreachable");
         }
 
         public static boolean isStopping() {

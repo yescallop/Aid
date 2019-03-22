@@ -1,20 +1,26 @@
 package cn.yescallop.aid.client.network;
 
-import cn.yescallop.aid.client.ClientConsoleMain;
-import cn.yescallop.aid.console.Logger;
+import cn.yescallop.aid.client.api.Factory;
+import cn.yescallop.aid.client.ui.controller.MonitorController;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
-import cn.yescallop.aid.network.protocol.*;
+import cn.yescallop.aid.network.protocol.ClientHelloPacket;
+import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.Packet;
+import cn.yescallop.aid.network.protocol.VideoPacket;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.util.FXImageHelper;
 import io.netty.channel.ChannelHandlerContext;
+import javafx.application.Platform;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.StackPane;
 import javafx.stage.Stage;
 import org.bytedeco.javacpp.PointerPointer;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 
 import static org.bytedeco.javacpp.avcodec.*;
@@ -31,6 +37,9 @@ public class DeviceHandler extends ClientPacketHandler {
 
     private FXImageHelper fxImageHelper;
 
+    private MonitorController controller;
+    private ImageView screen;
+
     public DeviceHandler() {
 
     }
@@ -43,11 +52,11 @@ public class DeviceHandler extends ClientPacketHandler {
 
     @Override
     protected void connectionClosed(ChannelHandlerContext ctx, ChannelState lastState, Throwable cause) {
-        if (!ClientConsoleMain.isStopping()) {
+        if (!Factory.Network.isStopping()) {
             if (lastState == ChannelState.ACTIVE) {
-                Logger.info("Connection to device closed");
+                Factory.UI.println("Connection to device closed");
             } else {
-                Logger.warning("Device unexpectedly closed the connection");
+                Factory.UI.println("Device unexpectedly closed the connection");
             }
         }
     }
@@ -60,24 +69,24 @@ public class DeviceHandler extends ClientPacketHandler {
                 try {
                     initDecoder(dhp.codecId);
                 } catch (FFmpegException e) {
-                    Logger.logException(e);
+                    Factory.UI.showDialog("Exception", e.getMessage());
                 }
                 break;
             case Packet.ID_VIDEO:
                 try {
                     processVideoPacket((VideoPacket) packet);
                 } catch (FFmpegException e) {
-                    Logger.logException(e);
+                    Factory.UI.showDialog("Exception", e.getMessage());
                 }
                 break;
             default:
-                Logger.info("From " + ctx.channel().remoteAddress() + ": " + packet);
+                Factory.UI.println("From " + ctx.channel().remoteAddress() + ": " + packet);
         }
     }
 
     @Override
     protected void runtimeExceptionCaught(ChannelHandlerContext ctx, RuntimeException re) {
-        Logger.logException(re);
+        Factory.UI.showDialog("Exception", re.getMessage());
     }
 
     private void initDecoder(int codecId) throws FFmpegException {
@@ -94,7 +103,7 @@ public class DeviceHandler extends ClientPacketHandler {
 
         packet = av_packet_alloc();
         frame = av_frame_alloc();
-        Logger.info("Decoder codec initialized");
+        Factory.UI.println("Decoder codec initialized");
     }
 
     private void processVideoPacket(VideoPacket p) throws FFmpegException {
@@ -105,7 +114,7 @@ public class DeviceHandler extends ClientPacketHandler {
         int ret;
         if ((ret = avcodec_send_packet(decoder, packet)) < 0) {
             if (ret == -1094995529) {
-                Logger.info("Waiting for stream info");
+                Factory.UI.println("Waiting for stream info");
             } else throw new FFmpegException("Error sending a packet for decoding: " + ret);
         }
         p.buf.release();
@@ -131,7 +140,7 @@ public class DeviceHandler extends ClientPacketHandler {
             long dur = curTime - lastTime;
             if (dur >= 1000) {
                 float fps = frameCount / (dur / 1000f);
-                Logger.info("FPS: " + String.format("%.1f", fps));
+                Factory.UI.println("FPS: " + String.format("%.1f", fps));
                 frameCount = 0;
                 lastTime = curTime;
             }
@@ -141,17 +150,29 @@ public class DeviceHandler extends ClientPacketHandler {
     private void processFrame() {
         if (fxImageHelper == null) {
             fxImageHelper = new FXImageHelper(frame);
-            Stage stage = new Stage();
-            ImageView imageView = new ImageView();
-            Image image = fxImageHelper.convertFromAVFrame(frame);
-            imageView.setImage(image);
-            Scene scene = new Scene(new StackPane(imageView));
-            stage.setScene(scene);
-            stage.sizeToScene();
-            stage.show();
+            Platform.runLater(new Runnable() {
+                @Override
+                public void run() {
+                    try {
+                        Stage stage = new Stage();
+                        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Monitor.fxml"));
+                        Parent root = fxmlLoader.load();
+                        controller = fxmlLoader.getController();
+                        screen = controller.getScreen();
+                        Scene scene = new Scene(root);
+                        scene.getRoot().requestFocus();
+                        stage.setScene(scene);
+                        stage.setOnCloseRequest(event -> {
+                            // 关闭窗口后操作
+                        });
+                        stage.show();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
         }
-
-
-
+        Image image = fxImageHelper.convertFromAVFrame(frame);
+        Platform.runLater(() -> screen.setImage(image));
     }
 }
