@@ -15,11 +15,11 @@
                     <columns>
                         <JFXTreeTableColumn fx:id="nameColumn"
                                             minWidth="100" text="设备名" prefWidth="100"
-                                            resizable="false"></JFXTreeTableColumn>
+                                            resizable="false"/>
                         <JFXTreeTableColumn fx:id="idColumn" text="设备号"
-                                            minWidth="100" resizable="false"></JFXTreeTableColumn>
+                                            minWidth="100" resizable="false"/>
                         <JFXTreeTableColumn fx:id="registerTimeColumn" text="注册时间"
-                                            minWidth="100" resizable="false"></JFXTreeTableColumn>
+                                            minWidth="100" resizable="false"/>
                     </columns>
                 </JFXTreeTableView>
             </left>

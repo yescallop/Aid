@@ -1,6 +1,6 @@
 <configuration>
 
-    <timestamp key="TIMESTAMP" datePattern="HHmmss"></timestamp>
+    <timestamp key="TIMESTAMP" datePattern="HHmmss"/>
 
     <appender name="FILE" class="ch.qos.logback.core.FileAppender">
         <file>${user.home}/vlcj-${TIMESTAMP}.log</file>

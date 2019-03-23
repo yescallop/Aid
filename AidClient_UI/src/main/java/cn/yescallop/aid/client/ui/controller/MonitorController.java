@@ -13,9 +13,9 @@ public class MonitorController {
     private ImageView screen;
 
     @FXML
-    public void initialize(){
+    public void initialize() {
         root.setOnKeyPressed(event -> {
-            switch (event.getCode()){
+            switch (event.getCode()) {
                 case W:
                     System.out.println("W");
                     break;
@@ -36,6 +36,7 @@ public class MonitorController {
             }
         });
     }
+
     public ImageView getScreen() {
         return screen;
     }

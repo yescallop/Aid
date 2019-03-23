@@ -208,9 +208,10 @@ public class Factory {
 
         /**
          * 连接设备端
+         *
          * @param deviceId 设备端ID
          */
-        public static boolean connect(int deviceId){
+        public static boolean connect(int deviceId) {
             if (deviceChannels.containsKey(deviceId))
                 return false;
             DeviceListPacket.DeviceInfo info = deviceListMap.get(deviceId);
