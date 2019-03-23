@@ -32,6 +32,9 @@ import static org.bytedeco.javacpp.avformat.avformat_alloc_context;
  */
 public class DeviceMain {
 
+    public static final String SERVER_HOST = "192.168.0.104";
+    public static final int SERVER_PORT = 9000;
+
     public static final String HOST = "0.0.0.0"; //TODO: Move these arguments to a configuration file
     public static final int PORT = 9001;
 
@@ -126,7 +129,7 @@ public class DeviceMain {
         while (true) {
             Logger.info("Attempting reconnecting to server...");
             try {
-                clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceClientHandler());
+                clientChannel = Network.startClient(SERVER_HOST, SERVER_PORT, new DeviceClientHandler());
             } catch (Exception e) {
                 try {
                     Thread.sleep(RECONNECTING_DELAY_MILLIS);

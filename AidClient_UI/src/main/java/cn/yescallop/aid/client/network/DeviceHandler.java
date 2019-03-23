@@ -4,10 +4,7 @@ import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.ui.controller.MonitorController;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
-import cn.yescallop.aid.network.protocol.ClientHelloPacket;
-import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
-import cn.yescallop.aid.network.protocol.FramePacket;
-import cn.yescallop.aid.network.protocol.Packet;
+import cn.yescallop.aid.network.protocol.*;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.util.FXImageHelper;
 import io.netty.channel.ChannelHandlerContext;
@@ -166,10 +163,15 @@ public class DeviceHandler extends ClientPacketHandler {
                         screen = controller.getScreen();
                         Scene scene = new Scene(root);
                         scene.getRoot().requestFocus();
+                        DeviceListPacket.DeviceInfo info = Factory.deviceInfoById(deviceId);
+                        stage.setTitle(String.format("[%d] %s", deviceId, info.name));
                         stage.setScene(scene);
                         stage.setOnCloseRequest(event -> Factory.Network.removeDeviceChannelById(deviceId)
                                 .close().syncUninterruptibly()
                         );
+                        stage.setHeight(frame.height());
+                        stage.setWidth(frame.width());
+                        stage.setResizable(false);
                         stage.show();
                     } catch (IOException e) {
                         e.printStackTrace();

@@ -26,7 +26,7 @@ public class Factory {
     private static Stage stage;
     private static UIHandler currentPage = null;
     private static StringProperty consoleInfo;
-    protected static Map<Integer, DeviceListPacket.DeviceInfo> deviceListMap = new LinkedHashMap<>();
+    private static Map<Integer, DeviceListPacket.DeviceInfo> deviceListMap = new LinkedHashMap<>();
     private static ObservableList<DeviceInfo> onlineDeviceList;
 
     private Factory() {
@@ -35,6 +35,10 @@ public class Factory {
     static {
         consoleInfo = new SimpleStringProperty("");
         onlineDeviceList = FXCollections.observableArrayList();
+    }
+
+    public static DeviceListPacket.DeviceInfo deviceInfoById(int id) {
+        return deviceListMap.get(id);
     }
 
     public static class UIData {
