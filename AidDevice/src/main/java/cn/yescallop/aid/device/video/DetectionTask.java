@@ -9,6 +9,9 @@ import org.bytedeco.javacpp.opencv_core.Mat;
 
 import static org.bytedeco.javacpp.opencv_core.CV_8UC3;
 
+/**
+ * TODO: Optimizes detection by a buffer instead of an only Mat with synchronized code blocks
+ */
 public class DetectionTask extends Thread {
 
     private final DeviceFrameHandler handler;

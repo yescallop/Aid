@@ -15,7 +15,7 @@ public class FramePacket extends Packet {
 
     @Override
     public int id() {
-        return ID_VIDEO;
+        return ID_FRAME;
     }
 
     @Override

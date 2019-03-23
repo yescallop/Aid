@@ -79,13 +79,15 @@ public class FrameGrabber extends Thread {
             if (packet.stream_index() == videoStreamIndex) { //video packet
                 if (avcodec_send_packet(decoder, packet) < 0)
                     throw new FFmpegException("Error sending a packet for decoding");
+                av_packet_unref(packet);
                 if (avcodec_receive_frame(decoder, frame) < 0)
                     throw new FFmpegException("Error during decoding");
 
                 handler.frameGrabbed(frame);
+                av_frame_unref(frame);
+            } else {
+                av_packet_unref(packet);
             }
-            av_packet_unref(packet);
-            av_frame_unref(frame);
         } else if (ret == AVERROR_EOF || ret == AVERROR_EIO()) {
             free();
             handler.eofReached();

@@ -15,6 +15,4 @@ public interface FrameHandler {
     void exceptionCaught(Throwable cause);
 
     void init(avcodec.AVCodecContext decoder) throws FFmpegException;
-
-    void close();
 }

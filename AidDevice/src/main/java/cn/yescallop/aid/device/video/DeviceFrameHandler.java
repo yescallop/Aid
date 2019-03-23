@@ -146,9 +146,4 @@ public class DeviceFrameHandler implements FrameHandler {
 
         packet = av_packet_alloc();
     }
-
-    @Override
-    public void close() {
-        detectionTask.interrupt();
-    }
 }

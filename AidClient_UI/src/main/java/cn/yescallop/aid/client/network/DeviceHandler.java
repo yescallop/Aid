@@ -74,7 +74,7 @@ public class DeviceHandler extends ClientPacketHandler {
                     Factory.UI.showDialog("Exception", e.getMessage());
                 }
                 break;
-            case Packet.ID_VIDEO:
+            case Packet.ID_FRAME:
                 try {
                     processVideoPacket((FramePacket) packet);
                 } catch (FFmpegException e) {
@@ -152,6 +152,8 @@ public class DeviceHandler extends ClientPacketHandler {
     private void processFrame() {
         if (fxImageHelper == null) {
             fxImageHelper = new FXImageHelper(frame);
+            int height = frame.height();
+            int width = frame.width();
             Platform.runLater(new Runnable() {
                 @Override
                 public void run() {
@@ -169,8 +171,8 @@ public class DeviceHandler extends ClientPacketHandler {
                         stage.setOnCloseRequest(event -> Factory.Network.removeDeviceChannelById(deviceId)
                                 .close().syncUninterruptibly()
                         );
-                        stage.setHeight(frame.height());
-                        stage.setWidth(frame.width());
+                        stage.setHeight(height);
+                        stage.setWidth(width);
                         stage.setResizable(false);
                         stage.show();
                     } catch (IOException e) {

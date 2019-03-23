@@ -32,7 +32,7 @@ import static org.bytedeco.javacpp.avformat.avformat_alloc_context;
  */
 public class DeviceMain {
 
-    public static final String SERVER_HOST = "192.168.0.104";
+    public static final String SERVER_HOST = "127.0.0.1";
     public static final int SERVER_PORT = 9000;
 
     public static final String HOST = "0.0.0.0"; //TODO: Move these arguments to a configuration file
@@ -68,7 +68,7 @@ public class DeviceMain {
         try {
             new CommandReader(new DeviceCommandHandler(), "> ").start();
 
-            clientChannel = Network.startClient("192.168.0.104", 9000, new DeviceClientHandler());
+            clientChannel = Network.startClient(SERVER_HOST, SERVER_PORT, new DeviceClientHandler());
             Logger.info("Connected to " + clientChannel.remoteAddress());
 
             serverChannel = Network.startServer(HOST, PORT, new DeviceServerHandler());
@@ -118,7 +118,13 @@ public class DeviceMain {
                 return;
             }
         } else {
-            V4L2Devices.openInput(fmtCtx, 0);
+            if (V4L2Devices.openInput(fmtCtx, 0) == 0) {
+                Logger.info("Successfully opened input");
+            } else {
+                Logger.info("Could not open device input");
+                System.exit(1);
+                return;
+            }
         }
 
         FrameGrabber fg = new FrameGrabber(fmtCtx, new DeviceFrameHandler());

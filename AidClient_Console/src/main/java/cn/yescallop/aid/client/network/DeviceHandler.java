@@ -32,8 +32,6 @@ public class DeviceHandler extends ClientPacketHandler {
     private AVPacket packet;
     private AVFrame frame;
 
-    private FXImageHelper fxImageHelper;
-
     public DeviceHandler() {
 
     }
@@ -66,7 +64,7 @@ public class DeviceHandler extends ClientPacketHandler {
                     Logger.logException(e);
                 }
                 break;
-            case Packet.ID_VIDEO:
+            case Packet.ID_FRAME:
                 try {
                     processVideoPacket((FramePacket) packet);
                 } catch (FFmpegException e) {
@@ -142,18 +140,6 @@ public class DeviceHandler extends ClientPacketHandler {
     }
 
     private void processFrame() {
-        if (fxImageHelper == null) {
-            fxImageHelper = new FXImageHelper(frame);
-            Stage stage = new Stage();
-            ImageView imageView = new ImageView();
-            Image image = fxImageHelper.convertFromAVFrame(frame);
-            imageView.setImage(image);
-            Scene scene = new Scene(new StackPane(imageView));
-            stage.setScene(scene);
-            stage.sizeToScene();
-            stage.show();
-        }
-
-
+        // no further process is implemented
     }
 }
