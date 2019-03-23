@@ -14,6 +14,7 @@ import cn.yescallop.aid.video.ffmpeg.FrameGrabber;
 import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowDeviceInfo;
 import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowDevices;
 import cn.yescallop.aid.video.ffmpeg.device.dshow.DshowException;
+import cn.yescallop.aid.video.ffmpeg.device.v4l2.V4L2Devices;
 import cn.yescallop.aid.video.ffmpeg.util.Logging;
 import io.netty.channel.Channel;
 import org.bytedeco.javacpp.*;
@@ -37,7 +38,7 @@ public class DeviceMain {
     public static final int ID = 1;
     public static final String NAME = "测试设备";
 
-    protected static Channel clientChannel;
+    public static Channel clientChannel;
     protected static Channel serverChannel;
     private static Map<Inet4Address, byte[]> addresses;
     private static boolean stopping = false;
@@ -64,14 +65,14 @@ public class DeviceMain {
         try {
             new CommandReader(new DeviceCommandHandler(), "> ").start();
 
-            clientChannel = Network.startClient("127.0.0.1", 9000, new DeviceClientHandler());
+            clientChannel = Network.startClient("192.168.0.104", 9000, new DeviceClientHandler());
             Logger.info("Connected to " + clientChannel.remoteAddress());
 
             serverChannel = Network.startServer(HOST, PORT, new DeviceServerHandler());
             Logger.info("Server started on " + HOST + ":" + PORT);
 
             initVideo();
-//            bluetooth = new BluetoothHandler("COM1", 2000, 9600);
+//            bluetooth = new BluetoothHandler("/dev/rfcomm0", 2000, 9600);
         } catch (NoSuchPortException e) {
             Logger.severe("Failed in connecting because of the wrong port");
             System.exit(1);
@@ -92,25 +93,29 @@ public class DeviceMain {
         Logging.init(DeviceLogCallback.INSTANCE);
         avdevice.avdevice_register_all();
 
-        DshowDeviceInfo[] devices;
-        try {
-            devices = DshowDevices.listDevices();
-        } catch (DshowException e) {
-            Logger.logException(e);
-            return;
-        }
-
-        DshowDeviceInfo in = devices[0];
-        Logger.info(String.format("Input device: %s (%s)\n", in.friendlyName(), in.uniqueName()));
-
         avformat.AVFormatContext fmtCtx = avformat_alloc_context();
+        String os = System.getProperty("os.name");
+        if (os.toLowerCase().startsWith("win")) {
+            DshowDeviceInfo[] devices;
+            try {
+                devices = DshowDevices.listDevices();
+            } catch (DshowException e) {
+                Logger.logException(e);
+                return;
+            }
 
-        if (DshowDevices.openInput(fmtCtx, in) == 0) {
-            Logger.info("Successfully opened input");
+            DshowDeviceInfo in = devices[0];
+            Logger.info(String.format("Input device: %s (%s)\n", in.friendlyName(), in.uniqueName()));
+
+            if (DshowDevices.openInput(fmtCtx, in) == 0) {
+                Logger.info("Successfully opened input");
+            } else {
+                Logger.info("Could not open device input");
+                System.exit(1);
+                return;
+            }
         } else {
-            Logger.info("Could not open device input");
-            System.exit(1);
-            return;
+            V4L2Devices.openInput(fmtCtx, 0);
         }
 
         FrameGrabber fg = new FrameGrabber(fmtCtx, new DeviceFrameHandler());

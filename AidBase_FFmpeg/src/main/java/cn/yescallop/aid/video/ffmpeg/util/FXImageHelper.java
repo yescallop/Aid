@@ -44,4 +44,9 @@ public class FXImageHelper {
 
         return wi;
     }
+
+    public void free() {
+        sws_freeContext(swsContext);
+        av_frame_free(swsFrame);
+    }
 }

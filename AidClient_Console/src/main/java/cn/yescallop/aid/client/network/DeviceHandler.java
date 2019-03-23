@@ -4,7 +4,10 @@ import cn.yescallop.aid.client.ClientConsoleMain;
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
-import cn.yescallop.aid.network.protocol.*;
+import cn.yescallop.aid.network.protocol.ClientHelloPacket;
+import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.FramePacket;
+import cn.yescallop.aid.network.protocol.Packet;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.util.FXImageHelper;
 import io.netty.channel.ChannelHandlerContext;
@@ -65,7 +68,7 @@ public class DeviceHandler extends ClientPacketHandler {
                 break;
             case Packet.ID_VIDEO:
                 try {
-                    processVideoPacket((VideoPacket) packet);
+                    processVideoPacket((FramePacket) packet);
                 } catch (FFmpegException e) {
                     Logger.logException(e);
                 }
@@ -97,7 +100,7 @@ public class DeviceHandler extends ClientPacketHandler {
         Logger.info("Decoder codec initialized");
     }
 
-    private void processVideoPacket(VideoPacket p) throws FFmpegException {
+    private void processVideoPacket(FramePacket p) throws FFmpegException {
         ByteBuffer data = p.buf.nioBuffer();
 
         av_packet_from_data(packet, data, p.size);

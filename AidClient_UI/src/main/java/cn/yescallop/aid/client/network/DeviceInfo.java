@@ -2,11 +2,10 @@ package cn.yescallop.aid.client.network;
 
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
-import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-
-import java.net.Inet4Address;
-import java.util.Map;
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleLongProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 
 /**
  * @author Magical Sheep
@@ -17,19 +16,14 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
     private StringProperty name;
     private SimpleLongProperty registerTime;
 
-    private Map<Inet4Address, byte[]> localAddresses;
-    private int port;
-
-    private DeviceInfo(int id, String name, long registerTime, Map<Inet4Address, byte[]> localAddresses, int port) {
+    private DeviceInfo(int id, String name, long registerTime) {
         this.id = new SimpleIntegerProperty(id);
         this.name = new SimpleStringProperty(name);
         this.registerTime = new SimpleLongProperty(registerTime);
-        this.localAddresses = localAddresses;
-        this.port = port;
     }
 
     public DeviceInfo(DeviceListPacket.DeviceInfo deviceInfo) {
-        this(deviceInfo.id, deviceInfo.name, deviceInfo.registerTime, deviceInfo.localAddresses, deviceInfo.port);
+        this(deviceInfo.id, deviceInfo.name, deviceInfo.registerTime);
     }
 
     public SimpleIntegerProperty idProperty() {
@@ -42,14 +36,6 @@ public class DeviceInfo extends RecursiveTreeObject<DeviceInfo> {
 
     public SimpleLongProperty registerTimeProperty() {
         return registerTime;
-    }
-
-    public Map<Inet4Address, byte[]> getLocalAddresses() {
-        return localAddresses;
-    }
-
-    public int getPort() {
-        return port;
     }
 
     public int getId() {

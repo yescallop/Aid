@@ -1,24 +1,26 @@
 package cn.yescallop.aid.device.network.protocol;
 
-import cn.yescallop.aid.network.protocol.VideoPacket;
+import cn.yescallop.aid.network.protocol.FramePacket;
 import io.netty.buffer.ByteBuf;
 import io.netty.util.ReferenceCounted;
 
 import java.nio.ByteBuffer;
 
-import static org.bytedeco.javacpp.avutil.*;
+import static org.bytedeco.javacpp.avutil.AVBufferRef;
+import static org.bytedeco.javacpp.avutil.av_buffer_unref;
 
 /**
  * @author Scallop Ye
- * A non-thread-safe reference-counted implementation of VideoPacket
+ * A non-thread-safe reference-counted implementation of FramePacket
  */
-public class ReferenceCountedVideoPacket extends VideoPacket implements ReferenceCounted {
+public class ReferenceCountedFramePacket extends FramePacket implements ReferenceCounted {
 
     private int refCnt = 1;
     public AVBufferRef bufRef;
 
     @Override
     public void writeTo(ByteBuf out) {
+        out.writeInt(deviceId);
         out.writeLong(time);
         out.writeInt(size);
         ByteBuffer data = bufRef.data()

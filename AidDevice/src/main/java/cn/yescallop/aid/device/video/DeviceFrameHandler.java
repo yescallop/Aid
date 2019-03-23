@@ -2,12 +2,14 @@ package cn.yescallop.aid.device.video;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.network.ClientManager;
-import cn.yescallop.aid.device.network.protocol.ReferenceCountedVideoPacket;
+import cn.yescallop.aid.device.network.protocol.ReferenceCountedFramePacket;
 import cn.yescallop.aid.device.video.opencv.DetectionHelper;
 import cn.yescallop.aid.device.video.opencv.MatHelper;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.FrameHandler;
-import org.bytedeco.javacpp.*;
+import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.DoublePointer;
+import org.bytedeco.javacpp.PointerPointer;
 
 import static org.bytedeco.javacpp.avcodec.*;
 import static org.bytedeco.javacpp.avutil.*;
@@ -20,19 +22,20 @@ public class DeviceFrameHandler implements FrameHandler {
 
     public static final int CODEC_ID = AV_CODEC_ID_MPEG2VIDEO;
     public static final int PIX_FMT = AV_PIX_FMT_YUV420P;
-    public static int width;
-    public static int height;
-    public static AVRational sampleAspectRatio;
+    int width;
+    int height;
 
     private long pts;
     private int frameCount = 0;
     private long lastTime = -1;
     private AVCodec codec;
-    public static AVCodecContext encoder;
+    private AVCodecContext encoder;
     private SwsContext swsContext;
 
     private AVFrame swsFrame;
     private AVPacket packet;
+
+    private DetectionTask detectionTask;
 
     public DeviceFrameHandler() throws FFmpegException {
         codec = avcodec_find_encoder(CODEC_ID);
@@ -59,9 +62,9 @@ public class DeviceFrameHandler implements FrameHandler {
         } else lastTime = curTime;
 
         if (!broadcastVideo(frame, curTime)) {
-            MatHelper.convert(frame);
-            if (DetectionHelper.detect()) {
-                Logger.warning("MOVEMENT DETECTED");
+            synchronized (this) {
+                MatHelper.convert(frame);
+                notify();
             }
         }
     }
@@ -86,7 +89,7 @@ public class DeviceFrameHandler implements FrameHandler {
                 throw new FFmpegException("Error during encoding: " + ret);
             }
 
-            ReferenceCountedVideoPacket p = new ReferenceCountedVideoPacket();
+            ReferenceCountedFramePacket p = new ReferenceCountedFramePacket();
             p.bufRef = av_buffer_ref(packet.buf());
             p.size = packet.size();
             p.time = curTime;
@@ -112,13 +115,12 @@ public class DeviceFrameHandler implements FrameHandler {
     public void init(AVCodecContext decoder) throws FFmpegException {
         width = decoder.width();
         height = decoder.height();
-        sampleAspectRatio = decoder.sample_aspect_ratio();
 
-        encoder.bit_rate(1000 * 1024); //1000k
+        encoder.bit_rate(2000 * 1024); //1000k
         encoder.pix_fmt(PIX_FMT);
         encoder.width(width);
         encoder.height(height);
-        encoder.sample_aspect_ratio(sampleAspectRatio);
+        encoder.sample_aspect_ratio(decoder.sample_aspect_ratio());
         AVRational fps = decoder.framerate();
         int intFps = Math.round(fps.num() / (float) fps.den());
         AVRational timeBase = av_make_q(1, intFps);
@@ -136,9 +138,17 @@ public class DeviceFrameHandler implements FrameHandler {
 
         swsContext = sws_getContext(width, height, decoder.pix_fmt(), width, height, PIX_FMT, SWS_BILINEAR, null, null, (DoublePointer) null);
 
-        MatHelper.init(decoder);
+        MatHelper.init(height, width, decoder.pix_fmt());
         DetectionHelper.init(height, width);
 
+        detectionTask = new DetectionTask(this);
+        detectionTask.start();
+
         packet = av_packet_alloc();
+    }
+
+    @Override
+    public void close() {
+        detectionTask.interrupt();
     }
 }

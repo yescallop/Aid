@@ -28,12 +28,6 @@ public class MonitorController {
                 case D:
                     System.out.println("D");
                     break;
-                case UP:
-                    System.out.println("UP");
-                    break;
-                case DOWN:
-                    System.out.println("DOWN");
-                    break;
                 case RIGHT:
                     System.out.println("RIGHT");
                     break;

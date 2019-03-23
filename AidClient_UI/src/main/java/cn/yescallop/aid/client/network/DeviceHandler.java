@@ -6,8 +6,8 @@ import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ClientPacketHandler;
 import cn.yescallop.aid.network.protocol.ClientHelloPacket;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
+import cn.yescallop.aid.network.protocol.FramePacket;
 import cn.yescallop.aid.network.protocol.Packet;
-import cn.yescallop.aid.network.protocol.VideoPacket;
 import cn.yescallop.aid.video.ffmpeg.FFmpegException;
 import cn.yescallop.aid.video.ffmpeg.util.FXImageHelper;
 import io.netty.channel.ChannelHandlerContext;
@@ -40,8 +40,11 @@ public class DeviceHandler extends ClientPacketHandler {
     private MonitorController controller;
     private ImageView screen;
 
-    public DeviceHandler() {
+    private int deviceId;
+    private Stage stage;
 
+    public DeviceHandler(int deviceId) {
+        this.deviceId = deviceId;
     }
 
     @Override
@@ -59,6 +62,8 @@ public class DeviceHandler extends ClientPacketHandler {
                 Factory.UI.println("Device unexpectedly closed the connection");
             }
         }
+        Platform.runLater(stage::close);
+        free();
     }
 
     @Override
@@ -74,7 +79,7 @@ public class DeviceHandler extends ClientPacketHandler {
                 break;
             case Packet.ID_VIDEO:
                 try {
-                    processVideoPacket((VideoPacket) packet);
+                    processVideoPacket((FramePacket) packet);
                 } catch (FFmpegException e) {
                     Factory.UI.showDialog("Exception", e.getMessage());
                 }
@@ -106,7 +111,7 @@ public class DeviceHandler extends ClientPacketHandler {
         Factory.UI.println("Decoder codec initialized");
     }
 
-    private void processVideoPacket(VideoPacket p) throws FFmpegException {
+    private void processVideoPacket(FramePacket p) throws FFmpegException {
         ByteBuffer data = p.buf.nioBuffer();
 
         av_packet_from_data(packet, data, p.size);
@@ -154,7 +159,7 @@ public class DeviceHandler extends ClientPacketHandler {
                 @Override
                 public void run() {
                     try {
-                        Stage stage = new Stage();
+                        stage = new Stage();
                         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getClassLoader().getResource("Monitor.fxml"));
                         Parent root = fxmlLoader.load();
                         controller = fxmlLoader.getController();
@@ -162,9 +167,9 @@ public class DeviceHandler extends ClientPacketHandler {
                         Scene scene = new Scene(root);
                         scene.getRoot().requestFocus();
                         stage.setScene(scene);
-                        stage.setOnCloseRequest(event -> {
-                            // 关闭窗口后操作
-                        });
+                        stage.setOnCloseRequest(event -> Factory.Network.removeDeviceChannelById(deviceId)
+                                .close().syncUninterruptibly()
+                        );
                         stage.show();
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -174,5 +179,10 @@ public class DeviceHandler extends ClientPacketHandler {
         }
         Image image = fxImageHelper.convertFromAVFrame(frame);
         Platform.runLater(() -> screen.setImage(image));
+    }
+
+    private void free() {
+        avcodec_free_context(decoder);
+        fxImageHelper.free();
     }
 }

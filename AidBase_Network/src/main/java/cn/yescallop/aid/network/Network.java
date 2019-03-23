@@ -37,7 +37,7 @@ public class Network {
                     @Override
                     public void initChannel(SocketChannel ch) {
                         ch.pipeline()
-                                .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, 0, 0))
+                                .addLast("IdleStateHandler", new IdleStateHandler(IDLE_TIMEOUT, IDLE_TIMEOUT, 0))
                                 .addLast("Decoder", new PacketDecoder())
                                 .addLast("Encoder", new PacketEncoder())
                                 .addLast(handlers);

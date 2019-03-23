@@ -8,6 +8,7 @@ import cn.yescallop.aid.network.protocol.DeviceListPacket;
 import cn.yescallop.aid.network.protocol.EventPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
+import javafx.application.Platform;
 
 public class ClientHandler extends ClientPacketHandler {
     @Override
@@ -38,7 +39,11 @@ public class ClientHandler extends ClientPacketHandler {
                 break;
             case Packet.ID_EVENT:
                 EventPacket eventPacket = (EventPacket) packet;
-                Factory.UI.println("Event " + eventPacket.event + " from device " + eventPacket.deviceId);
+                switch (eventPacket.event) {
+                    case EventPacket.EVENT_CAMERA_DETECTED:
+                        Platform.runLater(() -> Factory.UI.getCurrentPage().warningDialog(eventPacket.deviceId));
+                        break;
+                }
                 break;
         }
     }

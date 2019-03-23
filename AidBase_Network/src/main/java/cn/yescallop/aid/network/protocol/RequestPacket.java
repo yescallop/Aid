@@ -7,8 +7,7 @@ import io.netty.buffer.ByteBuf;
  */
 public class RequestPacket extends Packet {
 
-    public static final int TYPE_DEVICE_LIST = 0;
-    public static final int TYPE_VIDEO = 1;
+    public static final int TYPE_VIDEO = 0;
 
     public int type;
 

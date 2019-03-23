@@ -3,36 +3,28 @@ package cn.yescallop.aid.client.ui.controller;
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
 import cn.yescallop.aid.client.network.DeviceInfo;
-import com.jfoenix.controls.*;
+import com.jfoenix.controls.JFXTreeTableColumn;
+import com.jfoenix.controls.JFXTreeTableView;
+import com.jfoenix.controls.RecursiveTreeItem;
 import com.jfoenix.controls.datamodels.treetable.RecursiveTreeObject;
 import io.datafx.controller.ViewController;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.TreeTableColumn;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
-import javafx.stage.Stage;
 
 import javax.annotation.PostConstruct;
-import java.io.IOException;
-import java.util.Objects;
 import java.util.function.Function;
 
 /**
  * @author Magical Sheep
  */
 @ViewController(value = "/page/DeviceStatusPage.fxml", title = "DeviceStatus")
-public class DeviceStatusPageController implements UIHandler {
+public class DeviceStatusPageController extends UIHandler {
 
-    @FXML
-    private StackPane root;
     @FXML
     private JFXTreeTableView<DeviceInfo> onlineDeviceList;
     @FXML
@@ -68,7 +60,7 @@ public class DeviceStatusPageController implements UIHandler {
          */
         onlineDeviceList.setOnMouseClicked(event -> {
             if (event.getButton().equals(MouseButton.PRIMARY) && event.getClickCount() == 2) {
-                new Thread(() -> Factory.Network.connect(onlineDeviceList.getSelectionModel().getSelectedItem().getValue())).start();
+                new Thread(() -> Factory.Network.connect(onlineDeviceList.getSelectionModel().getSelectedItem().getValue().getId())).start();
 //                showDialog("Test", onlineDeviceList.getSelectionModel().getSelectedItem().toString());
             }
         });
@@ -94,18 +86,4 @@ public class DeviceStatusPageController implements UIHandler {
     public void release() {
 
     }
-
-    @Override
-    public void showDialog(String heading, String body) {
-        JFXButton ok = new JFXButton("确定");
-        ok.setPrefSize(70, 35);
-        JFXDialogLayout content = new JFXDialogLayout();
-        content.setHeading(new Text(heading));
-        content.setBody(new Text(body));
-        content.setActions(ok);
-        JFXDialog dialog = new JFXDialog(root, content, JFXDialog.DialogTransition.BOTTOM);
-        dialog.show();
-        ok.setOnAction(event -> dialog.close());
-    }
-
 }

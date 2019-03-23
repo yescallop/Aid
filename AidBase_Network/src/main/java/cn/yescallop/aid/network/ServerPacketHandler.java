@@ -3,7 +3,6 @@ package cn.yescallop.aid.network;
 import cn.yescallop.aid.network.protocol.EchoPacket;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.handler.timeout.IdleState;
 import io.netty.handler.timeout.IdleStateEvent;
 
 /**
@@ -25,7 +24,7 @@ public abstract class ServerPacketHandler extends PacketHandler {
 
     @Override
     public final void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        if (evt instanceof IdleStateEvent && ((IdleStateEvent) evt).state() == IdleState.READER_IDLE) {
+        if (evt instanceof IdleStateEvent) {
             if (idleCount >= Network.MAXIMUM_TIMEOUT_COUNT) {
                 state = ChannelState.CONNECTION_LOST;
                 ctx.close();

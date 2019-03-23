@@ -4,9 +4,7 @@ import cn.yescallop.aid.client.network.ClientHandler;
 import cn.yescallop.aid.client.network.DeviceHandler;
 import cn.yescallop.aid.client.network.DeviceInfo;
 import cn.yescallop.aid.client.ui.frame.Frame;
-import cn.yescallop.aid.network.Network;
 import cn.yescallop.aid.network.protocol.DeviceListPacket;
-import cn.yescallop.aid.network.protocol.RequestPacket;
 import io.netty.channel.Channel;
 import javafx.application.Platform;
 import javafx.beans.property.SimpleStringProperty;
@@ -16,6 +14,7 @@ import javafx.collections.ObservableList;
 import javafx.stage.Stage;
 
 import java.net.Inet4Address;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -161,6 +160,7 @@ public class Factory {
                 onlineDeviceList.add(new DeviceInfo(deviceInfo));
             }
         }
+
     }
 
     public static class Network {
@@ -168,7 +168,7 @@ public class Factory {
         private static boolean connectStatus = false;
         private static boolean stopping = false;
         private static Channel channel;
-        private static Channel deviceChannel;
+        private static Map<Integer, Channel> deviceChannels = new HashMap<>();
 
         /**
          * 连接服务器
@@ -204,20 +204,29 @@ public class Factory {
 
         /**
          * 连接设备端
-         * @param info 设备端信息
+         * @param deviceId 设备端ID
          */
-        public static void connect(DeviceInfo info){
-            for (Inet4Address addr : info.getLocalAddresses().keySet()) {
-                Factory.UI.println("Trying " + addr.getHostAddress() + ":" + info.getPort());
+        public static boolean connect(int deviceId){
+            if (deviceChannels.containsKey(deviceId))
+                return false;
+            DeviceListPacket.DeviceInfo info = deviceListMap.get(deviceId);
+            for (Inet4Address addr : info.localAddresses.keySet()) {
+                Factory.UI.println("Trying " + addr.getHostAddress() + ":" + info.port);
                 try {
-                    deviceChannel = cn.yescallop.aid.network.Network.startClient(addr, info.getPort(), new DeviceHandler());
+                    deviceChannels.put(deviceId,
+                            cn.yescallop.aid.network.Network.startClient(addr, info.port, new DeviceHandler(deviceId)));
                 } catch (Exception e) {
-                    Factory.UI.println("Unable to connect to " + addr.getHostAddress() + ":" + info.getPort());
+                    Factory.UI.println("Unable to connect to " + addr.getHostAddress() + ":" + info.port);
                     continue;
                 }
-                return;
+                return true;
             }
-            Factory.UI.println("Device " + info.getId() + " seems unreachable");
+            Factory.UI.println("Device " + deviceId + " seems unreachable");
+            return true;
+        }
+
+        public static Channel removeDeviceChannelById(int id) {
+            return deviceChannels.remove(id);
         }
 
         public static boolean isStopping() {

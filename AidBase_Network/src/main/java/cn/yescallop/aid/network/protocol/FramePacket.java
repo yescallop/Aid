@@ -6,8 +6,9 @@ import io.netty.buffer.Unpooled;
 /**
  * @author Scallop Ye
  */
-public class VideoPacket extends Packet {
+public class FramePacket extends Packet {
 
+    public int deviceId;
     public long time;
     public int size;
     public ByteBuf buf;
@@ -19,6 +20,7 @@ public class VideoPacket extends Packet {
 
     @Override
     public void readFrom(ByteBuf in) {
+        deviceId = in.readInt();
         time = in.readLong();
         size = in.readInt();
         int i = in.readableBytes();
@@ -28,6 +30,7 @@ public class VideoPacket extends Packet {
 
     @Override
     public void writeTo(ByteBuf out) {
+        out.writeInt(deviceId);
         out.writeLong(time);
         out.writeInt(size);
         out.writeBytes(buf);

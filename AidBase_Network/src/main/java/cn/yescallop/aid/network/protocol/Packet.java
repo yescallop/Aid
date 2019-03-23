@@ -41,7 +41,7 @@ public abstract class Packet {
                 packet = new EventPacket();
                 break;
             case ID_VIDEO:
-                packet = new VideoPacket();
+                packet = new FramePacket();
                 break;
             case ID_DEVICE_LIST:
                 packet = new DeviceListPacket();

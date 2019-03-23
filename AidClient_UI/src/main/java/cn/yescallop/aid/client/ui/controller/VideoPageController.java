@@ -3,8 +3,6 @@ package cn.yescallop.aid.client.ui.controller;
 import cn.yescallop.aid.client.api.Factory;
 import cn.yescallop.aid.client.api.UIHandler;
 import com.jfoenix.controls.JFXButton;
-import com.jfoenix.controls.JFXDialog;
-import com.jfoenix.controls.JFXDialogLayout;
 import com.jfoenix.controls.JFXSlider;
 import com.sun.jna.Memory;
 import io.datafx.controller.ViewController;
@@ -17,8 +15,6 @@ import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritablePixelFormat;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import uk.co.caprica.vlcj.component.DirectMediaPlayerComponent;
 import uk.co.caprica.vlcj.discovery.NativeDiscovery;
@@ -36,9 +32,8 @@ import java.nio.ByteBuffer;
  * @author Magical Sheep
  */
 @ViewController(value = "/page/VideoPage.fxml", title = "Video")
-public class VideoPageController implements UIHandler {
-    @FXML
-    private StackPane root;
+public class VideoPageController extends UIHandler {
+
     @FXML
     private Canvas screen;
     @FXML
@@ -169,20 +164,6 @@ public class VideoPageController implements UIHandler {
     public void release() {
         if (position != 0) stop();
         mediaPlayerComponent.getMediaPlayer().release();
-    }
-
-    @Override
-    public void showDialog(String heading, String body) {
-        JFXButton ok = new JFXButton("确定");
-        ok.setPrefSize(70, 35);
-        JFXDialogLayout content = new JFXDialogLayout();
-        content.setHeading(new Text(heading));
-        content.setBody(new Text(body));
-        content.setActions(ok);
-        JFXDialog dialog = new JFXDialog(root, content, JFXDialog.DialogTransition.BOTTOM);
-        if (position != 0) mediaPlayerComponent.getMediaPlayer().pause();
-        dialog.show();
-        ok.setOnAction(event -> dialog.close());
     }
 
     /**
