@@ -2,8 +2,7 @@ package cn.yescallop.aid.device;
 
 import cn.yescallop.aid.console.CommandHandler;
 import cn.yescallop.aid.console.Logger;
-
-import java.io.IOException;
+import cn.yescallop.aid.device.hardware.ControlUtil;
 
 /**
  * @author Scallop Ye
@@ -16,11 +15,13 @@ public class DeviceCommandHandler implements CommandHandler {
                 DeviceMain.stop();
                 break;
             case "write":
-                try {
-                    DeviceMain.bluetooth.write(args[0]);
-                } catch (IOException e) {
-                    Logger.severe("Failed in sending the message");
+                char c = args[0].charAt(0);
+                if (args[0].length() != 1 || c < '0' || c > '5') {
+                    Logger.warning("Value is expected to be between 0 and 5");
+                    break;
                 }
+                int action = c - '0';
+                ControlUtil.processAction(action);
                 break;
             default:
                 Logger.info("Invalid command");

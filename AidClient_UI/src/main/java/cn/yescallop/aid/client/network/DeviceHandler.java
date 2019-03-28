@@ -163,9 +163,10 @@ public class DeviceHandler extends ClientPacketHandler {
                         Parent root = fxmlLoader.load();
                         controller = fxmlLoader.getController();
                         screen = controller.getScreen();
+                        controller.deviceId = deviceId;
                         Scene scene = new Scene(root);
                         scene.getRoot().requestFocus();
-                        DeviceListPacket.DeviceInfo info = Factory.deviceInfoById(deviceId);
+                        DeviceListPacket.DeviceInfo info = Factory.Network.deviceInfoById(deviceId);
                         stage.setTitle(String.format("[%d] %s", deviceId, info.name));
                         stage.setScene(scene);
                         stage.setOnCloseRequest(event -> Factory.Network.removeDeviceChannelById(deviceId)

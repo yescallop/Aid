@@ -37,10 +37,6 @@ public class Factory {
         onlineDeviceList = FXCollections.observableArrayList();
     }
 
-    public static DeviceListPacket.DeviceInfo deviceInfoById(int id) {
-        return deviceListMap.get(id);
-    }
-
     public static class UIData {
 
         public final static double LRSpacing = 30; // 控件左右间距
@@ -230,8 +226,16 @@ public class Factory {
             return true;
         }
 
+        public static Channel getDeviceChannelById(int id) {
+            return deviceChannels.get(id);
+        }
+
         public static Channel removeDeviceChannelById(int id) {
             return deviceChannels.remove(id);
+        }
+
+        public static DeviceListPacket.DeviceInfo deviceInfoById(int id) {
+            return deviceListMap.get(id);
         }
 
         public static boolean isStopping() {

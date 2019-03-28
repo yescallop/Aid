@@ -44,7 +44,9 @@ public class ConsolePageController extends UIHandler {
 
         console.textProperty().bind(Factory.UIData.getConsoleInfo());
         connect.disableProperty().bind(new SimpleBooleanProperty(Factory.Network.isConnected()));
-        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> new Thread(Factory.Network::start).start());
+        connect.addEventHandler(MouseEvent.MOUSE_CLICKED, event -> {
+            if(!Factory.Network.isConnected()) new Thread(Factory.Network::start).start();
+        });
     }
 
     @Override

@@ -2,12 +2,13 @@ package cn.yescallop.aid.device.network;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.DeviceMain;
+import cn.yescallop.aid.device.hardware.ControlUtil;
 import cn.yescallop.aid.device.video.DeviceFrameHandler;
 import cn.yescallop.aid.network.ChannelState;
 import cn.yescallop.aid.network.ServerPacketHandler;
+import cn.yescallop.aid.network.protocol.ControlPacket;
 import cn.yescallop.aid.network.protocol.DeviceHelloPacket;
 import cn.yescallop.aid.network.protocol.Packet;
-import cn.yescallop.aid.network.protocol.RequestPacket;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -43,13 +44,15 @@ public class DeviceServerHandler extends ServerPacketHandler {
                     channel.writeAndFlush(p);
                     ClientManager.registerClient(channel);
                     break;
-                case Packet.ID_REQUEST:
-                    if (((RequestPacket) packet).type == RequestPacket.TYPE_VIDEO) {
-                        ClientManager.registerClient(channel);
-                    }
-                    break;
                 default:
                     Logger.warning("Unexpected packet before hello from " + channel.remoteAddress());
+            }
+        } else {
+            switch (packet.id()) {
+                case Packet.ID_CONTROL:
+                    int action = ((ControlPacket) packet).action;
+                    ControlUtil.processAction(action);
+                    break;
             }
         }
     }

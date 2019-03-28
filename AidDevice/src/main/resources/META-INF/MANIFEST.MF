@@ -1,8 +1,8 @@
 Manifest-Version: 1.0
-Class-Path: jansi-1.17.1.jar jline-3.10.0.jar netty-all-4.1.34.Final.j
- ar javacpp-1.4.4.jar opencv-4.0.1-1.4.4-linux-armhf.jar jline-termina
- l-3.10.0.jar purejavacomm-1.0.2.RELEASE.jar jna-4.2.2.jar ffmpeg-4.1-
- 1.4.4.jar ffmpeg-4.1-1.4.4-linux-armhf.jar jline-terminal-jansi-3.10.
- 0.jar opencv-4.0.1-1.4.4.jar
+Class-Path: jline-terminal-jansi-3.10.0.jar ffmpeg-4.1-1.4.4.jar jansi
+ -1.17.1.jar ffmpeg-4.1-1.4.4-linux-armhf.jar pi4j-core-1.2.jar jline-
+ terminal-3.10.0.jar opencv-4.0.1-1.4.4.jar javacpp-1.4.4.jar netty-al
+ l-4.1.34.Final.jar jline-3.10.0.jar jna-4.2.2.jar opencv-4.0.1-1.4.4-
+ linux-armhf.jar purejavacomm-1.0.2.RELEASE.jar
 Main-Class: cn.yescallop.aid.device.DeviceMain
 

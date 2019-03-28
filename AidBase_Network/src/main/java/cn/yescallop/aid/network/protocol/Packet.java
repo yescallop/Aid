@@ -16,6 +16,7 @@ public abstract class Packet {
     public static final int ID_FRAME = 0x06;
     public static final int ID_DEVICE_LIST = 0x07;
     public static final int ID_REQUEST = 0x08;
+    public static final int ID_CONTROL = 0x09;
 
 
     public static Packet from(int id, ByteBuf in) {
@@ -47,6 +48,9 @@ public abstract class Packet {
                 break;
             case ID_REQUEST:
                 packet = new RequestPacket();
+                break;
+            case ID_CONTROL:
+                packet = new ControlPacket();
                 break;
             default:
                 return null;

@@ -30,6 +30,7 @@ public class ClientUIMain extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
+        new Thread(Factory.Network::start).start();
         stage = primaryStage;
         Factory.UIData.setStage(stage);
         flowContext = new ViewFlowContext();

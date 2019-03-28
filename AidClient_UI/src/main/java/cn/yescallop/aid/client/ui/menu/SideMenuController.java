@@ -1,6 +1,8 @@
 package cn.yescallop.aid.client.ui.menu;
 
-import cn.yescallop.aid.client.ui.controller.*;
+import cn.yescallop.aid.client.ui.controller.ConsolePageController;
+import cn.yescallop.aid.client.ui.controller.DeviceStatusPageController;
+import cn.yescallop.aid.client.ui.controller.VideoPageController;
 import com.jfoenix.controls.JFXListView;
 import io.datafx.controller.ViewController;
 import io.datafx.controller.flow.Flow;
@@ -64,8 +66,8 @@ public class SideMenuController {
         bindNodeToController(home, ConsolePageController.class, contentFlow, contentFlowHandler);
         bindNodeToController(deviceStatus, DeviceStatusPageController.class, contentFlow, contentFlowHandler);
         bindNodeToController(video, VideoPageController.class, contentFlow, contentFlowHandler);
-        bindNodeToController(serverStatus, ServerStatusPageController.class, contentFlow, contentFlowHandler);
-        bindNodeToController(setting, SettingPageController.class, contentFlow, contentFlowHandler);
+//        bindNodeToController(serverStatus, ServerStatusPageController.class, contentFlow, contentFlowHandler);
+//        bindNodeToController(setting, SettingPageController.class, contentFlow, contentFlowHandler);
     }
 
     private void bindNodeToController(Node node, Class<?> controllerClass, Flow flow, FlowHandler flowHandler) {

@@ -22,25 +22,40 @@ public final class Logger {
         //no instance
     }
 
-    public static void logException(Throwable cause) {
-        Logger.severe("An exception occurred");
+    public static void logException(Throwable cause, String msg) {
+        Logger.severe(msg);
         CharArrayWriter caw = new CharArrayWriter();
         cause.printStackTrace(new PrintWriter(caw));
         lineReader.printAbove(Ansi.ansi().fgRed().a(caw.toCharArray()).fgDefault().toString());
+    }
+
+    public static void logException(Throwable cause) {
+        logException(cause, "An exception occurred");
     }
 
     public static void info(String str) {
         log("INFO", Ansi.Color.GREEN, str);
     }
 
+    public static void info(Object obj) {
+        info(String.valueOf(obj));
+    }
+
     public static void warning(String str) {
         log("WARNING", Ansi.Color.YELLOW, str);
+    }
+
+    public static void warning(Object obj) {
+        warning(String.valueOf(obj));
     }
 
     public static void severe(String str) {
         log("SEVERE", Ansi.Color.RED, str);
     }
 
+    public static void severe(Object obj) {
+        severe(String.valueOf(obj));
+    }
 
     private static DateTimeFormatter FORMATTER_NORMAL; //HH:mm:ss
 
