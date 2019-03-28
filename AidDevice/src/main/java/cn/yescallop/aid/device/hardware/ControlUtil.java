@@ -2,7 +2,6 @@ package cn.yescallop.aid.device.hardware;
 
 import cn.yescallop.aid.console.Logger;
 import cn.yescallop.aid.device.DeviceMain;
-import cn.yescallop.aid.device.hardware.servo.ServoController;
 import cn.yescallop.aid.device.hardware.servo.SoftPwmServoController;
 import cn.yescallop.aid.network.protocol.ControlPacket;
 import com.pi4j.io.gpio.Pin;
@@ -17,7 +16,7 @@ public class ControlUtil {
     public static final Pin PIN_BUTTON_UNLOCK = RaspiPin.GPIO_26;
     public static final Pin PIN_BUTTON_LOCK = RaspiPin.GPIO_27;
 
-    private static ServoController cameraServo;
+    private static SoftPwmServoController cameraServo;
 
     private static int cameraAngle = 0;
 
@@ -31,8 +30,17 @@ public class ControlUtil {
                 PIN_BUTTON_UNLOCK,
                 PIN_BUTTON_LOCK
         ).register();
+    }
+
+    public static void registerCameraServo() {
         cameraServo = new SoftPwmServoController(PIN_SERVO_CAMERA);
         cameraServo.write(0);
+    }
+
+    public static void unregisterCameraServo() {
+        if (cameraServo != null) {
+            cameraServo.unregister();
+        }
     }
 
     public static void processAction(int action) {

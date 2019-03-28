@@ -40,7 +40,7 @@ public class BluetoothHandler {
     }
 
     public boolean checkTimeout() {
-        return lastResponse != -1 && (System.currentTimeMillis() - lastResponse) >= 2000;
+        return lastResponse != -1 && (System.currentTimeMillis() - lastResponse) >= TIMEOUT_MILLIS;
     }
 
     private class EventListener implements SerialPortEventListener {

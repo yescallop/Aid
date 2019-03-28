@@ -33,8 +33,9 @@ public abstract class ClientPacketHandler extends PacketHandler {
     public final void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent && ((IdleStateEvent) evt).state() == IdleState.READER_IDLE) {
             if (idleCount >= Network.MAXIMUM_TIMEOUT_COUNT) {
-                state = ChannelState.CONNECTION_LOST;
-                ctx.close();
+//                state = ChannelState.CONNECTION_LOST;
+//                ctx.close();
+                //TODO: Re-implement
             }
             idleCount++;
         } else {

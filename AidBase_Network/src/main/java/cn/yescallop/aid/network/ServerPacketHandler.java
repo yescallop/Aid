@@ -26,8 +26,9 @@ public abstract class ServerPacketHandler extends PacketHandler {
     public final void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
         if (evt instanceof IdleStateEvent) {
             if (idleCount >= Network.MAXIMUM_TIMEOUT_COUNT) {
-                state = ChannelState.CONNECTION_LOST;
-                ctx.close();
+//                state = ChannelState.CONNECTION_LOST;
+//                ctx.close();
+                //TODO: Re-implement
             }
             ctx.channel().writeAndFlush(EchoPacket.INSTANCE_PING);
             idleCount++;

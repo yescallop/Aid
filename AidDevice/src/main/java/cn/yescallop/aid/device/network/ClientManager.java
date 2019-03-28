@@ -1,5 +1,6 @@
 package cn.yescallop.aid.device.network;
 
+import cn.yescallop.aid.device.hardware.ControlUtil;
 import cn.yescallop.aid.network.protocol.Packet;
 import io.netty.channel.Channel;
 import io.netty.channel.group.ChannelGroup;
@@ -31,10 +32,16 @@ public class ClientManager {
 
     public static void registerClient(Channel channel) {
         channelGroup.add(channel);
+        if (channelGroup.size() == 1) {
+            ControlUtil.registerCameraServo();
+        }
     }
 
     public static void unregisterClient(Channel channel) {
         channelGroup.remove(channel);
+        if (channelGroup.size() == 0) {
+            ControlUtil.unregisterCameraServo();
+        }
     }
 
     public static void broadcastPacket(Packet packet) {

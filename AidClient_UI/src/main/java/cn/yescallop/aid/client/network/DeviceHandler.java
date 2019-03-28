@@ -60,6 +60,7 @@ public class DeviceHandler extends ClientPacketHandler {
             }
         }
         Platform.runLater(stage::close);
+        Factory.Network.removeDeviceChannelById(deviceId);
         free();
     }
 
@@ -142,7 +143,7 @@ public class DeviceHandler extends ClientPacketHandler {
             long dur = curTime - lastTime;
             if (dur >= 1000) {
                 float fps = frameCount / (dur / 1000f);
-                Factory.UI.println("FPS: " + String.format("%.1f", fps));
+//                Factory.UI.println("FPS: " + String.format("%.1f", fps));
                 frameCount = 0;
                 lastTime = curTime;
             }
@@ -169,7 +170,7 @@ public class DeviceHandler extends ClientPacketHandler {
                         DeviceListPacket.DeviceInfo info = Factory.Network.deviceInfoById(deviceId);
                         stage.setTitle(String.format("[%d] %s", deviceId, info.name));
                         stage.setScene(scene);
-                        stage.setOnCloseRequest(event -> Factory.Network.removeDeviceChannelById(deviceId)
+                        stage.setOnCloseRequest(event -> Factory.Network.getDeviceChannelById(deviceId)
                                 .close().syncUninterruptibly()
                         );
                         stage.setHeight(height);

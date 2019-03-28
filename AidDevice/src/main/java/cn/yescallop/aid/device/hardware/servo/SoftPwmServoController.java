@@ -1,14 +1,14 @@
 package cn.yescallop.aid.device.hardware.servo;
 
-import com.pi4j.io.gpio.GpioFactory;
-import com.pi4j.io.gpio.GpioPinPwmOutput;
 import com.pi4j.io.gpio.Pin;
+import com.pi4j.wiringpi.Gpio;
+import com.pi4j.wiringpi.SoftPwm;
 
 public class SoftPwmServoController implements ServoController {
 
     private static int RANGE = 200;
 
-    private GpioPinPwmOutput pwm;
+    private int pinAddr;
     private int minAngle;
     private int maxAngle;
 
@@ -23,8 +23,9 @@ public class SoftPwmServoController implements ServoController {
     public SoftPwmServoController(Pin pin, int minAngle, int maxAngle) {
         if (minAngle < -135 || maxAngle > 135 || maxAngle <= minAngle)
             throw new IllegalArgumentException("minAngle: " + minAngle + ", maxAngle: " + maxAngle);
-        pwm = GpioFactory.getInstance().provisionSoftPwmOutputPin(pin, 0);
-        pwm.setPwmRange(RANGE);
+        Gpio.wiringPiSetup();
+        pinAddr = pin.getAddress();
+        SoftPwm.softPwmCreate(pinAddr, 0, RANGE);
 
         this.minAngle = minAngle;
         this.maxAngle = maxAngle;
@@ -35,7 +36,11 @@ public class SoftPwmServoController implements ServoController {
             return false;
         int v = degreeToPwmValue(degree);
 
-        pwm.setPwm(v);
+        SoftPwm.softPwmWrite(pinAddr, v);
         return true;
+    }
+
+    public void unregister() {
+        SoftPwm.softPwmStop(pinAddr);
     }
 }
