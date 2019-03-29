@@ -8,6 +8,7 @@ import org.jline.terminal.Terminal;
 import org.jline.terminal.TerminalBuilder;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 /**
  * @author Scallop Ye
@@ -48,13 +49,11 @@ public class CommandReader extends Thread {
             }
             if (line.isEmpty())
                 continue;
-            int index = line.indexOf(' ');
-            if (index < 0) {
-                handler.handle(line, new String[0]);
+            String[] args = line.split(" +");
+            if (args.length == 1) {
+                handler.handle(args[0], new String[0]);
             } else {
-                String cmd = line.substring(0, index);
-                String[] args = line.substring(index + 1).split(" +");
-                handler.handle(cmd, args);
+                handler.handle(args[0], Arrays.copyOf(args, 1, args.length);
             }
         }
     }

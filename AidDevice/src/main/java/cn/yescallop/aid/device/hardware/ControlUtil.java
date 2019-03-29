@@ -56,17 +56,22 @@ public class ControlUtil {
         }
     }
 
-    private static void rotateCamera(int action) {
+    private static boolean rotateCamera(int action) {
+        if (cameraServo == null)
+            return false;
         if (action == ControlPacket.ACTION_CAMERA_LEFT) {
             if (cameraAngle >= -120) {
                 cameraAngle -= 15;
                 cameraServo.write(cameraAngle);
+                return true;
             }
         } else if (action == ControlPacket.ACTION_CAMERA_RIGHT) {
             if (cameraAngle <= 120) {
                 cameraAngle += 15;
                 cameraServo.write(cameraAngle);
+                return true;
             }
         }
+        return false;
     }
 }
