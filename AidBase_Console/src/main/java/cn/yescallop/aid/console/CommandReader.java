@@ -53,7 +53,7 @@ public class CommandReader extends Thread {
             if (args.length == 1) {
                 handler.handle(args[0], new String[0]);
             } else {
-                handler.handle(args[0], Arrays.copyOf(args, 1, args.length);
+                handler.handle(args[0], Arrays.copyOfRange(args, 1, args.length));
             }
         }
     }
